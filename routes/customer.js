@@ -3,7 +3,7 @@ const path = require('path');
 const router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/support/:customerId', function(req, res, next) {
   res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
