@@ -4,5 +4,6 @@ foodXpress is a web application for food delivery and food takeout.
 
 ## Steps to run
 
+1. cd foodXpress
 1. npm install
 1. npm start
