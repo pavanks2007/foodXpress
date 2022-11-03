@@ -6,3 +6,6 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+routes/constants.js
+routes/query.js
