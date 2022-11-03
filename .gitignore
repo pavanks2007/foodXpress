@@ -7,5 +7,6 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# Remove later
 routes/constants.js
 routes/query.js
