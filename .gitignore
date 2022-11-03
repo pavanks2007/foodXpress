@@ -8,5 +8,4 @@ node_modules/
 .env
 
 # Remove later
-routes/constants.js
 routes/query.js
