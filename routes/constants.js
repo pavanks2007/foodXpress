@@ -21,6 +21,7 @@ module.exports = {
     CUISINE: 'cuisine',
     DATE_TIM: 'date_time',
     DESCRIPTION: 'description',
+    DETAILS: 'DETAILS',
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
     ENCRYPTED_CREDENTIALS: 'encrypted_credentials',
