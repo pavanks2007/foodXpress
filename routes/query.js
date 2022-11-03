@@ -1,6 +1,33 @@
 const constants = require('./constants.js')
 
 module.exports = {
+    getOrderSummaryForUser: (orderId) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID]: orderId
+            },
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT}`,
+        }
+    },
+    getOrderSummaryForDriver: (orderId) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID]: orderId
+            },
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING}`,
+        }
+    },
+    getOrderSummaryForRestaurant: (orderId) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID]: orderId
+            },
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
+        }
+    },
     putReviewForRestaurant: (restaurantId, userId, createdAt, review) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
@@ -12,11 +39,24 @@ module.exports = {
             },
         }
     },
+    queryListOfItemsInOrder: (orderId) => {
+        return {
+            TableName: constants.ORDER_ITEMS_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.ITEM_ID},${constants.ITEM_NAME},${constants.QUANTITY}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.ORDER_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': orderId,
+            },
+        }
+    },
     queryListOfRestaurants: () => {
         return {
-            TableName: [constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME],
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             KeyConditionExpression: '#pk = :details',
-            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`
+            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`,
             ExpressionAttributeNames: {
                 '#pk': constants.PRIMARY_KEY,
             },
@@ -25,26 +65,55 @@ module.exports = {
             },
         }
     },
+    queryListOfReviewsForRestaurant: (restaurantId) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.USER_ID},${constants.CREATED_AT},${constants.REVIEW}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.PRIMARY_KEY,
+            },
+            ExpressionAttributeValues: {
+                ':id': restaurantId,
+            },
+        }
+    },
     queryPreviousOrdersForUser: (userId) => {
         return {
-            TableName: [constants.ORDER_SUMMARY_TABLE_NAME],
-            KeyConditionExpression: '#user_id = :id',
-            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.DRIVER_ID},${constants.FINAL_PRICE},${constants.DATE_TIME},${constants.PAYMENT}`
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            IndexName: constants.ORDER_SUMMARY_USER_ID_INDEX,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT}`,
             ExpressionAttributeNames: {
-                '#user_id': constants.USER_ID,
+                '#pk': constants.USER_ID,
             },
             ExpressionAttributeValues: {
                 ':id': userId,
             },
         }
     },
-    queryListOfReviewsForRestaurant: (restaurantId) => {
+    queryPreviousOrdersForDriver: (driverId) => {
         return {
-            TableName: [constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME],
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            IndexName: constants.ORDER_SUMMARY_DRIVER_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.CREATED_AT},${constants.REVIEW}`
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING}`,
             ExpressionAttributeNames: {
-                '#pk': constants.PRIMARY_KEY,
+                '#pk': constants.DRIVER_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': driverId,
+            },
+        }
+    },
+    queryPreviousOrdersForRestaurant: (restaurantId) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            IndexName: constants.ORDER_SUMMARY_RESTAURANT_ID_INDEX,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.RESTAURANT_ID,
             },
             ExpressionAttributeValues: {
                 ':id': restaurantId,

@@ -7,6 +7,7 @@ module.exports = {
     RESTAURANTS_AND_REVIEWS_TABLE_NAME: 'Restaurants_and_Reviews',
     RESTAURANT_MENU_TABLE_NAME: 'Restaurant_Menu',
     // Index Names
+    ORDER_SUMMARY_USER_ID_INDEX: 'user_id-order_id-index',
     ORDER_SUMMARY_DRIVER_ID_INDEX: 'driver_id-order_id-index',
     ORDER_SUMMARY_RESTAURANT_ID_INDEX: 'restaurant_id-order_id-index',
     // Column Names
