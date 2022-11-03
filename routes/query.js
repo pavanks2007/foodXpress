@@ -1,16 +1,53 @@
 const constants = require('./constants.js')
 
 module.exports = {
-    getListOfRestaurants: () => {
+    putReviewForRestaurant: (restaurantId, userId, createdAt, review) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Item: {
+                [constants.PRIMARY_KEY]: restaurantId, 
+                [constants.SORT_KEY]: userId,
+                [constants.CREATED_AT]: createdAt,
+                [constants.REVIEW]: review
+            },
+        }
+    },
+    queryListOfRestaurants: () => {
         return {
             TableName: [constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME],
-            FilterExpression: '#sk = :details',
+            KeyConditionExpression: '#pk = :details',
             ProjectionExpression: `${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`
             ExpressionAttributeNames: {
-                '#sk': constants.SORT_KEY,
+                '#pk': constants.PRIMARY_KEY,
             },
             ExpressionAttributeValues: {
                 ':details': constants.DETAILS,
+            },
+        }
+    },
+    queryPreviousOrdersForUser: (userId) => {
+        return {
+            TableName: [constants.ORDER_SUMMARY_TABLE_NAME],
+            KeyConditionExpression: '#user_id = :id',
+            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.DRIVER_ID},${constants.FINAL_PRICE},${constants.DATE_TIME},${constants.PAYMENT}`
+            ExpressionAttributeNames: {
+                '#user_id': constants.USER_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': userId,
+            },
+        }
+    },
+    queryListOfReviewsForRestaurant: (restaurantId) => {
+        return {
+            TableName: [constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME],
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.USER_ID},${constants.CREATED_AT},${constants.REVIEW}`
+            ExpressionAttributeNames: {
+                '#pk': constants.PRIMARY_KEY,
+            },
+            ExpressionAttributeValues: {
+                ':id': restaurantId,
             },
         }
     },
