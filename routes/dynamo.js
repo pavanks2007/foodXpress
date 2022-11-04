@@ -4,7 +4,7 @@ function getDynamoDbClient() {
   const AWS = require("aws-sdk");
   var credentials = new AWS.SharedIniFileCredentials({profile: 'ece567-project-account'});
   AWS.config.credentials = credentials;
-  return new AWS.DynamoDB.DocumentClient();  
+  return new AWS.DynamoDB.DocumentClient({ region:'us-east-1' });  
 }
 
 function getFromTable(documentClient, params){
