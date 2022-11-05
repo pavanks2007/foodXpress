@@ -34,7 +34,7 @@ module.exports = {
             Item:{
                 [constants.USER_ID]: userId, 
                 [constants.SORT_KEY]: constants.DETAILS,
-                [constants.USER_NAME]: username
+                [constants.USER_NAME]: username,
                 [constants.USER_TYPE]: userType,
                 [constants.CREATED_AT]: createdAt,
                 [constants.ADDRESS]: address,
