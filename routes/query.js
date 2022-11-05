@@ -78,6 +78,19 @@ module.exports = {
             },
         }
     },
+    queryOrderItems: (orderId) => {
+        return {
+            TableName: constants.ORDER_ITEMS_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.QUANTITY}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.ORDER_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': orderId,
+            },
+        }
+    },
     queryPreviousOrdersForUser: (userId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
