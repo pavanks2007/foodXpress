@@ -26,8 +26,13 @@ router.post('/previous_orders', async function(req, res, next) {
   res.json(previous_orders.Items);
 });
 
-router.get('/order', function(req, res, next) {
+router.get('/order', async function(req, res, next) {
   // TODO order details page
+  const restaurantId = "R_04";
+  const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantId));
+  // console.log(menu_items);
+  const coupons = await dynamo.queryTable(ddb, ddbQueries.queryCouponsForRestaurant(restaurantId));
+  console.log(coupons);
   res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 

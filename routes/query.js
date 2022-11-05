@@ -28,6 +28,20 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
         }
     },
+    putCustomer: (userId, username, userType, createdAt, address, encryptedCredential) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Item:{
+                [constants.USER_ID]: userId, 
+                [constants.SORT_KEY]: constants.DETAILS,
+                [constants.USER_NAME]: username
+                [constants.USER_TYPE]: userType,
+                [constants.CREATED_AT]: createdAt,
+                [constants.ADDRESS]: address,
+                [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential,
+            }
+        }
+    },
     putReviewForRestaurant: (restaurantId, userId, createdAt, review) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
@@ -36,6 +50,19 @@ module.exports = {
                 [constants.SORT_KEY]: userId,
                 [constants.CREATED_AT]: createdAt,
                 [constants.REVIEW]: review
+            },
+        }
+    },
+    queryCouponsForRestaurant: (restaurantId) => {
+        return {
+            TableName: constants.COUPONS_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.COUPON_ID},${constants.COUPON_VALUE},${constants.COUPON_USED},${constants.EXPIRATION_TIME}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.RESTAURANT_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': restaurantId,
             },
         }
     },
@@ -72,6 +99,19 @@ module.exports = {
             ProjectionExpression: `${constants.USER_ID},${constants.CREATED_AT},${constants.REVIEW}`,
             ExpressionAttributeNames: {
                 '#pk': constants.PRIMARY_KEY,
+            },
+            ExpressionAttributeValues: {
+                ':id': restaurantId,
+            },
+        }
+    },
+    queryMenuItemsInRestaurant : (restaurantId) => {
+        return {
+            TableName: constants.RESTAURANT_MENU_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.ITEM_PRICE}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.RESTAURANT_ID,
             },
             ExpressionAttributeValues: {
                 ':id': restaurantId,

@@ -25,7 +25,7 @@ module.exports = {
     DETAILS: 'DETAILS',
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
-    ENCRYPTED_CREDENTIALS: 'encrypted_credentials',
+    ENCRYPTED_CREDENTIAL: 'encrypted_credential',
     ENCRYPTED_PAYMENT: 'encrypted_payment',
     EXPIRATION_TIME: 'expiration_time',
     FINAL_PRICE: 'final_price',
