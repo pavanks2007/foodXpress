@@ -65,6 +65,19 @@ module.exports = {
             },
         }
     },
+    queryCustomerDetails: (userId) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            KeyConditionExpression: '#pk = :id',
+            ProjectionExpression: `${constants.USER_NAME},${constants.ADDRESS},${constants.USER_TYPE}`,
+            ExpressionAttributeNames: {
+                '#pk': constants.USER_ID,
+            },
+            ExpressionAttributeValues: {
+                ':id': userId,
+            },
+        }
+    },
     queryListOfReviewsForRestaurant: (restaurantId) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
@@ -120,6 +133,32 @@ module.exports = {
             },
         }
     },
+    putCustomer: (userId, username, userType, createdAt, address, encryptedCredential) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Item:{
+                [constants.USER_ID]: userId, 
+                [constants.SORT_KEY]: constants.DETAILS,
+                [constants.USER_NAME]: username,
+                [constants.USER_TYPE]: userType,
+                [constants.CREATED_AT]: createdAt,
+                [constants.ADDRESS]: address,
+                [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential,
+            }
+        }
+    },
+    putMenu: (restaurant_id, item_id, description, item_name, item_price) => {
+        return {
+            TableName: constants.RESTAURANT_MENU_TABLE_NAME,
+            Item:{
+                [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.ITEM_ID]: item_id,
+                [constants.DESCRIPTION]: description,
+                [constants.ITEM_NAME]: item_name,
+                [constants.ITEM_PRICE]: item_price              
+            }
+        }
+    }
 }
 
 /*
