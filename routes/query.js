@@ -1,13 +1,44 @@
 const constants = require('./constants.js')
 
 module.exports = {
-    deleteUser: () => {
+    deleteCoupon: (restaurant_id, coupon_id) => {
         return {
-            TableName: constants.DDB_TABLE_NAME,
+            TableName: constants.COUPONS_TABLE_NAME,
             Key: {
-                'pk': roomId,
-                'sk': connectionId
+                [constants.RESTAURANT_ID] : restaurant_id,
+                [constants.COUPON_ID] : coupon_id
             },
+            ConditionExpression: `attribute_exists(${constants.COUPON_ID})`
+        }
+    },
+    deleteMenuItem: (restaurant_id, item_id) => {
+        return {
+            TableName: constants.RESTAURANT_MENU_TABLE_NAME,
+            Key: {
+                [constants.RESTAURANT_ID] : restaurant_id,
+                [constants.ITEM_ID] : item_id
+            },
+            ConditionExpression: `attribute_exists(${constants.ITEM_ID})`
+        }
+    },
+    deleteUser: (userId) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Key: {
+                [constants.USER_ID] : userId,
+                [constants.SORT_KEY] : constants.DETAILS
+            },
+            ConditionExpression: `attribute_exists(${constants.SORT_KEY})`
+        }
+    },
+    deleteRestaurant: (restaurant_id) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Key: {
+                [constants.PRIMARY_KEY] : constants.DETAILS,
+                [constants.SORT_KEY] : restaurant_id
+            },
+            ConditionExpression: `attribute_exists(${constants.SORT_KEY})`
         }
     },
     getOrderSummaryForUser: (orderId) => {
@@ -28,6 +59,16 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING}`,
         }
     },
+    getUserDetails: (userId) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Key: {
+                [constants.USER_ID]: userId,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS},${constants.ENCRYPTED_CREDENTIAL}`,
+        }
+    },
     getOrderSummaryForRestaurant: (orderId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
@@ -37,17 +78,59 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
         }
     },
-    putCustomer: (userId, username, userType, createdAt, address, encryptedCredential) => {
+    putCoupon: (restaurant_id, coupon_id, coupon_value, used, expiration_time) => {
+        return {
+            TableName: constants.COUPONS_TABLE_NAME,
+            Item:{
+                [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.COUPON_ID]: coupon_id,
+                [constants.COUPON_VALUE]: coupon_value,
+                [constants.USED]: used,
+                [constants.EXPIRATION_TIME]: expiration_time,
+            }
+        }
+    },
+    putCustomer: (userId, username, email, userType, createdAt, address, encryptedCredential) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
             Item:{
                 [constants.USER_ID]: userId, 
                 [constants.SORT_KEY]: constants.DETAILS,
                 [constants.USER_NAME]: username,
+                [constants.EMAIL]: email,
                 [constants.USER_TYPE]: userType,
                 [constants.CREATED_AT]: createdAt,
                 [constants.ADDRESS]: address,
                 [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential,
+            }
+        }
+    },
+    putMenuItemInRestaurant: (restaurant_id, item_id, item_name, item_price, description) => {
+        return {
+            TableName: constants.RESTAURANT_MENU_TABLE_NAME,
+            Item:{
+                [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.ITEM_ID]: item_id,
+                [constants.ITEM_NAME]: item_name,
+                [constants.ITEM_PRICE]: item_price,
+                [constants.DESCRIPTION]: description              
+            }
+        }
+    },
+    putRestaurant: (restaurantId, restaurantName, restaurantAddress, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Item: {
+                [constants.PRIMARY_KEY]: constants.DETAILS,
+                [constants.SORT_KEY]: restaurantId,
+                [constants.RESTAURANT_NAME]: restaurantName,
+                [constants.RESTAURANT_ADDRESS]: restaurantAddress,
+                [constants.OPEN_TIME]: openTime,
+                [constants.CLOSE_TIME]: closeTime,
+                [constants.CONTACT]: contact,
+                [constants.CUISINE]: cuisine,
+                [constants.RATING]: rating,
+                [constants.MINIMUM_ORDER]: minimum_order
             }
         }
     },
@@ -195,32 +278,22 @@ module.exports = {
             },
         }
     },
-    putCustomer: (userId, username, userType, createdAt, address, encryptedCredential) => {
+    updateRestaurantDetail: (restaurant_id, key, value) => {
         return {
-            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
-            Item:{
-                [constants.USER_ID]: userId, 
-                [constants.SORT_KEY]: constants.DETAILS,
-                [constants.USER_NAME]: username,
-                [constants.USER_TYPE]: userType,
-                [constants.CREATED_AT]: createdAt,
-                [constants.ADDRESS]: address,
-                [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential,
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Key: {
+                [constants.PRIMARY_KEY] : constants.DETAILS,
+                [constants.SORT_KEY] : restaurant_id
+            },
+            UpdateExpression: 'set #key = :value',
+            ExpressionAttributeNames: {
+                '#key': key
+            },
+            ExpressionAttributeValues: {
+                ':value': value
             }
         }
     },
-    putMenu: (restaurant_id, item_id, description, item_name, item_price) => {
-        return {
-            TableName: constants.RESTAURANT_MENU_TABLE_NAME,
-            Item:{
-                [constants.RESTAURANT_ID]: restaurant_id, 
-                [constants.ITEM_ID]: item_id,
-                [constants.DESCRIPTION]: description,
-                [constants.ITEM_NAME]: item_name,
-                [constants.ITEM_PRICE]: item_price              
-            }
-        }
-    }
 }
 
 /*

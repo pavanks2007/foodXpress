@@ -15,14 +15,15 @@ router.get('/dashboard', function(req, res, next) {
 router.post('/dashboard', async function(req, res, next) {
   
 });
+
 router.get('/previous_orders', function(req, res, next) {
   // TODO previous_orders page
   res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
 router.post('/previous_orders', async function(req, res, next) {
-  const driverId = '';
-  const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForDriver(driverId));
+  const {driver_id} = req.body
+  const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForDriver(driver_id));
   res.json(previous_orders.Items);
 });
 

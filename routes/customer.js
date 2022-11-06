@@ -5,7 +5,6 @@ const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 const fs = require('fs');
-const { putCustomer,queryListOfCustomers } = require('./query.js');
 
 const ddb = dynamo.getDynamoDbClient();
 
@@ -19,49 +18,48 @@ router.get('/restaurants', async function(req, res, next) {
   res.json(restaurants.Items);
 });
 
-router.get('/:id', async function(req, res, next) {
-  const id = req.params.id;
-  console.log(id)
-  try {
-  const users = await dynamo.getFromTable(ddb, ddbQueries.queryGetCustomer(id));
-  res.json(users.Items);
-} catch(err) {
-  console.error(err);
-      res.status(500).json({ err: 'Something went wrong' });
-}
+router.post('/restaurant/items', async function(req, res, next) {
+  const {restaurant_id} = req.body;
+  const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
+  res.json(menuItems.Items);
 });
 
-
-router.post('/list', async function(req, res, next) {
-  
-  const {user_id,user_name, user_type,address} = req.body
-  console.log(user_id,user_name, user_type,address)
-  const createdAt = new Date()
-  const encryptedCredential="Rutgers@123"
-  try{
-    const newCustomer=await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id,user_name,user_type,createdAt,address,encryptedCredential));
-    res.json(newCustomer);
-  } catch (err) {
-      console.error(err);
-      res.status(500).json({ err: 'Something went wrong' });
+router.get('/getUserDetails/:id', async function(req, res, next) {
+  const user_id = req.params.id;
+  try {
+    const users = await dynamo.getFromTable(ddb, ddbQueries.queryGetCustomer(id));
+    res.json(users.Item);
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong', error: err});
   }
 });
 
-router.post('/menu',async function(req,res,next)
+
+router.post('/addUser', async function(req, res, next) {
+  const {user_id, user_name, email, user_type, address} = req.body;
+  const createdAt = new Date().toString();
+  const encryptedCredential="Rutgers@123";
+  try {
+    const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, encryptedCredential));
+    res.json({message: 'Successfully added user: ' + user_id});
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: err });
+  }
+});
+
+router.post('/deleteUser', async function(req,res,next)
 {
-  const {restaurant_id, item_id, description, item_name, item_price} = req.body
-  console.log(restaurant_id, item_id, description, item_name, item_price)
-    try
-    {
-        const viewMenu= await dynamo.putInTable(ddb, ddbQueries.putMenu(restaurant_id, item_id, description, item_name, item_price))
-        console.log(viewMenu.Items)
-        res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
-    }
-    catch(err)
-    {
-        console.log(err)
-        res.send('Unable to pull Menu')
-    }
+  const {user_id} = req.body
+  try {
+      const deleteUserQuery = ddbQueries.deleteUser(user_id);
+      const deleteUser = await dynamo.deleteInTable(ddb, deleteUserQuery);
+      res.json({message:'Successfully deleted user', query: deleteUserQuery, queryResult: deleteUser})
+  } catch(err) {
+      console.log(err)
+      res.send({message:'Unable to delete user', error: err})
+  }
 });
 
 module.exports = router;
