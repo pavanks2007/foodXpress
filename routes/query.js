@@ -1,6 +1,15 @@
 const constants = require('./constants.js')
 
 module.exports = {
+    deleteUser: () => {
+        return {
+            TableName: constants.DDB_TABLE_NAME,
+            Key: {
+                'pk': roomId,
+                'sk': connectionId
+            },
+        }
+    },
     getOrderSummaryForUser: (orderId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
