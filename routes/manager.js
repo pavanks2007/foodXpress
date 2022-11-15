@@ -102,27 +102,6 @@ router.post('/menu'), async function(req,res)
     //need help
 }
 
-// loads coupon page where coupon data will be sent
-router.get('/coupons',(req,res,next)=>
-{
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
-})
-//gets data from database and sends it over. 
-router.post('/coupons', async function(req,res)
-{
-    const restaurantID=""
-    const coupons = await dynamo.queryTable(ddb, ddbQueries.queryCouponsForRestaurant(restaurantID));
-    res.json(coupons);
-})
-//adds Coupon
-router.post('/coupons/:couponID',(req,res)=>
-{
-
-    //
-    res.send('Coupon has been updated')
-
-})
-
 router.get('/logout',  function (req, res)  
 {
     // If the user is loggedin

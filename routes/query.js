@@ -66,7 +66,17 @@ module.exports = {
                 [constants.USER_ID]: userId,
                 [constants.SORT_KEY]: constants.DETAILS
             },
-            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS},${constants.ENCRYPTED_CREDENTIAL}`,
+            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS}`,
+        }
+    },
+    getUserCredentials: (userId) => {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Key: {
+                [constants.USER_ID]: userId,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            ProjectionExpression: `${constants.USER_ID},${constants.ENCRYPTED_CREDENTIAL}`,
         }
     },
     getOrderSummaryForRestaurant: (orderId) => {
