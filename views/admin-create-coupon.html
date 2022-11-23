@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <title>Admin Create Coupon</title>
+</head>
+<body style="background-color: #fef9a8;">
+    <div class="giant">
+        <!-- Food Xpress Banner -->
+        <div class="p-5 xl-4 bg-danger text-white" >FoodXpress </div>
+
+        <br><br>
+
+        <h3 class="display-8 pl-2">Create coupon</h3>
+        <hr style="background-color:#CC9966"></hr>
+        <div class="dashboard-body d-flex justify-content-center">
+            
+            <form>
+                
+                <div class="pt-4"></div>
+                <label for="CouponName" class="form-label">Coupon Name</label>
+                <input type="text" class="form-control form-control-lg" id="CouponName" aria-describedby="NameHelp" placeholder="Coupon Name">
+                
+                <div class="pt-4"></div>
+                <label for="DeductibleAmount" class="form-label">Deductible Amount</label>
+                <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp" placeholder="Deductible Amount">
+                
+                <div class="pt-4"></div>
+                <label for="ValidFrom" class="form-label">Valid From</label>
+                <input type="text" class="form-control form-control-lg" id="Valid From" aria-describedby="NameHelp" placeholder="Enter timestamp">
+                
+                <div class="pt-4"></div>
+                <label for="ValidTill" class="form-label">Valid Till</label>
+                <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp" placeholder="Enter timestamp">
+                
+                <div class="pt-4"></div>
+                <div class="dropdown">
+                    <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Select Restaurant
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                      <button class="dropdown-item" type="button">Action</button>
+                      <button class="dropdown-item" type="button">Another action</button>
+                      <button class="dropdown-item" type="button">Something else here</button>
+                    </div>
+                  </div>
+                
+                <div class="pt-4"></div>
+            </form>
+            
+    
+        </div>
+        <div class="button d-flex justify-content-center">
+            <button type="button" class="btn btn-danger btn-lg">Create Coupon</button>
+        </div>
+        <div class="pt-4"></div>
+        <div class="pt-4"></div>
+
+
+
+    </div>
+</body>
+</html>
