@@ -1,0 +1,25 @@
+.card{
+    background-color: #FDF68E;
+    border-width: 2px;
+    border-color: #CC9967;
+    width: 45%;
+    max-height: 1000rem;
+}
+
+.close{
+    padding-left: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-right: 0.75rem;
+    background-color: #CC9967;
+    border-width: 1.5px;
+
+}
+
+.close-button{
+    padding-left:42rem;
+}
+
+.check-box{
+    padding-right: 3rem;
+}

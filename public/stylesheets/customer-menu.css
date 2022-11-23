@@ -1,5 +1,5 @@
 .card{
-    width:800px;
+    width:48%;
     height: 200px;
     background-color: #fef9a8;
     border-width: thin; 
@@ -49,5 +49,22 @@ a:hover{
 }
 
 .quantity-spinner{
-     width: 84%;
+     width: 83%;
+}
+
+.holder{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.btn-holder{
+    padding-right: 1.25rem;
+}
+
+.universal-holder{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
 }

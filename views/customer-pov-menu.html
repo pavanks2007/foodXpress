@@ -11,23 +11,27 @@
 </head>
 <body style="background-color: #fef9a8;">
     <div class="giant">
-        <div class="d-inline-flex">
-            <h1 class="display-6" style="padding-top: 1rem;">{Restaurant Name} Menu</h1>
-            <div class="cart">
-              <button type="submit" class="cart-btn btn btn-danger btn-lg">CART</i></button>
-            </div>
+        <div class="holder">
+            <h1 class="display-6 pt-3">{Restaurant Name} Menu</h1>
+              <div class="btn-holder pt-3">
+                <a href="./customer-checkout.html" class="cart-btn px-4 mx-1 btn btn-danger  btn-lg" role="button">CART</a>
+              </div>
         </div>
         <hr style="background-color:#CC9966"></hr>
+
+        
         <div id="list-example" class="list-group d-inline-flex justify-content-center">
             <a class="list-group-item list-group-item-action" href="#frequently-ordered-items">Frequently Ordered Items</a>
             <a class="list-group-item list-group-item-action" href="#menu-items">Menu Items</a>
             <a class="list-group-item list-group-item-action" href="#reviews">Reviews</a>
         </div>
         <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
-        
-        <div class="pt-5">
-            <h4 id="frequently-ordered-items px-5 ">Frequently Ordered Items</h4>
-        </div>
+          
+           <div class="pt-4"></div>
+
+            <h4 id="frequently-ordered-items" class="mx-5 pt-3">Frequently Ordered Items</h4>
+            <div class="pt-4"></div>
+
         <div class="foq-holder d-flex justify-content-center">
             <div class="card mb-3">
                 <div class="row no-gutters">
@@ -195,6 +199,6 @@
                 </div>
         
             </div>
-    </div>
+          </div>
 </body>
 </html>
