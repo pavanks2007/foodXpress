@@ -17,9 +17,10 @@
 }
 
 .close-button{
-    padding-left:42rem;
+    display: flex;
+    justify-content: end;
 }
 
 .check-box{
-    padding-right: 3rem;
+    padding-right: 2rem;
 }
