@@ -65,3 +65,15 @@ a:hover{
     display: flex;
     justify-content: space-between;
 }
+
+
+
+.edit-and-delete{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-holder-del-edit{
+    display: flex;
+    justify-content: end;
+}
