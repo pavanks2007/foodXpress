@@ -1,0 +1,11 @@
+.card{
+    background-color: #FDF68E;
+   
+}
+.card-body{
+    display: flex;
+    justify-content: space-between;
+}
+.btn-holder{
+    padding-bottom: 1rem;
+}
