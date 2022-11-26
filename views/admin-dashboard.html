@@ -27,32 +27,37 @@
             <div class="d-flex justify-content-center mx-auto">
                 <form>
                     <div class="pt-3"></div>
-                    <label for="restuarantName" class="form-label">Admin Name</label>
-                    <input type="text" class="form-control form-control-lg" id="readRestaurantName" aria-describedby="emailHelp">
+                    <label for="adminName" class="form-label">Admin Name</label>
+                    <input type="text" class="form-control form-control-lg" id="editAdminName" aria-describedby="emailHelp">
                     <div class="pt-5"></div>
 
-                    <div class="timings-holder">
-                        <label for="openFromTimings" class="form-label mx-3">Surge Fee</label>
-                        <input type="number" class="form-control form-control" id="readOpenFrom" readonly>
+                    <div class="surge-tax-holder">
+                        <label for="surgeFee" class="form-label mx-3">Surge Fee(USD)</label>
+                        <input type="number" class="form-control form-control" id="editSurgeFee">
                         <div class="pt-5"></div>
 
-                        <label for="bankAccountNumber" class="form-label-lg mx-3">Tax %</label>
-                        <input type="number" class="form-control form-control" id="readOpenTill" readonly>
+                        <label for="taxPercent" class="form-label-lg mx-3">Tax %</label>
+                        <input type="number" class="form-control form-control" id="editTaxPercent">
                     </div>
 
                     <div class="pt-5"></div>
 
-                    <label for="restaurantManagerName" class="form-label-lg">Today's earnings</label>
-                    <input type="text" class="form-control form-control-lg" id="readrestaurantManagerName" readonly>
+                    <label for="todayEarnings" class="form-label-lg">Today's earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readTodayEarnings" readonly>
                     <div class="pt-5"></div>
 
-                    <label for="bankAccountNumber" class="form-label-lg">This Month's earnings</label>
-                    <input type="password" class="form-control form-control-lg" id="readBankAccountNumber" readonly>
+                    <label for="monthEarnings" class="form-label-lg">This Month's earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readMonthEarnings" readonly>
                     <div class="pt-5"></div>
 
-                    <label for="bankRoutingDetails" class="form-label-lg">Total earnings</label>
-                    <input type="number" class="form-control form-control-lg" id="readBankAccountNumber" readonly>
+
+                    <label for="totalEarnings" class="form-label-lg">Total earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readTotalEarnings" readonly>
                     <div class="pt-5"></div>
+
+                    <div class="button d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger btn-lg">Update Details</button>
+                    </div>
 
                 </form>
             </div>
