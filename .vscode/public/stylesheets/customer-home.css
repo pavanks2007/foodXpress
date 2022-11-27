@@ -1,0 +1,39 @@
+.cards-wrapper {
+    display: flex;
+    justify-content: center;
+}
+.card img {
+width: 100%;
+height: 15vw;
+object-fit: cover;
+}
+.card {
+margin: 0 0.5em;
+box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+border: none;
+border-radius: 0;
+}
+.carousel-inner {
+padding: 1em;
+}
+.carousel-control-prev,
+.carousel-control-next {
+background-color: #e1e1e1;
+width: 5vh;
+height: 5vh;
+border-radius: 50%;
+top: 50%;
+transform: translateY(-50%);
+}
+
+.small-nav-bar{
+    display: flex;
+    justify-content: flex-end;
+}
+@media (min-width: 768px) {
+.card img {
+    height: 11em;
+}
+
+
+}

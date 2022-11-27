@@ -1,0 +1,26 @@
+{
+  "name": "foodxpress",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pavanks2007/foodXpress.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pavanks2007/foodXpress/issues"
+  },
+  "homepage": "https://github.com/pavanks2007/foodXpress#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1247.0",
+    "cookie-parser": "^1.4.6",
+    "debug": "^4.3.4",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0"
+  }
+}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <title>Customer Dashboard</title>
+</head>
+<body style="background-color: #fef9a8;">
+    <div class="giant">
+
+    <div class="p-5 xl-4 bg-danger text-white" >FoodXpress
+        <div class="small-nav-bar">
+            <p class="text-white"><a href="./customer-home.html" class="text-white">Home</a>&emsp;<a href="./sdnskd" class="text-white">Previous Orders</a>&emsp;<a href="./customer-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
+        </div>    
+    </div>
+    <div class="pt-5"></div>
+    <h3 class="display-6 pl-2">USER DASHBOARD</h3>
+    <hr style="background-color:#CC9966"></hr>
+    <div class="dashboard-body d-flex justify-content-center">
+        <div class = 'user-image justify-content-center'>
+            <img src="../images/blank-profile-picture-973460__480.jpeg" alt="..." class="rounded w-75 mx-auto d-box">
+        </div>
+        <form>
+            
+            <div class="pt-3"></div>
+            <label for="InputName" class="form-label">Name</label>
+            <input type="Name" class="form-control form-control-lg" id="InputName" aria-describedby="NameHelp">
+            <div class="pt-4"></div>
+            <div class="pt-3"></div>
+            <label for="InputEmail" class="form-label">Email</label>
+            <input type="email" class="form-control form-control-lg" id="InputEmail" aria-describedby="emailHelp">
+            <div class="pt-4"></div>
+            <div class="pt-3"></div>
+            <label for="InputAddress1" class="form-label">Address Line 1</label>
+            <input type="address" class="form-control form-control-lg" id="InputAddress1" aria-describedby="AddressHelp1">
+            <div class="pt-4"></div>
+            <label for="InputAddress2" class="form-label">Address Line 2</label>
+            <input type="address" class="form-control form-control-lg" id="InputAddress2" aria-describedby="AddressHelp2" >
+            <div class="pt-4"></div>
+            <label for="ZipCode" class="form-label">ZipCode</label>
+            <input type="zipcode" class="form-control form-control-lg" id="ZipCode" aria-describedby="ZipCodeHelp">
+            <div class="pt-4"></div>
+           
+        </form>
+        
+
+    </div>
+    <div class="submit d-flex justify-content-center">
+        <button type="button" class="btn btn-danger btn-lg">Save Details</button>
+    </div>
+
+    </div>
+      
+
+
+
+</body>
+</html>

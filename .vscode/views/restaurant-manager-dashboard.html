@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../public/stylesheets/restaurant-manager-dashboard.css">
+</head>
+<body style="background-color: #fef9a8;">
+    <div class="p-5 xl-4 bg-danger text-white" >FoodXpress
+        <div class="small-nav-bar">
+            <p class="text-white"><a href="./restaurant-manager-active-prev-orders.html" class="text-white">Orders</a>&emsp;<a href="./restaurant-manager-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
+        </div>    
+    </div>
+    <div class="pt-5"></div>
+    <h3 class="display-6 pl-2">MANAGER DASHBOARD</h3>
+    <hr style="background-color:#CC9966"></hr>
+    <div class="dashboard-body">
+        <div class = 'user-image'>
+            <img src="../images/blank-profile-picture-973460__480.jpeg" alt="..." class="usr-img">
+        </div>
+            
+            <div class="pt-3"></div>
+            <div class="d-flex justify-content-center mx-auto">
+                <form>
+                    <div class="pt-3"></div>
+                    <label for="restuarantName" class="form-label">Restaurant Name</label>
+                    <input type="text" class="form-control form-control-lg" id="readRestaurantName" aria-describedby="emailHelp" readonly>
+                    <div class="pt-5"></div>
+    
+                    <label for="restaurantManagerName" class="form-label-lg">Restaurant Manager Name</label>
+                    <input type="text" class="form-control form-control-lg" id="readrestaurantManagerName" readonly>
+                    <div class="pt-5"></div>
+
+                    <label for="bankAccountNumber" class="form-label-lg">Bank Account Number</label>
+                    <input type="password" class="form-control form-control-lg" id="readBankAccountNumber" readonly>
+                    <div class="pt-5"></div>
+
+                    <label for="bankRoutingDetails" class="form-label-lg">Routing Number</label>
+                    <input type="number" class="form-control form-control-lg" id="readBankAccountNumber" readonly>
+                    <div class="pt-5"></div>
+
+                    <div class="timings-holder">
+                        <label for="openFromTimings" class="form-label mx-3">Open From</label>
+                        <input type="time" class="form-control form-control" id="readOpenFrom" readonly>
+                        <div class="pt-5"></div>
+
+                        <label for="bankAccountNumber" class="form-label-lg mx-3">Open Till</label>
+                        <input type="time" class="form-control form-control" id="readOpenTill" readonly>
+                    </div>
+
+                    <div class="pt-5"></div>
+
+                    <label for="bankRoutingDetails" class="form-label-lg">Minimum Order Amount</label>
+                    <input type="number" class="form-control" id="readBankAccountNumber" readonly>
+
+                    <div class="pt-5"></div>
+
+                    <div class="contact-admin">Need to make changes? <a href="./contact-us-page.html" class="text-danger mx-1"> Contact</a> the admin.</div>
+
+                </form>
+            </div>
+    <!-- <div class="submit d-flex justify-content-center">
+        <button type="button" class="btn btn-danger btn-lg">Save Details</button>
+    </div> -->
+
+    </div>
+    
+</body>
+</html>
