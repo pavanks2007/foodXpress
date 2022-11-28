@@ -11,7 +11,7 @@ foodXpress is a web application for food delivery and food takeout.
 aws_access_key_id = <PERSONAL_ACCESS_KEY_ID>
 aws_secret_access_key = <PERSONAL_SECRET_ACCESS_KEY>
 ```
-
+2. npm install express-validator
 ## Steps to run
 
 1. cd foodXpress

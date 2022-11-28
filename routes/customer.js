@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const router = express.Router();
+var expressValidator = require('express-validator');
 const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
@@ -24,11 +25,16 @@ router.post('/restaurant/items', async function(req, res, next) {
   res.json(menuItems.Items);
 });
 
-router.get('/getUserDetails/:id', async function(req, res, next) {
-  const user_id = req.params.id;
+
+
+router.post('/orders/checkout', async function(req, res, next) {
+  const { order_id,customer_id,restaurant_id,total_price,taxes,surge_fee,total_tip, express_delivery,coupon_used} = req.body;
+  const createdAt = new Date().toString();
+  //const order_id=100;
+  console.log(req);
   try {
-    const users = await dynamo.getFromTable(ddb, ddbQueries.queryGetCustomer(id));
-    res.json(users.Item);
+    const chkout = await dynamo.putInTable(ddb, ddbQueries.postCheckout(order_id,customer_id,restaurant_id,total_price,taxes,surge_fee,total_tip, express_delivery,coupon_used,createdAt));
+    res.json({message: 'Successfully checkout out and added order summary: ' + chkout});
   } catch(err) {
     console.error(err);
     res.status(500).json({ err: 'Something went wrong', error: err});
@@ -37,12 +43,20 @@ router.get('/getUserDetails/:id', async function(req, res, next) {
 
 
 router.post('/addUser', async function(req, res, next) {
-  const {user_id, user_name, email, user_type, address} = req.body;
+  const { user_name, email, address,password,confirmedPassword} = req.body;
   const createdAt = new Date().toString();
-  const encryptedCredential="Rutgers@123";
+  const user_type='Customer';
+  //const encryptedCredential="Rutgers@123";
+  // Validation
+  req.checkBody('user_name', 'Name is required').notEmpty();
+  req.checkBody('email', 'Email is required').notEmpty();
+  req.checkBody('email', 'Email is not valid').isEmail();
+  req.checkBody('password', 'Password is required').notEmpty();
+  req.checkBody('confirmedPassword', 'Passwords do not match').equals(req.body.password);
+  const user_id='rt67';
   try {
-    const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, encryptedCredential));
-    res.json({message: 'Successfully added user: ' + user_id});
+    const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id,user_name,email,user_type,createdAt,address,password));
+    res.json({message: 'Successfully added user: ' + newCustomer});
   } catch (err) {
       console.error(err);
       res.status(500).json({ error: err });
