@@ -41,6 +41,19 @@ router.post('/orders/checkout', async function(req, res, next) {
   }
 });
 
+router.post('/reviews', async function(req, res, next) {
+  const { customer_id,restaurant_id,review,rating} = req.body;
+  const createdAt = new Date().toString();
+  console.log(req);
+  try {
+    const review_post = await dynamo.putInTable(ddb, ddbQueries.putReviewForRestaurant(customer_id,restaurant_id,createdAt,review));
+    res.json({message: 'Successfully checkout out and added order summary: ' + review_post});
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong', error: err});
+  }
+});
+
 
 router.post('/addUser', async function(req, res, next) {
   const { user_name, email, address,password,confirmedPassword} = req.body;

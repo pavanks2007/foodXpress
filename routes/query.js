@@ -118,6 +118,18 @@ module.exports = {
             }
       }
     },
+    postReview: (customer_id,restaurant_id,review,rating,createdAt) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Item:{
+                [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.USER_ID]: customer_id,
+                [constants.CREATED_AT]: createdAt,
+                [constants.REVIEW]: review,
+                [constants.RATING]: rating
+            }
+      }
+    },
     putCustomer: (userId, username, email, userType, createdAt, address, encryptedCredential) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
