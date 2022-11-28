@@ -11,6 +11,17 @@ router.get('/', function(req, res, next) {
   res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
+router.get('/restaurants', async function(req, res, next) {
+  const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
+  res.json(restaurants.Items);
+});
+
+router.post('/restaurant/items', async function(req, res, next) {
+  const {restaurant_id} = req.body;
+  const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
+  res.json(menuItems.Items);
+});
+
 router.post('/addRestaurant', async function(req,res,next){
   const {restaurant_id, restaurant_name, restaurant_address, open_time, close_time, contact, cuisine, rating, minimum_order} = req.body
   try {

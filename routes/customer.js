@@ -24,6 +24,12 @@ router.post('/restaurant/items', async function(req, res, next) {
   res.json(menuItems.Items);
 });
 
+router.post('/previous_orders', async function(req, res, next) {
+  const {customer_id} = req.body
+  const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
+  res.json(previous_orders.Items);
+});
+
 router.get('/getUserDetails/:id', async function(req, res, next) {
   const user_id = req.params.id;
   try {
@@ -34,7 +40,6 @@ router.get('/getUserDetails/:id', async function(req, res, next) {
     res.status(500).json({ err: 'Something went wrong', error: err});
   }
 });
-
 
 router.post('/addUser', async function(req, res, next) {
   const {user_id, user_name, email, user_type, address} = req.body;

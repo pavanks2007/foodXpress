@@ -29,20 +29,17 @@ router.post('/previous_orders', async function(req, res, next) {
 
 router.get('/order', async function(req, res, next) {
   // TODO order details page
-  const restaurantId = "R_04";
-  const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantId));
+  const {restaurant_id} = req.body;
+  const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
   // console.log(menu_items);
-  const coupons = await dynamo.queryTable(ddb, ddbQueries.queryCouponsForRestaurant(restaurantId));
-  console.log(coupons);
   res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/order', async function(req, res, next) {
-  const driverId = '';
-  const orderId = '';
-  const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(orderId));
-  if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID) && driverId == order_summary.Item[constants.DRIVER_ID]) {
-    const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(orderId));
+router.post('/previous_orders', async function(req, res, next) {
+  const {driver_id, order_id} = req.body;
+  const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(order_id));
+  if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID) && driver_id == order_summary.Item[constants.DRIVER_ID]) {
+    const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
     res.json({order_summary: order_summary.Item, order_items: order_items.Item});
   } else {
     // TODO error
