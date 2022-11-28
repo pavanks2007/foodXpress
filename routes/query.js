@@ -41,7 +41,7 @@ module.exports = {
             ConditionExpression: `attribute_exists(${constants.SORT_KEY})`
         }
     },
-    getOrderSummaryForUser: (orderId) => {
+    getOrderSummaryForCustomer: (orderId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Key: {
@@ -87,6 +87,16 @@ module.exports = {
                 [constants.ORDER_ID]: orderId
             },
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
+        }
+    },
+    getRestaurantDetails: (restaurant_id) => {
+        return {
+            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            Key: {
+                [constants.PRIMARY_KEY] : constants.DETAILS,
+                [constants.SORT_KEY] : restaurant_id
+            },
+            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`,
         }
     },
     putCoupon: (restaurant_id, coupon_id, coupon_value, used, expiration_time) => {
@@ -215,7 +225,7 @@ module.exports = {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             KeyConditionExpression: '#pk = :details',
-            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`,
+            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`,
             ExpressionAttributeNames: {
                 '#pk': constants.PRIMARY_KEY,
             },
@@ -276,7 +286,7 @@ module.exports = {
             },
         }
     },
-    queryPreviousOrdersForUser: (userId) => {
+    queryPreviousOrdersForCustomer: (userId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_USER_ID_INDEX,
