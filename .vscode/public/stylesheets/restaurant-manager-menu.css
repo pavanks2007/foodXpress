@@ -1,0 +1,67 @@
+.card{
+    width:48%;
+    height: 200px;
+    background-color: #fef9a8;
+    border-width: thin; 
+    border-color: #000;
+}
+.card-img{
+    width: 260px;
+    height: 195px;
+    padding-left: 20px;
+    padding-top: 25px;
+    padding-bottom: 15px;
+}
+
+a:hover{
+    text-decoration-color:#fff ;
+}
+
+.list-group-item{
+    background-color: #FDF68E;
+    border-color: #000;
+    padding-block: 1rem;
+    
+}
+
+.list-group-item:hover{
+    background-color: #DC3444;
+    border-color: #fff;
+    padding-block: 1rem;
+
+}
+
+.spinner-div{
+    padding-left: 19rem;
+}
+
+.h4{
+    padding-left: 15rem;
+}
+
+.date{
+    padding-left: 12rem;
+}
+
+.cart{
+    padding-top: 1rem;
+    padding-left: 125rem;
+}
+
+.quantity-spinner{
+     width: 83%;
+}
+
+.holder{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.btn-holder{
+    padding-right: 1.25rem;
+}
+.small-holder{
+    display: flex;
+    justify-content: space-between;
+}

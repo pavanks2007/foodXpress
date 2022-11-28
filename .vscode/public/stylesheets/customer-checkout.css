@@ -1,0 +1,49 @@
+.tip-btn-one{
+padding-left: 5rem;
+}
+
+.card{
+width:800px;
+height: 200px;
+background-color: #fef9a8;
+border-width: thin;
+border-color: #000;
+}
+.card-img{
+width: 260px;
+height: 195px;
+padding-left: 20px;
+padding-top: 25px;
+padding-bottom: 15px;
+}
+
+.spinner-div{
+padding-left: 21rem;
+}
+
+.quantity-spinner{
+width: 84%;
+}
+
+textarea{
+max-width: 200px;
+max-height: 75px;
+}
+
+.bill-block{
+padding-left: 50rem;
+}
+
+.price-tags{
+padding-right: 39%;
+}
+
+.prices{
+padding-left: 39%;
+}
+
+.small-nav-bar{
+    display: flex;
+    justify-content: flex-end;
+}
+
