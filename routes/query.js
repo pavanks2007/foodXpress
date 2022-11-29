@@ -111,35 +111,6 @@ module.exports = {
             }
         }
     },
-    postCheckout: (order_id,customer_id,restaurant_id,total_price,taxes,surge_fee,total_tip, express_delivery,coupon_used,createdAt) => {
-        return {
-            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
-            Item:{
-                [constants.ORDER_ID]: order_id, 
-                [constants.RESTAURANT_ID]: restaurant_id, 
-                [constants.USER_ID]: customer_id,
-                [constants.COUPON_USED]: coupon_used,
-                [constants.TOTAL_PRICE]: total_price,
-                [constants.TAXES]: taxes,
-                [constants.SURGE_FEE]: surge_fee, 
-                [constants.TOTAL_TIP]: total_tip,
-                [constants.EXPRESS_DELIVERY]: express_delivery,
-                [constants.CREATED_AT]: createdAt
-            }
-      }
-    },
-    postReview: (customer_id,restaurant_id,review,rating,createdAt) => {
-        return {
-            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
-            Item:{
-                [constants.RESTAURANT_ID]: restaurant_id, 
-                [constants.USER_ID]: customer_id,
-                [constants.CREATED_AT]: createdAt,
-                [constants.REVIEW]: review,
-                [constants.RATING]: rating
-            }
-      }
-    },
     putCustomer: (userId, username, email, userType, createdAt, address, encryptedCredential) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
@@ -167,6 +138,23 @@ module.exports = {
             }
         }
     },
+    putOrderSummary: (order_id, customer_id, restaurant_id, total_price, taxes, surge_fee, total_tip, express_delivery, coupon_used, createdAt) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Item:{
+                [constants.ORDER_ID]: order_id, 
+                [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.USER_ID]: customer_id,
+                [constants.COUPON_USED]: coupon_used,
+                [constants.TOTAL_PRICE]: total_price,
+                [constants.TAXES]: taxes,
+                [constants.SURGE_FEE]: surge_fee, 
+                [constants.TOTAL_TIP]: total_tip,
+                [constants.EXPRESS_DELIVERY]: express_delivery,
+                [constants.CREATED_AT]: createdAt
+            }
+      }
+    },
     putRestaurant: (restaurantId, restaurantName, restaurantAddress, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
@@ -184,14 +172,15 @@ module.exports = {
             }
         }
     },
-    putReviewForRestaurant: (restaurantId, userId, createdAt, review) => {
+    putReviewForRestaurant: (restaurantId, userId, createdAt, review, rating) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             Item: {
                 [constants.PRIMARY_KEY]: restaurantId, 
                 [constants.SORT_KEY]: userId,
                 [constants.CREATED_AT]: createdAt,
-                [constants.REVIEW]: review
+                [constants.REVIEW]: review,
+                [constants.RATING]: rating
             },
         }
     },
