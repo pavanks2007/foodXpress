@@ -11,7 +11,7 @@ loggedIn = false;
 var userType = '';
 
 /* GET home page. */
-router.get('/', (req, res) => {
+router.get('/', function (req, res) {
 
     if (!loggedIn) {
         res.redirect('login')
@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
 });
 
-router.get('/login', (req, res) => {
+router.get('/login', function (req, res) {
     res.render('general/generalLogin.ejs', { root: path.join(__dirname, '..', 'views') });
 })
 
@@ -58,10 +58,8 @@ router.get('/logout', function (req, res) {
     console.log('User Successfully logged Out')
 })
 
-router.get('/register', (req, res) => {
-
+router.get('/register', function (req, res) {
     res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
-
 })
 
 
@@ -110,7 +108,7 @@ router.post('/restaurant/menu', async function (req, res, next) {
     }
 });
 
-router.get('/contact-us', (req, res) => {
+router.get('/contact-us', function (req, res) {
     res.sendFile('general/contact-us-page.html', { root: path.join(__dirname, '..', 'views') });
 })
 

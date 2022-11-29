@@ -12,8 +12,7 @@ var loggedin=false;
 const restaurantID=""
 //requires view engine. Using ejs
 /* GET home page. */
-router.get('/', (req, res) =>
-{
+router.get('/', function (req, res) {
     /* This will check if manager is logged in
        If Manager is not logged i, redirect to log in page
        else redirect to manager dashboard*/
@@ -28,13 +27,11 @@ router.get('/', (req, res) =>
 
 });
 
-router.get('/login',(req,res)=>
-{
+router.get('/login', function (req, res) {
     res.render("manager/login");
-})
+});
 
-router.post('/login',async function (req,res)
-{
+router.post('/login', async function (req,res){
     const user_id= req.body.user_id
     const password=req.body.password
     try
@@ -69,49 +66,37 @@ router.post('/login',async function (req,res)
         console.log('Wrong User Name or User does not exist.')
         res.redirect('/manager')
     }
-}) 
+}); 
 
-router.get('/logout',  function (req, res)  
-{
+router.get('/logout',  function (req, res) {
     loggedin = false;
     res.redirect('/manager');
     console.log('User Successfully logged Out')
-})
+});
 
 
-router.get('/dashboard',function (req, res)
-{
-    
+router.get('/dashboard', function (req, res){
     //const storeInfo= await dynamo.get
-    
     res.render("manager/restaurant-manager-dashboard")
-
-
-})
+});
 
 //retreave all prev orders from database and send it over to webpage.
-router.get('/allOrders',async function(req,res)
-{
-    try
-    {
+router.get('/allOrders', async function(req,res){
+    try {
         const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurantID));
         console.log('Successfully pulled data')
         res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items})
-    }
-    catch(err)
-    {
+    } catch(err) {
         console.log(err)
         res.send('Unable to pull data.')
     }
 })
 
-router.get('/orders/confirm',(req,res)=>
-{
+router.get('/orders/confirm', function (req, res) {
     res.render("manager/restaurant-manager-active-prev-orders")
 })
 
-router.get('/viewMenu/:rID',async function(req,res)
-{
+router.get('/viewMenu/:rID', async function(req,res) {
     const restaurantID=req.params.rID;
     try
     {
@@ -178,8 +163,7 @@ router.get('/viewCoupons/:rID', async function(req,res,next){
     }
 });
 
-router.post('/addCoupon', async function(req,res,next)
-{
+router.post('/addCoupon', async function(req,res,next) {
     const {restaurant_id, coupon_id, coupon_value, expiration_time} = req.body
     try 
     {
@@ -205,12 +189,12 @@ router.post('/deleteCoupon', async function(req,res,next){
         res.send({message:'Unable to delete coupon', error: err})
     }
 });
-router.get('/login', (req, res) => {
+router.get('/login', function (req, res) {
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 })
 
 /*Takes in username and password*/
-router.post('/login', (req, res) => {
+router.post('/login', function (req, res) {
     //get user, send user to database, 
     var user_name = req.body.user_name
     console.log(user_name)
@@ -232,20 +216,20 @@ router.post('/login', (req, res) => {
 })
 
 
-router.post('/dashboard', (req, res) => {
+router.post('/dashboard', function (req, res) {
     //do later
 })
 
-router.get('/orders', (req, res) => {
+router.get('/orders', function (req, res) {
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 })
 
-router.post('orders/confirm', (req, res) => {
+router.post('orders/confirm', function (req, res) {
     //not sure how to handle this
 })
 
 //This will load page where restaurant menu will show up.
-router.get('/menu', (req, res) => {
+router.get('/menu', function (req, res) {
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 })
 

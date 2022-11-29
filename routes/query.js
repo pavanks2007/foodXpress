@@ -138,13 +138,14 @@ module.exports = {
             }
         }
     },
-    putOrderSummary: (order_id, customer_id, restaurant_id, total_price, taxes, surge_fee, total_tip, express_delivery, coupon_used, createdAt) => {
+    putOrderSummary: (order_id, customer_id, restaurant_id, driver_id, total_price, taxes, surge_fee, total_tip, express_delivery, coupon_used, createdAt) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Item:{
                 [constants.ORDER_ID]: order_id, 
                 [constants.RESTAURANT_ID]: restaurant_id, 
                 [constants.USER_ID]: customer_id,
+                [constants.DRIVER_ID]: driver_id,
                 [constants.COUPON_USED]: coupon_used,
                 [constants.TOTAL_PRICE]: total_price,
                 [constants.TAXES]: taxes,
