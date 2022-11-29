@@ -29,6 +29,7 @@ module.exports = {
     ENCRYPTED_CREDENTIAL: 'encrypted_credential',
     ENCRYPTED_PAYMENT: 'encrypted_payment',
     EXPIRATION_TIME: 'expiration_time',
+    EXPRESS_DELIVERY: 'express_delivery',
     FINAL_PRICE: 'final_price',
     ITEM_ID: 'item_id',
     ITEM_NAME: 'item_name',
@@ -48,8 +49,12 @@ module.exports = {
     RESTAURANT_NAME: 'restaurant_name',
     REVIEW: 'review',
     SORT_KEY: 'sk',
+    SURGE_FEE: 'surge_fee', 
+    TAXES: 'taxes',
+    TOTAL_PRICE: 'total_price',
+    TOTAL_TIP: 'total_tip',
     USED: 'used',
     USER_ID: 'user_id',
     USER_NAME: 'user_name',
-    USER_TYPE: 'user_type',
+    USER_TYPE: 'user_type'
 }

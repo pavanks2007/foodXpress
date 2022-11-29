@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const http = require('http');
 const cookieParser = require('cookie-parser');
+const expressValidator = require('express-validator');
 
 const app = express();
 const indexRouter = require('./routes/index');
@@ -16,6 +17,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine','ejs');
+app.use(expressValidator());
 
 app.use('/', indexRouter);
 app.use('/customer', customerRouter);

@@ -15,18 +15,19 @@
     
         <br><br>
         <div class="d-flex justify-content-center mx-auto">
-            <form>
+            <form action="/login" method="POST">
 
                 <div class="pt-3"></div>
-                <label for="exampleInputEmail1" class="form-label">User ID</label>
-                <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter User ID">
-                <div class="pt-5"></div>
+                <label for="exampleInputEmail1" class="form-label">User ID
+                    <input type="text" class="form-control form-control-lg" name="user_id" value="<%locals.user_id%>" placeholder="Enter User ID">
+                    <div class="pt-5"></div>
+                </label>
+                <label for="exampleInputPassword1" class="form-label-lg">Password
+                    <input type="password" class="form-control form-control-lg" name="password" value="<%locals.password%>" placeholder="Password">
+                    <div class="pt-5"></div>
 
-                <label for="exampleInputPassword1" class="form-label-lg">Password</label>
-                <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
-                <div class="pt-5"></div>
-
-                <div class="text-center "><small class="text-muted">New to the website? Register <a href="register.html">here</a></small></div>
+                </label>
+                <div class="text-center "><small class="text-muted">New to the website? Register <a href="./register">here</a></small></div>
 
                 <div class="pt-5"></div>
 
@@ -37,10 +38,3 @@
         </form>
         </div>
     </div>
-    
-    
-
-    
-    
-</body>
-</html>
