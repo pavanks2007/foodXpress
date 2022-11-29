@@ -7,46 +7,43 @@ const ddbQueries = require('./query.js');
 
 const ddb = dynamo.getDynamoDbClient();
 
-router.get('/dashboard', function(req, res, next) {
-  // TODO dashboard page
-  res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+router.get('/dashboard', function (req, res, next) {
+    // TODO dashboard page
+    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/dashboard', async function(req, res, next) {
-  
+router.post('/dashboard', async function (req, res, next) {
+
 });
 
-router.get('/previous_orders', function(req, res, next) {
-  // TODO previous_orders page
-  res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+router.get('/orders', function (req, res, next) {
+    // TODO previous_orders page
+    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/previous_orders', async function(req, res, next) {
-  const {driver_id} = req.body
-  const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForDriver(driver_id));
-  res.json(previous_orders.Items);
+router.post('/orders', async function (req, res, next) {
+    const { driver_id } = req.body
+    const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForDriver(driver_id));
+    res.json(previous_orders.Items);
 });
 
-router.get('/order', async function(req, res, next) {
-  // TODO order details page
-  const restaurantId = "R_04";
-  const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantId));
-  // console.log(menu_items);
-  const coupons = await dynamo.queryTable(ddb, ddbQueries.queryCouponsForRestaurant(restaurantId));
-  console.log(coupons);
-  res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+router.get('/order', async function (req, res, next) {
+    // TODO order details page
+    const { restaurant_id } = req.body;
+    const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
+    // console.log(menu_items);
+    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/order', async function(req, res, next) {
-  const driverId = '';
-  const orderId = '';
-  const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(orderId));
-  if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID) && driverId == order_summary.Item[constants.DRIVER_ID]) {
-    const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(orderId));
-    res.json({order_summary: order_summary.Item, order_items: order_items.Item});
-  } else {
-    // TODO error
-  }
+router.post('/previous_orders', async function (req, res, next) {
+    const { driver_id, order_id } = req.body;
+    const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(order_id));
+    if (!order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) 
+        throw `No driver assigned to order ${order_id}`;
+    if (driver_id != order_summary.Item[constants.DRIVER_ID])
+        throw `Order ${order_id} is not assigned to driver ${driver_id}`;
+    const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
+    res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
 });
 
 module.exports = router;
