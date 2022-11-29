@@ -34,8 +34,7 @@ router.get('/login', function (req, res) {
 router.post('/login', async function (req,res){
     const user_id= req.body.user_id
     const password=req.body.password
-    try
-    {
+    try {
         const userNameData= await dynamo.getFromTable(ddb,ddbQueries.getUserCredentials(user_id))
         const userType=await dynamo.getFromTable(ddb,ddbQueries.getUserDetails(user_id))
         
@@ -58,10 +57,7 @@ router.post('/login', async function (req,res){
                 console.log('Wrong Password')
                 res.redirect('/manager')
             }
-    }
-    
-    catch(err)
-    {
+    } catch(err) {
         console.log(err)
         console.log('Wrong User Name or User does not exist.')
         res.redirect('/manager')
@@ -98,16 +94,13 @@ router.get('/orders/confirm', function (req, res) {
 
 router.get('/viewMenu/:rID', async function(req,res) {
     const restaurantID=req.params.rID;
-    try
-    {
+    try {
         const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
         console.log(viewMenu.Items)
         //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
 
         res.render("manager/viewMenu",{menu:viewMenu.Items})
-    }
-    catch(err)
-    {
+    } catch(err) {
         console.log(err)
         res.send('Unable to pull Menu')
     }
@@ -165,14 +158,11 @@ router.get('/viewCoupons/:rID', async function(req,res,next){
 
 router.post('/addCoupon', async function(req,res,next) {
     const {restaurant_id, coupon_id, coupon_value, expiration_time} = req.body
-    try 
-    {
+    try {
         const addCouponQuery = ddbQueries.putCoupon(restaurant_id, coupon_id, coupon_value, true, expiration_time);
         const addCoupon = await dynamo.putInTable(ddb, addCouponQuery);
         res.json({message:'Successfully put coupon', query: addCouponQuery, queryResult: addCoupon})
-    } 
-    catch(err) 
-    {
+    } catch(err) {
         console.log(err)
         res.send({message:'Unable to add coupon', error: err})
     }
@@ -241,8 +231,7 @@ router.post('/menu2'), async function (req, res) {
         const viewMenu = await dynamo.putInTable(ddb, ddbQueries.putMenu(restaurant_id, item_id, description, item_name, item_price))
         console.log(viewMenu.Items)
         res.json({ message: 'Successfully pulled Menu', data: viewMenu.Items })
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err)
         res.send('Unable to pull Menu')
     }

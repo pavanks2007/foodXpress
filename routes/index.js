@@ -43,9 +43,7 @@ router.post('/login', async function (req, res) {
             console.log('Wrong Password')
             res.redirect('/')
         }
-    }
-
-    catch (err) {
+    } catch (err) {
         console.log(err)
         console.log('Wrong User Name or User does not exist.')
         res.redirect('/')
