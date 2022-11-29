@@ -9,7 +9,8 @@ const fs = require('fs');
 const ddb = dynamo.getDynamoDbClient();
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
+router.get('/', async function (req, res, next) 
+{
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 

@@ -11,12 +11,6 @@ var loggedin=false;
 
 const restaurantID=""
 //requires view engine. Using ejs
-const constants = require('./constants.js');
-const dynamo = require('./dynamo.js');
-const ddbQueries = require('./query.js');
-
-const ddb = dynamo.getDynamoDbClient();
-
 /* GET home page. */
 router.get('/', (req, res) =>
 {
