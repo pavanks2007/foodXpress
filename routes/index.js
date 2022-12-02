@@ -7,83 +7,61 @@ const ddbQueries = require('./query.js');
 
 const ddb = dynamo.getDynamoDbClient();
 
-loggedIn = false;
-var userType = '';
-
 /* GET home page. */
 router.get('/', function (req, res) {
-
-    if (!loggedIn) {
-        res.redirect('login')
-    }
-    else {
-        res.redirect(userType)
-    }
-
+    res.redirect('/restaurants');
 });
 
 router.get('/login', function (req, res) {
-    res.render('general/generalLogin.ejs', { root: path.join(__dirname, '..', 'views') });
+    res.render('generalLogin.ejs', { root: path.join(__dirname, '..', 'views', 'general') });
 })
 
 router.post('/login', async function (req, res) {
-    const user_id = req.body.user_id
-    const password = req.body.password
     try {
-        const credentials = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id))
-        const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserDetails(user_id))
-        userType = userInfo.Item[constants.USER_TYPE]
-
-        if (password == credentials.Item[constants.ENCRYPTED_CREDENTIAL]) {
-            console.log("User successfully logged in.")
-            loggedIn = true;
-            res.redirect('/' + userType + '/dashboard')
-        }
-        else {
-            console.log('Wrong Password')
-            res.redirect('/')
-        }
+        console.log(req.signedCookies);
+        console.log(req.body)
+        const {user_id, password, user_type} = req.body
+        const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id));
+        if (! userInfo.Item[constants.USER_ID]) 
+            throw `User does not exist; provided ${user_id}`
+        if (user_type != userInfo.Item[constants.USER_TYPE])
+            throw `Usertype does not match; provided ${user_type}`
+        if (password != userInfo.Item[constants.ENCRYPTED_CREDENTIAL]) 
+            throw `Password does not match`
+        console.log(`${user_type} ${user_id} successfully logged in.`);
+        res.cookie('user_id', user_id, { signed: true });
+        res.cookie('user_type', user_type, { signed: true });
+        // res.send(`${user_type} ${user_id} successfully logged in.`);
+        res.redirect('/restaurants');
     } catch (err) {
-        console.log(err)
-        console.log('Wrong User Name or User does not exist.')
-        res.redirect('/')
+        console.log(err);
+        res.redirect('/login'); // TODO: send error message
     }
 })
 
 router.get('/logout', function (req, res) {
-    loggedIn = false;
+
+    res.clearCookie('user_id');
+    res.clearCookie('user_type');
+    console.log('User Successfully logged Out');
     res.redirect('/');
-    console.log('User Successfully logged Out')
 })
 
 router.get('/register', function (req, res) {
     res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
-})
-
+});
 
 router.post('/addUser', async function (req, res, next) {
-    const { user_id, user_name, email, user_type, address } = req.body;
+    const { user_id, encryptedCredential, user_name, email, user_type, address } = req.body;
     const createdAt = new Date().toString();
-    const encryptedCredential = "Rutgers@123";
     try {
-        const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, encryptedCredential));
+        await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, encryptedCredential));
         res.json({ message: 'Successfully added user: ' + user_id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err });
     }
 });
-
-/* GET home page. */
-// router.get('/', function (req, res, next) {
-//     try {
-//         // res.redirect('/restaurants');
-//         res.sendFile('index.html', { root: path.join(__dirname, '..', 'views') });
-//     } catch (err) {
-//         console.log(err);
-//         res.send({ message: 'Unable to render route /', error: err });
-//     }
-// });
 
 router.get('/restaurants', async function (req, res, next) {
     try {

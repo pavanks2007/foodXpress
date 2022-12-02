@@ -3,6 +3,8 @@ const express = require('express');
 const http = require('http');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
+const bodyParser = require('body-parser');
+const multer = require('multer');
 
 const app = express();
 const indexRouter = require('./routes/index');
@@ -10,12 +12,15 @@ const customerRouter = require('./routes/customer');
 const managerRouter = require('./routes/manager');
 const adminRouter = require('./routes/admin');
 const driverRouter = require('./routes/driver');
+const secret = 'Test123';
 
 // Set path to views directory
+
+app.use(cookieParser(secret));
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+// app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
 app.use(expressValidator());
