@@ -60,6 +60,15 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING}`,
         }
     },
+    getOrderSummaryForRestaurant: (orderId) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID]: orderId
+            },
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
+        }
+    },
     getUserDetails: (userId) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
@@ -77,16 +86,7 @@ module.exports = {
                 [constants.USER_ID]: userId,
                 [constants.SORT_KEY]: constants.DETAILS
             },
-            ProjectionExpression: `${constants.USER_ID},${constants.ENCRYPTED_CREDENTIAL}`,
-        }
-    },
-    getOrderSummaryForRestaurant: (orderId) => {
-        return {
-            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
-            Key: {
-                [constants.ORDER_ID]: orderId
-            },
-            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
+            ProjectionExpression: `${constants.USER_ID},${constants.ENCRYPTED_CREDENTIAL},${constants.USER_TYPE}`,
         }
     },
     getRestaurantDetails: (restaurant_id) => {
@@ -138,20 +138,22 @@ module.exports = {
             }
         }
     },
-    putOrderSummary: (order_id, customer_id, restaurant_id, driver_id, total_price, taxes, surge_fee, total_tip, express_delivery, coupon_used, createdAt) => {
+    putOrderSummary: (order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Item:{
                 [constants.ORDER_ID]: order_id, 
-                [constants.RESTAURANT_ID]: restaurant_id, 
                 [constants.USER_ID]: customer_id,
+                [constants.RESTAURANT_ID]: restaurant_id, 
                 [constants.DRIVER_ID]: driver_id,
-                [constants.COUPON_USED]: coupon_used,
-                [constants.TOTAL_PRICE]: total_price,
+                [constants.ITEMS_PRICE]: items_price,
                 [constants.TAXES]: taxes,
                 [constants.SURGE_FEE]: surge_fee, 
                 [constants.TOTAL_TIP]: total_tip,
-                [constants.EXPRESS_DELIVERY]: express_delivery,
+                [constants.COUPON_USED]: coupon_used,
+                [constants.COUPON_VALUE]: coupon_value,
+                [constants.FINAL_PRICE]: final_price,
+                [constants.MODE]: mode,
                 [constants.CREATED_AT]: createdAt
             }
       }

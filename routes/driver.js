@@ -13,29 +13,20 @@ router.get('/dashboard', function (req, res, next) {
 });
 
 router.post('/dashboard', async function (req, res, next) {
-
+    
 });
 
 router.get('/orders', function (req, res, next) {
-    // TODO previous_orders page
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/orders', async function (req, res, next) {
+router.post('/previousOrders', async function (req, res, next) {
     const { driver_id } = req.body
     const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForDriver(driver_id));
     res.json(previous_orders.Items);
 });
 
-router.get('/order', async function (req, res, next) {
-    // TODO order details page
-    const { restaurant_id } = req.body;
-    const menu_items = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
-    // console.log(menu_items);
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
-});
-
-router.post('/previous_orders', async function (req, res, next) {
+router.post('/order', async function (req, res, next) {
     const { driver_id, order_id } = req.body;
     const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(order_id));
     if (!order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) 

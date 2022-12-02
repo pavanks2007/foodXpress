@@ -264,7 +264,7 @@ router.post('/menu', async function (req, res, next) {
     }
 });
 
-router.post('/orders', async function (req, res, next) {
+router.post('/previousOrders', async function (req, res, next) {
     try {
         const { restaurant_id } = req.body;
         const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurant_id));
