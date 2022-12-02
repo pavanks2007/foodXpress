@@ -1,9 +1,13 @@
+const { response } = require('express');
 const express = require('express');
+const { appendFile } = require('fs');
 const path = require('path');
 const router = express.Router();
 const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
+const axios = require('axios');
+const xmlbuilder2=require('xmlbuilder2');
 
 const ddb = dynamo.getDynamoDbClient();
 
@@ -74,6 +78,54 @@ router.get('/register', function (req, res) {
     res.render('general/register.ejs', { root: path.join(__dirname, '..', 'views') });
 })
 
+router.get('/add_updateAddress',function(req,res)
+{
+    res.render('general/addAddress.ejs', { root: path.join(__dirname, '..', 'views') });
+})
+
+router.post('/validateAddress', async function(req,res)
+{
+        const {addi, city,state} = req.body;
+        const xaddipt2= req.body.xaddipt2;
+    
+        const root =xmlbuilder2.create({ version: '1.0' })
+        .ele('AddressValidateRequest', { USERID: '159NONE00041' })
+          .ele('Address')
+            .ele('Address1').txt(addi).up()
+            .ele('Address2').txt(xaddipt2).up()
+            .ele('City').txt(city).up()
+            .ele('State').txt(state).up()
+            .ele('Zip5').up()
+            .ele('Zip4').up()
+            .up()
+        .up();
+        try{
+            let xml= root.end({prettyPrint: true});
+            console.log(xml)
+
+            var ans;
+            
+            let url='https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&xml='+ encodeURIComponent(xml);
+
+             axios.get(url)
+             .then(function(response){
+                const obj= xmlbuilder2.convert(response.data,{format:"object"})
+                console.log(obj);
+             })
+             .catch(function(err){
+                console.log(err);
+                res.redirect('/add_updateAddress');
+
+             });
+        }
+        catch(error)
+        {
+            console.log(error)
+        }
+
+        res.redirect('/dashboard');
+})
+
 router.post('/addUser', async function (req, res) {
     
     const {user_id,user_name, email,password, conf} = req.body;
@@ -86,7 +138,10 @@ router.post('/addUser', async function (req, res) {
     req.checkBody('email', 'Email is not valid').isEmail();
     req.checkBody('password', 'Password is required').notEmpty();
     req.checkBody('conf', 'Passwords do not match').equals(password);
-    try {
+    try 
+    {
+
+        res.redirect('/add_updateAddress')
         const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, password));
         console.log('Successfully added user: '+ user_id)
         res.redirect('/dashboard')

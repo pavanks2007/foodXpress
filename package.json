@@ -18,12 +18,14 @@
   "homepage": "https://github.com/pavanks2007/foodXpress#readme",
   "dependencies": {
     "aws-sdk": "^2.1247.0",
+    "axios": "^1.2.0",
     "cookie-parser": "^1.4.6",
     "debug": "^4.3.4",
     "ejs": "^3.1.8",
     "express": "^4.18.2",
     "express-validator": "^4.3.0",
     "http-errors": "^2.0.0",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "xmlbuilder2": "^3.0.2"
   }
 }

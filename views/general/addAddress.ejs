@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <title>Add Address</title>
+</head>
+<body style="background-color: #fef9a8;">
+    <div class="giant">
+        <div class="p-5 xl-4 bg-danger text-white" >FoodXpress </div>
+    
+        <br><br>
+        <div class="d-flex justify-content-center">
+            <form action="/validateAddress" method="POST">
+                <div class="pt-3"></div>
+                <label for="exampleInputEmail1" class="form-label">Street Address</label>
+                <input type="text" class="form-control form-control-lg" name="addi" value="<%locals.addi%>" placeholder="Street Address">
+                <div class="pt-4"></div>
+
+                <label for="exampleInputEmail1" class="form-label"> FLoor Number</label>
+                <input type="text" class="form-control form-control-lg" name="xaddipt2" value="<%locals.xaddipt2%>" placeholder="Apt #, Floor">
+                <div class="pt-4"></div>
+                <label for="exampleInputEmail1" class="form-label">City</label>
+                <input type="text" class="form-control form-control-lg" name="city"  value="<%locals.city%>" placeholder="City">
+                <div class="pt-4"></div>
+
+                <label for="exampleInputEmail1" class="form-label">State</label>
+                <input type="text" class="form-control form-control-lg" name="state" value="<%locals.state%>" placeholder="State Ex: 'NJ'">
+                <div class="pt-4"></div>
+
+                <div class="text-center">
+                <button type="submit" class="btn btn-danger btn-lg">Register</button>
+                </div>
+
+        </form>
+        </div>
+    </div>
+</body>
+</html>
