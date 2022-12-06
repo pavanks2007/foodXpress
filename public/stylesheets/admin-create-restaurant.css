@@ -1,0 +1,22 @@
+.banking-details-form{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.small-nav-bar{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.timings-holder{
+    display: flex;
+    justify-content: center;
+}
+
+.details-holder{
+    justify-content: space-between;
+}
+
+
+
+
