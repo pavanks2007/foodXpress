@@ -39,12 +39,26 @@ router.get('/orderFees', async function (req, res, next) {
     res.json({ taxes: 0.14, surge_fees: 3});
 });
 
-router.post('/orderCheckout', async function (req, res, next) {
-    // TODO get input
+// router.post('/orderConfirmation', async function (req, res, next) {
+//     const { order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode } = req.body;
+//     const createdAt = new Date().toString();
+//     const driver_id = await dynamo.scanTable(ddb, ddbQueries.getAvailableDriver());
+//     console.log(driver_id.Items);
+//     try {
+//         const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
+//         res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).json({ err: 'Something went wrong', error: err });
+//     }
+// });
+
+router.post('/orderConfirmation', async function (req, res, next) {
     const { order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode } = req.body;
     const createdAt = new Date().toString();
-    const driver_id = "";
-    console.log(req);
+    const driver_id_list = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDriver());
+    let driver_id = driver_id_list.Items[0].driver_id.toString();
+    console.log(driver_id_list.Items[0].driver_id);
     try {
         const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
         res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
@@ -52,6 +66,9 @@ router.post('/orderCheckout', async function (req, res, next) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong', error: err });
     }
+});
+
+router.post('/payment', async function (req, res, next) {
 });
 
 router.post('/reviews', async function (req, res, next) {
@@ -82,6 +99,17 @@ router.post('/order', async function (req, res, next) {
         throw `Order ${order_id} is not ordered by customer ${customer_id}`;
     const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
     res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
+});
+router.get('/order/:id', async function (req, res, next) {
+    const id = req.params.id;
+    try {
+    const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(id));
+    res.json(order_summary.Item);
+} catch (err) {
+    console.error(err);
+    res.status(500).json({ err: 'Something went wrong', error: err });
+}
+    
 });
 
 router.get('/getUserDetails/:id', async function (req, res, next) {

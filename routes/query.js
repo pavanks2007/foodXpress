@@ -50,6 +50,19 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT}`,
         }
     },
+    scanAvailableDriver: ()=> {
+        return {
+            TableName: constants.DRIVER,
+            ExpressionAttributeNames: {
+                '#available': constants.DRIVER_AVAILABILITY,
+            },
+            ExpressionAttributeValues: {
+                ':true': true,
+            },
+            FilterExpression : "#available = :true" ,
+            ProjectionExpression: `${constants.DRIVER_ID}`,
+        }
+    },
     
     getOrderSummaryForDriver: (orderId) => {
         return {
@@ -139,6 +152,7 @@ module.exports = {
         }
     },
     putOrderSummary: (order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt) => {
+        console.log(order_id, customer_id, restaurant_id, driver_id);
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Item:{
@@ -336,6 +350,24 @@ module.exports = {
             }
         }
     },
+    updateOrderforDriver: (order_id, key, value) => {
+        console.log(order_id, key,value)
+        //restaurantId='test_07'
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID] : order_id,
+            },
+            UpdateExpression: 'set #key = :value',
+            ExpressionAttributeNames: {
+                '#key': [constants.DRIVER_ID],
+            },
+            ExpressionAttributeValues: {
+                ':value': value
+            }
+        }
+    },
+
 }
 
 /*

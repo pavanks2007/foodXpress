@@ -12,6 +12,7 @@ const customerRouter = require('./routes/customer');
 const managerRouter = require('./routes/manager');
 const adminRouter = require('./routes/admin');
 const driverRouter = require('./routes/driver');
+const paymentRouter = require('./routes/payment');
 const secret = 'Test123';
 
 // Set path to views directory
@@ -30,6 +31,7 @@ app.use('/customer', customerRouter);
 app.use('/manager', managerRouter);
 app.use('/admin', adminRouter);
 app.use('/driver', driverRouter);
+app.use('/payment', paymentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
