@@ -50,4 +50,17 @@ router.post('/updateOrderforDriver', async function (req, res, next) {
     }
 });
 
+router.post('/status', async function(req,res,next){
+    const{driver_id,status} = req.body;
+    try{
+    const checkout = await dynamo.updateTable(ddb, ddbQueries.updatestatusforDriver(driver_id, Available, status));
+    res.json({ message: 'Successfully updated order withnew driver: ' + checkout });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+    }
+    });
+
+module.exports = router;
+
 module.exports = router;
