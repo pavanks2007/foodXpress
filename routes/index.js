@@ -51,7 +51,7 @@ router.get('/register', function (req, res) {
     res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/addUser', async function (req, res, next) {
+router.post('/registerUser', async function (req, res, next) {
     const { user_id, encryptedCredential, user_name, email, user_type, address } = req.body;
     const createdAt = new Date().toString();
     try {
@@ -86,6 +86,6 @@ router.post('/restaurant/menu', async function (req, res, next) {
 
 router.get('/contact-us', function (req, res) {
     res.sendFile('general/contact-us-page.html', { root: path.join(__dirname, '..', 'views') });
-})
+});
 
 module.exports = router;

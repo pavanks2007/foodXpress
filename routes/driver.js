@@ -26,7 +26,7 @@ router.post('/previousOrders', async function (req, res, next) {
     res.json(previous_orders.Items);
 });
 
-router.post('/order', async function (req, res, next) {
+router.post('/orderSummary', async function (req, res, next) {
     const { driver_id, order_id } = req.body;
     const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForDriver(order_id));
     if (!order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) 
@@ -36,6 +36,7 @@ router.post('/order', async function (req, res, next) {
     const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
     res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
 });
+
 
 router.post('/updateOrderforDriver', async function (req, res, next) {
     const { driver_id, order_id } = req.body;
