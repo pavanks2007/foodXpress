@@ -28,7 +28,7 @@ module.exports = {
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
     DRIVER_NAME: 'name',
-    DRIVER_AVAILABILITY: 'Available',
+    DRIVER_AVAILABILITY: 'available',
     EMAIL: 'email',
     ENCRYPTED_CREDENTIAL: 'encrypted_credential',
     ENCRYPTED_PAYMENT: 'encrypted_payment',
@@ -38,6 +38,8 @@ module.exports = {
     ITEM_ID: 'item_id',
     ITEM_NAME: 'item_name',
     ITEM_PRICE: 'item_price',
+    LAT: 'lat',
+    LONG: 'long',
     ITEMS_PRICE: 'items_price',
     MINIMUM_ORDER: 'minimum_order',
     MODE: 'mode',
@@ -62,6 +64,4 @@ module.exports = {
     USER_ID: 'user_id',
     USER_NAME: 'user_name',
     USER_TYPE: 'user_type',
-    DRIVER_NAME: 'name',
-    DRIVER_AVAILABILITY: 'Available'
 }
