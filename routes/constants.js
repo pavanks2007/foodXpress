@@ -6,7 +6,7 @@ module.exports = {
     ORDER_SUMMARY_TABLE_NAME: 'Order_Summary',
     RESTAURANTS_AND_REVIEWS_TABLE_NAME: 'Restaurants_and_Reviews',
     RESTAURANT_MENU_TABLE_NAME: 'Restaurant_Menu',
-    DRIVER: 'Driver',
+    DRIVER_TABLE_NAME: 'Driver',
     // Index Names
     ORDER_SUMMARY_USER_ID_INDEX: 'user_id-order_id-index',
     ORDER_SUMMARY_DRIVER_ID_INDEX: 'driver_id-order_id-index',
@@ -61,5 +61,7 @@ module.exports = {
     USED: 'used',
     USER_ID: 'user_id',
     USER_NAME: 'user_name',
-    USER_TYPE: 'user_type'
+    USER_TYPE: 'user_type',
+    DRIVER_NAME: 'name',
+    DRIVER_AVAILABILITY: 'Available'
 }
