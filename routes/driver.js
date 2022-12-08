@@ -46,7 +46,7 @@ router.post('/status', async function(req,res,next){
         console.error(err);
         res.status(500).json({ err: 'Something went wrong', error: err });
     }
-    });
-
+});
 
 module.exports = router;
+
