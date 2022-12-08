@@ -14,8 +14,8 @@ const restaurantID=""
 /* GET home page. */
 router.get('/', function (req, res) {
     /* This will check if manager is logged in
-       If Manager is not logged i, redirect to log in page
-       else redirect to manager dashboard*/
+    If Manager is not logged i, redirect to log in page
+    else redirect to manager dashboard*/
     if(!loggedin)
     {
         res.redirect('manager/login')
@@ -24,7 +24,7 @@ router.get('/', function (req, res) {
     {
         res.redirect('manager/dashboard')
     }
-
+    
 });
 
 router.get('/login', function (req, res) {
@@ -38,25 +38,25 @@ router.post('/login', async function (req,res){
         const userNameData= await dynamo.getFromTable(ddb,ddbQueries.getUserCredentials(user_id))
         const userType=await dynamo.getFromTable(ddb,ddbQueries.getUserDetails(user_id))
         
-            if(password==userNameData.Item[constants.ENCRYPTED_CREDENTIAL])
+        if(password==userNameData.Item[constants.ENCRYPTED_CREDENTIAL])
+        {
+            if("manager"==userType.Item[constants.USER_TYPE])
             {
-                  if("manager"==userType.Item[constants.USER_TYPE])
-                {
-                    console.log("User successfully logged in.")
-                    loggedin=true;
-                    res.redirect('/manager') 
-                }
-                else
-                {
-                    console.log('Wrong User Type')
-                    res.redirect('/manager')
-                }
+                console.log("User successfully logged in.")
+                loggedin=true;
+                res.redirect('/manager') 
             }
             else
             {
-                console.log('Wrong Password')
+                console.log('Wrong User Type')
                 res.redirect('/manager')
             }
+        }
+        else
+        {
+            console.log('Wrong Password')
+            res.redirect('/manager')
+        }
     } catch(err) {
         console.log(err)
         console.log('Wrong User Name or User does not exist.')
@@ -67,16 +67,16 @@ router.post('/login', async function (req,res){
 router.get('/logout',  function (req, res) {
     loggedin = false;
     res.redirect('/manager');
-    console.log('User Successfully logged Out')
+    console.log('User Successfully logged Out');
 });
 
 
 router.get('/dashboard', function (req, res){
     //const storeInfo= await dynamo.get
-    res.render("manager/restaurant-manager-dashboard")
+    res.render("manager/restaurant-manager-dashboard");
 });
 
-//retreave all prev orders from database and send it over to webpage.
+//retrieve all prev orders from database and send it over to webpage.
 router.get('/allOrders', async function(req,res){
     try {
         const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurantID));
@@ -92,13 +92,12 @@ router.get('/orders/confirm', function (req, res) {
     res.render("manager/restaurant-manager-active-prev-orders")
 })
 
-router.get('/viewMenu/:rID', async function(req,res) {
-    const restaurantID=req.params.rID;
+router.post('/menu', async function(req,res) {
+    const { restaurant_id } = req.body;
     try {
         const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
         console.log(viewMenu.Items)
         //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
-
         res.render("manager/viewMenu",{menu:viewMenu.Items})
     } catch(err) {
         console.log(err)
@@ -107,27 +106,27 @@ router.get('/viewMenu/:rID', async function(req,res) {
 })
 
 router.post('/addMenuItem', async function(req,res,next){
-  const {restaurant_id, item_id, item_name, item_price, description} = req.body
-  try {
-      const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(restaurant_id, item_id, item_name, item_price, description);
-      const addMenuItem = await dynamo.putInTable(ddb, addMenuItemQuery);
-      res.json({message:'Successfully put menu item', query: addMenuItemQuery, queryResult: addMenuItem})
-  } catch(err) {
-      console.log(err)
-      res.send({message:'Unable to add menu item', error: err})
-  }
+    const {restaurant_id, item_id, item_name, item_price, description} = req.body
+    try {
+        const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(restaurant_id, item_id, item_name, item_price, description);
+        const addMenuItem = await dynamo.putInTable(ddb, addMenuItemQuery);
+        res.json({message:'Successfully put menu item', query: addMenuItemQuery, queryResult: addMenuItem})
+    } catch(err) {
+        console.log(err)
+        res.send({message:'Unable to add menu item', error: err})
+    }
 });
 
 router.post('/deleteMenuItem', async function(req,res,next){
-  const {restaurant_id, item_id} = req.body
-  try {
-      const deleteMenuQuery = ddbQueries.deleteMenuItem(restaurant_id, item_id);
-      const deleteMenuItem = await dynamo.deleteInTable(ddb, deleteMenuQuery);
-      res.json({message:'Successfully deleted menu item', query: deleteMenuQuery, queryResult: deleteMenuItem})
-  } catch(err) {
-      console.log(err)
-      res.send({message:'Unable to delete menu item', error: err})
-  }
+    const {restaurant_id, item_id} = req.body
+    try {
+        const deleteMenuQuery = ddbQueries.deleteMenuItem(restaurant_id, item_id);
+        const deleteMenuItem = await dynamo.deleteInTable(ddb, deleteMenuQuery);
+        res.json({message:'Successfully deleted menu item', query: deleteMenuQuery, queryResult: deleteMenuItem})
+    } catch(err) {
+        console.log(err)
+        res.send({message:'Unable to delete menu item', error: err})
+    }
 }); 
 
 router.post('/updateRestaurantDetail', async function(req,res,next){
@@ -196,11 +195,11 @@ router.post('/login', function (req, res) {
     //if database has user, check if password matches.
     var password = req.body.password;
     const match = 0;
-
+    
     if (match == 0) {
         return res.send('Password is incorrect!Try again')
     }
-
+    
     res.send('Log in successful')
     res.send('success').redirect('/')
 })

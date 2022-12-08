@@ -18,7 +18,7 @@ router.get('/login', function (req, res) {
 
 router.post('/login', async function (req, res) {
     try {
-        console.log(req.signedCookies);
+        console.log(req.signedCookies['user_type']);
         console.log(req.body)
         const {user_id, password, user_type} = req.body
         const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id));
@@ -51,7 +51,7 @@ router.get('/register', function (req, res) {
     res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
 });
 
-router.post('/registerUser', async function (req, res, next) {
+router.post('/addUser', async function (req, res, next) {
     const { user_id, encryptedCredential, user_name, email, user_type, address } = req.body;
     const createdAt = new Date().toString();
     try {
@@ -86,6 +86,6 @@ router.post('/restaurant/menu', async function (req, res, next) {
 
 router.get('/contact-us', function (req, res) {
     res.sendFile('general/contact-us-page.html', { root: path.join(__dirname, '..', 'views') });
-});
+})
 
 module.exports = router;
