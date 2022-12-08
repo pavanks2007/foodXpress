@@ -35,7 +35,14 @@ router.post('/restaurant/menu', async function (req, res, next) {
 router.post('/addRestaurant', async function (req, res, next) {
     try {
         const { restaurant_id, restaurant_name, restaurant_address, open_time, close_time, contact, cuisine, rating, minimum_order } = req.body;
-        const addRestaurantQuery = ddbQueries.putRestaurant(restaurant_id, restaurant_name, restaurant_address, open_time, close_time, contact, cuisine, rating, minimum_order);
+        
+        let coordinates;
+        
+        getCoordinates(restaurant_address).then(result => {
+            coordinates = result;
+          });
+        
+        const addRestaurantQuery = ddbQueries.putRestaurant(restaurant_id, restaurant_name, restaurant_address,coordinates[0],coordinates[1], open_time, close_time, contact, cuisine, rating, minimum_order);
         const addRestaurant = await dynamo.putInTable(ddb, addRestaurantQuery);
         res.json({ message: 'Successfully put restaurant', query: addRestaurantQuery, queryResult: addRestaurant })
     } catch (err) {
@@ -91,5 +98,23 @@ router.post('/viewCoupons', async function (req, res, next) {
         res.send({ message: 'Unable to retrieve coupons', error: err })
     }
 });
+
+function getCoordinates(address) {
+    // Encode the address and add the API key to the URL
+    let url2 = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key={ADDKEYHERE and remove curly thingies.}`;
+  
+    // Make the API request and process the response
+    return fetch(url2)
+      .then(response => response.json())
+      .then(data => {
+        // Extract the latitude and longitude from the API response
+        let coordinates = Object.values(data.results[0].geometry.location);
+        return coordinates;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+  
 
 module.exports = router;

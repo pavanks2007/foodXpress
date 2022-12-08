@@ -198,7 +198,7 @@ module.exports = {
             }
       }
     },
-    putRestaurant: (restaurantId, restaurantName, restaurantAddress, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
+    putRestaurant: (restaurantId, restaurantName, restaurantAddress,lat,long, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             Item: {
@@ -206,6 +206,8 @@ module.exports = {
                 [constants.SORT_KEY]: restaurantId,
                 [constants.RESTAURANT_NAME]: restaurantName,
                 [constants.RESTAURANT_ADDRESS]: restaurantAddress,
+                [constants.LAT]: lat,
+                [constants.LONG]: long,
                 [constants.OPEN_TIME]: openTime,
                 [constants.CLOSE_TIME]: closeTime,
                 [constants.CONTACT]: contact,
@@ -257,7 +259,7 @@ module.exports = {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             KeyConditionExpression: '#pk = :details',
-            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING}`,
+            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING},${constants.LAT},${constants.LONG}`,
             ExpressionAttributeNames: {
                 '#pk': constants.PRIMARY_KEY,
             },
