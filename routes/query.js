@@ -350,6 +350,23 @@ module.exports = {
             }
         }
     },
+    
+    updateStatusforDriver: (driver_id, value) => {
+        return {
+            TableName: constants.DRIVER_TABLE_NAME,
+            Key: {
+                [constants.DRIVER_ID] : driver_id,
+            },
+            UpdateExpression: 'set #key = :value',
+            ExpressionAttributeNames: {
+                '#key': constants.DRIVER_AVAILABILITY,
+            },
+            ExpressionAttributeValues: {
+                ':value': value
+            }
+        }
+    },
+    
     updateOrderforDriver: (order_id, key, value) => {
         console.log(order_id, key,value)
         //restaurantId='test_07'
