@@ -34,6 +34,8 @@ module.exports = {
     ITEM_ID: 'item_id',
     ITEM_NAME: 'item_name',
     ITEM_PRICE: 'item_price',
+    LAT: 'lat',
+    LONG: 'long',
     MINIMUM_ORDER: 'minimum_order',
     OPEN_TIME: 'open_time',
     ORDER_ID: 'order_id',

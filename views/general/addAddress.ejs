@@ -11,24 +11,31 @@
 <body style="background-color: #fef9a8;">
     <div class="giant">
         <div class="p-5 xl-4 bg-danger text-white" >FoodXpress </div>
-    
         <br><br>
         <div class="d-flex justify-content-center">
-            <form action="/validateAddress" method="POST">
+            <form action="/add_updateAddress/<%=userID %>" method="POST">
                 <div class="pt-3"></div>
                 <label for="exampleInputEmail1" class="form-label">Street Address</label>
-                <input type="text" class="form-control form-control-lg" name="addi" value="<%locals.addi%>" placeholder="Street Address">
+                <input type="text" class="form-control form-control-lg" name="addpt1" value="<%locals.addpt1%>" placeholder="Street Address" required>
                 <div class="pt-4"></div>
 
                 <label for="exampleInputEmail1" class="form-label"> FLoor Number</label>
-                <input type="text" class="form-control form-control-lg" name="xaddipt2" value="<%locals.xaddipt2%>" placeholder="Apt #, Floor">
+                <input type="text" class="form-control form-control-lg" name="addpt2" value="<%locals.addpt2%>" placeholder="Apt #, Floor">
                 <div class="pt-4"></div>
                 <label for="exampleInputEmail1" class="form-label">City</label>
-                <input type="text" class="form-control form-control-lg" name="city"  value="<%locals.city%>" placeholder="City">
+                <input type="text" class="form-control form-control-lg" name="city"  value="<%locals.city%>" placeholder="City" required>
                 <div class="pt-4"></div>
 
                 <label for="exampleInputEmail1" class="form-label">State</label>
-                <input type="text" class="form-control form-control-lg" name="state" value="<%locals.state%>" placeholder="State Ex: 'NJ'">
+                <input type="text" class="form-control form-control-lg" name="state" value="<%locals.state%>" placeholder="State Ex: 'NJ'" required>
+                <div class="pt-4"></div>
+
+                <label for="exampleInputEmail1" class="form-label">Zip Code</label>
+                <input type="number" class="form-control form-control-lg" name="zip" value="<%locals.zip%>" placeholder="Zip Code" required>
+                <div class="pt-4"></div>
+                
+                <label for="exampleInputEmail1" class="form-label">Country</label>
+                <input type="text" class="form-control form-control-lg" value="U.S.A" readonly>
                 <div class="pt-4"></div>
 
                 <div class="text-center">

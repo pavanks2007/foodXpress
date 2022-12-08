@@ -75,10 +75,12 @@ router.post('/reviews', async function (req, res, next) {
     }
 });
 
-router.post('/previous_orders', async function (req, res, next) {
-    const { customer_id } = req.body
-    const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
-    res.json(previous_orders.Items);
+router.get('/previous_orders', async function (req, res, next) 
+{
+    
+   // const { customer_id } = req.params.rID
+    //const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
+    res.sendFile('customer/customer-previous-orders.html', { root: path.join(__dirname, '..', 'views') });
 });
 
 router.get('/getUserDetails/:id', async function (req, res, next) {

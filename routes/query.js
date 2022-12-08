@@ -1,5 +1,19 @@
 const constants = require('./constants.js')
 
+function updateTable(table_name, key, col_name, col_value) {
+    return {
+        TableName: table_name,
+        Key: key,
+        UpdateExpression: 'set #key = :value',
+        ExpressionAttributeNames: {
+            '#key': col_name,
+        },
+        ExpressionAttributeValues: {
+            ':value': col_value
+        }
+    }
+}
+
 module.exports = {
     deleteCoupon: (restaurant_id, coupon_id) => {
         return {
@@ -77,7 +91,7 @@ module.exports = {
                 [constants.USER_ID]: userId,
                 [constants.SORT_KEY]: constants.DETAILS
             },
-            ProjectionExpression: `${constants.USER_ID},${constants.ENCRYPTED_CREDENTIAL}`,
+            ProjectionExpression: `${constants.USER_ID},${constants.ENCRYPTED_CREDENTIAL},${constants.USER_TYPE}`
         }
     },
     getOrderSummaryForRestaurant: (orderId) => {
@@ -111,7 +125,7 @@ module.exports = {
             }
         }
     },
-    putCustomer: (userId, username, email, userType, createdAt, address, encryptedCredential) => {
+    putCustomer: (userId, username, email, userType, createdAt, address,lat,long, encryptedCredential) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
             Item:{
@@ -122,7 +136,10 @@ module.exports = {
                 [constants.USER_TYPE]: userType,
                 [constants.CREATED_AT]: createdAt,
                 [constants.ADDRESS]: address,
+                [constants.LAT]: lat,
+                [constants.LONG]: long,
                 [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential
+                
             }
         }
     },
@@ -334,6 +351,17 @@ module.exports = {
             }
         }
     },
+    updateEncryptedDataTable: (user_id, col_name, col_value) => {
+        return updateTable(
+            constants.ENCRYPTED_DATA_TABLE_NAME,
+            {
+                [constants.USER_ID]: user_id,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            col_name,
+            col_value
+        )
+    }
 }
 
 /*
