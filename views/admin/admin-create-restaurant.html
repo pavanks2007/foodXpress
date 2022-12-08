@@ -24,6 +24,30 @@
                     <input type="text" class="form-control" id="restuarantName" placeholder="Restaurant Name">
                     <input type="text" class="form-control" id="restuarantAddress" placeholder="Restaurant Address">
                     
+    <link rel="stylesheet" href="../public/stylesheets/admin-create-restaurant.css">
+</head>
+<body style="background-color: #fef9a8;">
+   
+    <div class="p-5 xl-4 bg-danger text-white" >FoodXpress 
+        <div class="small-nav-bar">
+            <p class="text-white"><a href="./admin/admin-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
+      </div>
+    </div>
+
+    <h3 class="display-6 pl-2 pt-2">Create Restaurant</h3>
+    <hr style="background-color:#CC9966"></hr>
+    <div class="dashboard-body">
+            <div class="d-flex justify-content-center mx-auto">
+                <form>
+                    <div class="pt-4"></div>
+                    <label for="restaurantName" class="form-label">Restaurant Name</label>
+                    <input type="text" class="form-control form-control-lg" id="RestaurantName" aria-describedby="NameHelp" >
+                    
+                    <div class="pt-4"></div>
+                    <label for="DeductibleAmount" class="form-label">Restaurant Address</label>
+                    <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+                    
+                    <div class="pt-4"></div>
                     <select class="form-control" id="restaurant_type" name="restaurant_type">
                         <option value="Chinese">Choose Restaurant Type</option>
                         <option value="Japanese">Japanese</option>
@@ -89,6 +113,81 @@
     <!-- <div class="submit d-flex justify-content-center">
         <button type="button" class="btn btn-danger btn-lg">Save Details</button>
     </div> -->
+                    </select>
+
+                    <div class="pt-5"></div>
+                    <div class="timings-holder">
+                        <label for="openFromTimings" class="form-label mx-3">Open From</label>
+                        <input type="time" class="form-control form-control" id="readOpenFrom" readonly>
+                        <div class="pt-5"></div>
+
+                        <label for="openTillTimings" class="form-label-lg mx-3">Open Till</label>
+                        <input type="time" class="form-control form-control" id="readOpenTill" readonly>
+                    </div>
+                    <div class="pt-4"></div> 
+                   
+                </form>
+
+                
+            </div>
+            
+            <h3 class="display-6 pl-2">Owner Details</h3>
+            <hr style="background-color:#CC9966"></hr>
+
+            <div class="form-holder d-flex justify-content-center">
+                <form>
+                        <div class="pt-4"></div>
+                            <label for="restaurantName" class="form-label">Owner Name</label>
+                            <input type="text" class="form-control form-control-lg" id="RestaurantName" aria-describedby="NameHelp">
+                            
+                        <div class="pt-4"></div>
+                            <label for="DeductibleAmount" class="form-label">Owner Address</label>
+                            <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+
+                        <div class="pt-4"></div>
+                            <label for="DeductibleAmount" class="form-label">Owner email <Address></Address></label>
+                            <input type="email" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+
+                        
+                        <div class="pt-4"></div>
+                            <label for="DeductibleAmount" class="form-label">Owner Phone Number <Address></Address></label>
+                            <input type="number" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+
+                </form>
+
+                
+            </div>
+
+            <h3 class="display-6 pl-2">Owner Details</h3>
+            <hr style="background-color:#CC9966"></hr>
+            
+            <div class="banking-details d-flex justify-content-center">
+                <form class="banking-details-form">
+
+                <div class="details-holder">
+
+                
+                    <div class="pt-4"></div>
+                                <label for="DeductibleAmount" class="form-label">Bank Account Number</label>
+                                <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+
+
+                    <div class="pt-4"></div>
+                                <label for="DeductibleAmount" class="form-label">Routing Number</label>
+                                <input type="text" class="form-control form-control-lg" id="DeductibleAmount" aria-describedby="NameHelp">
+
+                </div>
+                   
+
+                
+                </form>
+
+            </div>
+
+            <div class="pt-5"></div>
+            <div class="button text-center ml-3">
+                <button type="submit" class="btn btn-danger btn-lg pl-4">Edit Restaurant</button>
+            </div>
 
     </div>
     

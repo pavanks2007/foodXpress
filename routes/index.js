@@ -9,9 +9,6 @@ const axios = require('axios');
 const xmlbuilder2=require('xmlbuilder2');
 const ddb = dynamo.getDynamoDbClient();
 
-loggedIn = false;
-var userType = '';
-
 /* GET home page. */
 router.get('/', async function (req, res) {
 
@@ -41,12 +38,21 @@ router.route("/login")
     }
 })
 .post(async function (req, res) {
+=======
+router.get('/', function (req, res) {
+    res.redirect('/restaurants');
+});
+
+router.get('/login', function (req, res) {
+    res.render('generalLogin.ejs', { root: path.join(__dirname, '..', 'views', 'general') });
+})
+
+router.post('/login', async function (req, res) {
     try {
         console.log(req.signedCookies);
         console.log(req.body)
         const {user_id, password, user_type} = req.body
         const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id));
-
         if (!userInfo.Item[constants.USER_ID]) 
             throw `User does not exist; provided ${user_id}`
         if (user_type != userInfo.Item[constants.USER_TYPE])
@@ -58,6 +64,7 @@ router.route("/login")
         res.cookie('user_type', user_type, { signed: true });
         // res.send(`${user_type} ${user_id} successfully logged in.`);
         res.redirect('/'+user_type);
+        // res.redirect('/restaurants');
     } catch (err) {
         console.log(err);
         res.redirect('/login'); // TODO: send error message
@@ -75,6 +82,7 @@ router.get('/logout', function (req, res) {
 router.get('/register', function (req, res) {
     res.render('general/register.ejs', { root: path.join(__dirname, '..', 'views') });
 })
+
 router.post('/registerpg1', async function(req,res)//checks if user exists. If info is valid, move on to the next phase of registration
 {
     const {user_id,user_name, email,password,confirmPass, user_type} = req.body;
@@ -90,6 +98,18 @@ router.post('/registerpg1', async function(req,res)//checks if user exists. If i
     {
         console.log('User Exists')
         res.redirect('/register')
+    res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
+});
+
+router.post('/addUser', async function (req, res, next) {
+    const { user_id, encryptedCredential, user_name, email, user_type, address } = req.body;
+    const createdAt = new Date().toString();
+    try {
+        await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, encryptedCredential));
+        res.json({ message: 'Successfully added user: ' + user_id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err });
     }
     else
     {
