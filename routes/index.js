@@ -185,8 +185,8 @@ router.post('/add_updateAddress/:rID', async function (req, res)
                         console.log(coordinates[0])
                         console.log(coordinates[1])
 
-                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LAT,coordinates[0]));
-                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LONG,coordinates[1]));
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LATITUDE,coordinates[0]));
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LONGITUDE,coordinates[1]));
 
                         console.log('Successfully added coordinates')
                         res.redirect('/dashboard')
