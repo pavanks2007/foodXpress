@@ -23,6 +23,12 @@ router.get('/dashboard', async function (req, res, next)
 router.get('/restaurants', async function (req, res, next) {
     try {
         const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
+        Object.keys(restaurants.Items).forEach(function(key, index) {
+            if (restaurants.Items.hasOwnProperty(constants.LAT, constants.LONG)) {
+                
+            }
+            restaurants.Items['distance'] = measure();
+        });
         res.json(restaurants.Items);
     } catch (err) {
         console.log(err);
