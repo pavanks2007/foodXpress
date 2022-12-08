@@ -7,6 +7,23 @@
     <title>Admin - New Restaurant Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../public/stylesheets/restaurant-manager-dashboard.css">
+</head>
+<body style="background-color: #fef9a8;">
+   
+   
+    <h3 class="display-6 pl-2">Edit Restaurant - Admin</h3>
+    <hr style="background-color:#CC9966"></hr>
+    <div class="dashboard-body">
+       
+           
+            <div class="d-flex justify-content-center mx-auto">
+                <form>
+                  
+                    <label for="restuarantName" class="form-label">Modify Restaurant Details</label>
+                    <input type="text" class="form-control" id="restuarantName" placeholder="Restaurant Name">
+                    <input type="text" class="form-control" id="restuarantAddress" placeholder="Restaurant Address">
+                    
     <link rel="stylesheet" href="../../public/stylesheets/admin-create-restaurant.css">
 </head>
 <body style="background-color: #fef9a8;">
@@ -50,6 +67,52 @@
                         <option value="Middle Eastern">Middle Eastern</option>
                         <option value="Arabic">Arabic</option>
                         <option value="African">African</option>
+                    <div class="pt-3"></div>
+                    <label for="openFromTimings" class="form-label">New Restaurant Timings</label>
+                    <input type="text" class="form-control" id="openFromTimings" placeholder="Open From">
+                    <input type="text" class="form-control" id="openToTimings" placeholder="Open To">
+                    <div class="pt-3"></div>  
+
+                   
+                </form>
+            </div>
+            <div class="form-group">
+
+                <label for="owner_address">Owner Details:</label>
+                <input type="text" class="form-control" id="owner_name" name="owner_name" placeholder="Owner name">
+            <div class="form-group">
+    
+                <input type="text" class="form-control" id="owner_address" name="owner_address" placeholder="Owner Address">
+                
+                
+                <input type="text" class="form-control" id="zipcode" name="zipcode" placeholder="Zipcode">
+                
+            <div class="form-group">
+                
+                <input type="text" class="form-control" id="owner_phone" name="owner_phone" placeholder="Owner Phone">
+            <div class="form-group">
+                
+                <input type="text" class="form-control" id="owner_email" name="owner_email" placeholder="Owner Email">
+            <div class="form-group">
+                
+                <input type="text" class="form-control" id="ssn_id" name="ssn_id" placeholder="SSN ID" maxlength="9">
+                <div class="pt-3"></div>
+            <div class="form-group">
+                <label for="owner_address">Owner Bank Details:</label>
+                <input type="text" class="form-control" id="routing_number" name="routing_number" placeholder="Routing Number">
+            <div class="form-group">
+                <input type="text" class="form-control" id="account_number" name="account_number" placeholder="Account Number">
+                <div class="pt-3"></div>
+
+            <div class="d-flex justify-content-center mx-auto">
+
+                <button type="submit" class="btn btn-primary">Edit Restaurant</button>
+            </div>
+        </div>    
+               
+    <!-- <div class="submit d-flex justify-content-center">
+        <button type="button" class="btn btn-danger btn-lg">Save Details</button>
+    </div> -->
                     </select>
 
                     <div class="pt-5"></div>

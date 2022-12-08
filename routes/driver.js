@@ -37,7 +37,6 @@ router.post('/orderSummary', async function (req, res, next) {
     res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
 });
 
-
 router.post('/updateOrderforDriver', async function (req, res, next) {
     const { driver_id, order_id } = req.body;
     const driver_id_list = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDriver());
@@ -51,4 +50,16 @@ router.post('/updateOrderforDriver', async function (req, res, next) {
     }
 });
 
+router.post('/status', async function(req,res,next){
+    const{driver_id,status} = req.body;
+    try{                                                                   
+    const checkout = await dynamo.updateTable(ddb, ddbQueries.updateStatusforDriver(driver_id, status));
+    res.json({ message: 'Successfully updated order with new driver: ' + checkout });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+    }
+});
+
 module.exports = router;
+

@@ -9,10 +9,16 @@ const fs = require('fs');
 
 const ddb = dynamo.getDynamoDbClient();
 
+router.get('/', function(req,res)   // This still needs some work once cookie handler is finished
+{
+    res.redirect('customer/dashboard')
+})
+
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
-});
+router.get('/dashboard', async function (req, res, next) 
+{
+    res.render('customer/customer-dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
+})
 
 router.get('/restaurants', async function (req, res, next) {
     try {
@@ -23,6 +29,11 @@ router.get('/restaurants', async function (req, res, next) {
         res.send({ message: 'Unable to view restaurants', error: err });
     }
 });
+
+router.get('/profile',function (req, res)
+{
+    res.sendFile('customer/customer-profile.html', { root: path.join(__dirname, '..', 'views') });
+})
 
 router.post('/restaurant/menu', async function (req, res, next) {
     try {
@@ -84,6 +95,12 @@ router.post('/reviews', async function (req, res, next) {
     }
 });
 
+router.get('/previous_orders', async function (req, res, next) {
+    //const { customer_id } = req.params.rID
+    //const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
+    res.sendFile('customer/customer-previous-orders.html', { root: path.join(__dirname, '..', 'views') });
+});
+    
 router.post('/previousOrders', async function (req, res, next) {
     const { customer_id } = req.body
     const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));

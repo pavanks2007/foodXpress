@@ -7,18 +7,18 @@ const ddbQueries = require('./query.js');
 
 const ddb = dynamo.getDynamoDbClient();
 
-var loggedin=false;
-
 const restaurantID=""
 //requires view engine. Using ejs
+
 /* GET home page. */
-router.get('/', function (req, res) {
+router.get('/', (req, res) =>
+{
     /* This will check if manager is logged in
     If Manager is not logged i, redirect to log in page
     else redirect to manager dashboard*/
     if(!loggedin)
     {
-        res.redirect('manager/login')
+        res.redirect('login')
     }
     else
     {
@@ -82,24 +82,31 @@ router.get('/allOrders', async function(req,res){
         const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurantID));
         console.log('Successfully pulled data')
         res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items})
-    } catch(err) {
+    }
+    catch(err)
+    {
         console.log(err)
         res.send('Unable to pull data.')
     }
 })
 
-router.get('/orders/confirm', function (req, res) {
+router.get('/orders/confirm',(req,res)=>
+{
     res.render("manager/restaurant-manager-active-prev-orders")
 })
 
-router.post('/menu', async function(req,res) {
-    const { restaurant_id } = req.body;
-    try {
+router.get('/viewMenu/:rID',async function(req,res)
+{
+    const restaurantID=req.params.rID;
+    try
+    {
         const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
         console.log(viewMenu.Items)
         //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
         res.render("manager/viewMenu",{menu:viewMenu.Items})
-    } catch(err) {
+    }
+    catch(err)
+    {
         console.log(err)
         res.send('Unable to pull Menu')
     }
@@ -155,13 +162,17 @@ router.get('/viewCoupons/:rID', async function(req,res,next){
     }
 });
 
-router.post('/addCoupon', async function(req,res,next) {
+router.post('/addCoupon', async function(req,res,next)
+{
     const {restaurant_id, coupon_id, coupon_value, expiration_time} = req.body
-    try {
+    try 
+    {
         const addCouponQuery = ddbQueries.putCoupon(restaurant_id, coupon_id, coupon_value, true, expiration_time);
         const addCoupon = await dynamo.putInTable(ddb, addCouponQuery);
         res.json({message:'Successfully put coupon', query: addCouponQuery, queryResult: addCoupon})
-    } catch(err) {
+    } 
+    catch(err) 
+    {
         console.log(err)
         res.send({message:'Unable to add coupon', error: err})
     }
@@ -178,6 +189,7 @@ router.post('/deleteCoupon', async function(req,res,next){
         res.send({message:'Unable to delete coupon', error: err})
     }
 });
+
 router.get('/login', function (req, res) {
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
 })

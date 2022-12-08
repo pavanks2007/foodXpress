@@ -14,22 +14,27 @@
     
         <br><br>
         <div class="d-flex justify-content-center">
-            <form>
+            <form action="/registerpg1" method="POST">
                 <div class="pt-3"></div>
+                <label for="exampleInputEmail1" class="form-label">user ID</label>
+                <input type="text" class="form-control form-control-lg" name="user_id" value="<%locals.user_id%>" placeholder="Enter user ID" required>
+                <div class="pt-4"></div>
+                
+                
                 <label for="exampleInputEmail1" class="form-label">Email</label>
-                <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                <input type="email" class="form-control form-control-lg" name="email" aria-describedby="emailHelp" value="<%locals.email%>" placeholder="Enter email" required>
                 <div class="pt-4"></div>
 
-                <label for="exampleInputEmail1" class="form-label">User Name</label>
-                <input type="email" class="form-control form-control-lg" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter UserName">
+                <label for="exampleInputEmail1" class="form-label">First & last Name</label>
+                <input type="text" class="form-control form-control-lg" name="user_name" aria-describedby="emailHelp" value="<%locals.user_name%>" placeholder="Enter First & Last Name" required>
                 <div class="pt-4"></div>
 
                 <label for="exampleInputPassword1" class="form-label-lg">Password</label>
-                <input type="password" class="form-control form-control-lg" id="exampleInputPassword1" placeholder="Password">
+                <input type="password" class="form-control form-control-lg" name="password" value="<%locals.password%>" placeholder="Password" required>
                 <div class="pt-4"></div>
 
                 <label for="exampleInputPassword2" class="form-label-lg">Password</label>
-                <input type="password" class="form-control form-control-lg" id="exampleInputPassword2" placeholder="Re-Password">
+                <input type="password" class="form-control form-control-lg" name="confirmedPassword" value="<%locals.confirmPass%>"placeholder="Re-Password" required>
                 <div class="pt-5"></div>
                 <div class="text-left "><small class="text-muted"> Register as: </small></div>
                 <div class="pt-3"></div>
@@ -38,12 +43,12 @@
                 
                 <div class = 'd-flex justify-content-center'>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked>
-                        <label class="form-check-label" for="flexRadioDefault1">Customer</label>
+                        <input class="form-check-input" type="radio" name="user_type" value="customer" checked>
+                        <label class="form-check-label" for="user_id">Customer</label>
                       </div>
                       <div class="form-check mx-3">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">Driver </label>
+                        <input class="form-check-input" type="radio" name="user_type" value="driver" >
+                        <label class="form-check-label" for="user_id">Driver </label>
                       </div>
                 </div>
 
@@ -51,7 +56,7 @@
 
 
                 <div class="text-center">
-                <button type="submit" class="btn btn-danger btn-lg">Register</button>
+                <button type="submit" class="btn btn-danger btn-lg">Next</button>
                 </div>
 
         </form>
