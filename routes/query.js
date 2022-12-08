@@ -405,7 +405,6 @@ module.exports = {
     
     updateOrderforDriver: (order_id, key, value) => {
         console.log(order_id, key,value)
-        //restaurantId='test_07'
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Key: {
@@ -418,6 +417,23 @@ module.exports = {
             ExpressionAttributeValues: {
                 ':value': value
             }
+        }
+    },
+    updateEncryptedDataTable: (user_id, col_name, col_value) => {
+        return updateTable(
+            constants.ENCRYPTED_DATA_TABLE_NAME,
+            {
+                [constants.USER_ID]: user_id,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            col_name,
+            col_value
+        )
+    },
+    scanAllUserIds: ()=> {
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            ProjectionExpression: `${constants.USER_ID}`,
         }
     },
 }
