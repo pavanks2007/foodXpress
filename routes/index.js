@@ -155,7 +155,7 @@ router.post('/add_updateAddress/:rID', async function (req, res)
                 console.log('successfully Added/Updated Users Address')
                 try
                 {
-                    let url2=`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fulladd)}&key=AIzaSyCSCk3BE2UzEdCR0-NcWzmnD2dTCv3Jcsg`
+                    let url2=`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fulladd)}&key={delete curly brackets and add key}`
     
                     fetch(url2)
                     .then(function(response){
