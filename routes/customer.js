@@ -117,16 +117,16 @@ router.post('/order', async function (req, res, next) {
     const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
     res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
 });
+
 router.get('/order/:id', async function (req, res, next) {
     const id = req.params.id;
     try {
-    const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(id));
-    res.json(order_summary.Item);
-} catch (err) {
-    console.error(err);
-    res.status(500).json({ err: 'Something went wrong', error: err });
-}
-    
+        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(id));
+        res.json(order_summary.Item);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+    }
 });
 
 router.get('/getUserDetails/:id', async function (req, res, next) {

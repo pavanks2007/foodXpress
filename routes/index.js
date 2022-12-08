@@ -20,6 +20,7 @@ router.get('/', async function (req, res) {
     }
 
 });
+
 router.get('/dashboard', function (req, res) 
 { 
     res.render('general/landingPage.ejs', { root: path.join(__dirname, '..', 'views') });
@@ -37,8 +38,7 @@ router.route("/login")
         console.log("There is an error "+err)
     }
 })
-.post(async function (req, res) {
-=======
+
 router.get('/', function (req, res) {
     res.redirect('/restaurants');
 });
@@ -49,7 +49,7 @@ router.get('/login', function (req, res) {
 
 router.post('/login', async function (req, res) {
     try {
-        console.log(req.signedCookies);
+        console.log(req.signedCookies['user_type']);
         console.log(req.body)
         const {user_id, password, user_type} = req.body
         const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id));
@@ -81,10 +81,10 @@ router.get('/logout', function (req, res) {
 
 router.get('/register', function (req, res) {
     res.render('general/register.ejs', { root: path.join(__dirname, '..', 'views') });
-})
+});
 
-router.post('/registerpg1', async function(req,res)//checks if user exists. If info is valid, move on to the next phase of registration
-{
+router.post('/registerpg1', async function(req,res) {
+    //checks if user exists. If info is valid, move on to the next phase of registration
     const {user_id,user_name, email,password,confirmPass, user_type} = req.body;
     let createdAt = new Date().toString();
 
@@ -98,6 +98,7 @@ router.post('/registerpg1', async function(req,res)//checks if user exists. If i
     {
         console.log('User Exists')
         res.redirect('/register')
+    }
     res.sendFile('register.html', { root: path.join(__dirname, '..', 'views') });
 });
 
@@ -111,17 +112,16 @@ router.post('/addUser', async function (req, res, next) {
         console.error(err);
         res.status(500).json({ error: err });
     }
-    else
-    {
-        try{ 
-            const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt,'', '','',password));
-            console.log('Successfully added user: '+ user_id)
-            res.redirect('/add_updateAddress/'+user_id)
-        } catch (err) {
+    // {
+    //     try{ 
+    //         const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt,'', '','',password));
+    //         console.log('Successfully added user: '+ user_id)
+    //         res.redirect('/add_updateAddress/'+user_id)
+    //     } catch (err) {
             
-            console.log('there is an error: '+err )
-        }
-    }
+    //         console.log('there is an error: '+err )
+    //     }
+    // }
 })
 
 router.get('/add_updateAddress/:rID',function(req,res)
