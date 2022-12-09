@@ -198,7 +198,7 @@ module.exports = {
             }
       }
     },
-    putRestaurant: (restaurantId, restaurantName, restaurantAddress,lat,long, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
+    putRestaurant: (restaurantId, restaurantName, restaurantAddress,latitude,longitude, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             Item: {
@@ -206,8 +206,8 @@ module.exports = {
                 [constants.SORT_KEY]: restaurantId,
                 [constants.RESTAURANT_NAME]: restaurantName,
                 [constants.RESTAURANT_ADDRESS]: restaurantAddress,
-                [constants.LAT]: lat,
-                [constants.LONG]: long,
+                [constants.LATITUDE]: latitude,
+                [constants.LONGITUDE]: longitude,
                 [constants.OPEN_TIME]: openTime,
                 [constants.CLOSE_TIME]: closeTime,
                 [constants.CONTACT]: contact,

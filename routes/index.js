@@ -173,7 +173,7 @@ router.post('/add_updateAddress/:rID', async function (req, res)
                 console.log('successfully Added/Updated Users Address')
                 try
                 {
-                    let url2=`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fulladd)}&key={ADDKEYHERE and remove curly thingies.}`
+                    let url2=`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fulladd)}&key=AIzaSyCSCk3BE2UzEdCR0-NcWzmnD2dTCv3Jcsg`
     
                     fetch(url2)
                     .then(function(response){
@@ -185,8 +185,8 @@ router.post('/add_updateAddress/:rID', async function (req, res)
                         console.log(coordinates[0])
                         console.log(coordinates[1])
 
-                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LAT,coordinates[0]));
-                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LONG,coordinates[1]));
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LATITUDE,coordinates[0]));
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LONGITUDE,coordinates[1]));
 
                         console.log('Successfully added coordinates')
                         res.redirect('/dashboard')
