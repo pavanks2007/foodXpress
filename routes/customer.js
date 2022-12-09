@@ -16,7 +16,7 @@ paypal.configure({
 });
 
 const accountSid = 'AC24363df7efae2d43927f757719479774';
-const authToken = '3f266d820866fbbb831442a685a1dc22';
+const authToken = '4e8a88c1a07ade0d62dfdf8251c06289';
 const client = require("twilio")(accountSid, authToken);
 
 const ddb = dynamo.getDynamoDbClient();
@@ -56,12 +56,21 @@ router.get('/restaurants', async function (req, res, next) {
     }
 });
 
+router.get('/restaurants/:params', async function (req, res, next) {
+    try {
+        const restaurant_id = req.params.params;
+        const restaurantDetails = await dynamo.getFromTable(ddb, ddbQueries.getRestaurantDetails(restaurant_id));
+        restaurantDetails.Item[constants.RESTAURANT_ID] = restaurantDetails.Item[constants.SORT_KEY];
+        const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
+        res.render('general/view-menu', {restaurantDetails: restaurantDetails.Item, items: menuItems.Items, user_type: user_type});
+    } catch (err) {
+        console.log(err);
+        res.send({ message: 'Unable to view restaurant menu', error: err });
+    }
+});
+
 router.get('/dashboard',function (req, res){
     res.render('customer/profile', {user_type: user_type});
-})
-
-router.get('/cart', function (req, res, next) {
-    res.render('customer/cart', {user_type: user_type});
 });
 
 router.post('/orderPayment', async (req, res) => {
@@ -142,24 +151,29 @@ router.get('/orderPayment/success', async (req, res) => {
             await dynamo.updateTable(ddb, ddbQueries.updateOrderStatus(paymentId, constants.SENT));
             // Assign driver
             const availableDrivers = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDrivers());
-            const driver_id = availableDrivers.Items[0].driver_id;
-            console.log(`Driver ${driver_id} is assigned to the order ${paymentId}`);
-            await dynamo.updateTable(ddb, ddbQueries.updateStatusforDriver(driver_id, false));
-            await dynamo.updateTable(ddb, ddbQueries.updateOrderforDriver(paymentId, driver_id));
+            if(availableDrivers.Items.length > 0) {
+                const driver_id = availableDrivers.Items[0].driver_id;
+                console.log(`Driver ${driver_id} is assigned to the order ${paymentId}`);
+                await dynamo.updateTable(ddb, ddbQueries.updateStatusforDriver(driver_id, false));
+                await dynamo.updateTable(ddb, ddbQueries.updateOrderforDriver(paymentId, driver_id));
+            } else {
+                console.log(`No driver is available for order_id ${paymentId}`);
+            }
             // TODO redirect to order status page
+            // TODO check phone notifications
             try {
                 client.messages
                 .create({
                     from: 'whatsapp:+14155238886',
                     body: "Thanku for choosing us, Your Order is Confirmed",
-                    to: 'whatsapp:+18484680962'
+                    to: 'whatsapp:+18484371960'
                 })
                 .then((message) => {
-                    console.log(message.status);
+                    console.log("message.status", message.status);
                     //res.status(200).send(message.status);
                 })
                 .done();
-                res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
+                res.json({ message: 'Successfully checkout out and added order summary: ' });
             } catch (err) {
                 console.error(err);
                 res.status(500).json({ err: 'Something went wrong', error: err });

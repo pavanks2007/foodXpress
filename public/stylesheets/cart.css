@@ -6,11 +6,11 @@
 #cart-wrap {
   display: flex;
   margin: 0 auto;
-  max-width: 1200px;
+  /* max-width: 1200px; */
 }
 #cart-products, #cart-items { padding: 10px; }
 #cart-products { flex-grow: 1; }
-#cart-items { width: 180px; }
+#cart-items { width: 400px; }
 input.cart, button.cart {
   padding: 10px;
   border: 0;
@@ -66,6 +66,13 @@ input.cart, button.cart {
 .c-del { width: 25%; }
 .c-qty { width: 75%; }
 .c-empty, .c-checkout { width: 100%; }
+#heading-main {
+  margin: 10px;
+}
+.headings {
+  margin: 10px;
+  font-size: large;
+}
 
 /* (D) RESPONSIVE */
 @media screen and (max-width: 640px) {
