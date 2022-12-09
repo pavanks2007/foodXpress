@@ -52,7 +52,7 @@ router.route("/login").get(function (req, res) {
     if (req.signedCookies[constants.USER_ID] !== undefined && req.signedCookies[constants.USER_TYPE] !== undefined)
         res.redirect(`/${req.signedCookies[constants.USER_TYPE]}/`)
     else
-        res.render('general/generalLogin.ejs', { root: path.join(__dirname, '..', 'views') });
+        res.render('general/login', {user_type: user_type} );
 });
 
 router.route("/login").post(async function (req, res) {
@@ -88,7 +88,7 @@ router.get('/logout', function (req, res) {
 })
 
 router.get('/register', function (req, res) {
-    res.render('general/register.ejs', { root: path.join(__dirname, '..', 'views') });
+    res.render('general/register', {user_type: user_type});
 })
 
 router.post('/addUser', async function(req,res)//checks if user exists. If info is valid, move on to the next phase of registration
@@ -119,7 +119,7 @@ router.post('/addUser', async function(req,res)//checks if user exists. If info 
 })
 
 router.get('/add_updateAddress/:rID',function(req,res) {
-    res.render("general/addAddress",{userID:req.params.rID} );
+    res.render("general/addAddress",{userID:req.params.rID, user_type: user_type});
 })
 
 router.post('/add_updateAddress/:rID', async function (req, res) {

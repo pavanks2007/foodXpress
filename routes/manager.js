@@ -21,7 +21,7 @@ router.get('/dashboard', async function (req, res) {
     else
     {
         //const storeInfo= await dynamo.get
-        res.render("manager/restaurant-manager-dashboard");
+        res.render("manager/dashboard", {user_type: user_type});
     }
 });
 
@@ -35,7 +35,7 @@ router.get('/allOrders', async function(req,res) {
         try{
             const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(req.signedCookies.user_id));
             console.log('Successfully pulled data')
-            res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items})
+            res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items, user_type: user_type})
         }
         catch(err)
         {
@@ -51,7 +51,7 @@ router.get('/orders/confirm',(req,res)=> {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        res.render("manager/viewMenu.ejs")
+        res.render("manager/viewMenu", {user_type: user_type})
     }
 })
 
@@ -68,7 +68,7 @@ router.get('/viewMenu',async function(req,res) {
             console.log(viewMenu.Items)
             //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
 
-            res.render("manager/viewMenu",{menu:viewMenu.Items})
+            res.render("manager/viewMenu",{menu:viewMenu.Items, user_type: user_type})
         }
         catch(err)
         {
@@ -144,7 +144,7 @@ router.get('/viewCoupons', async function(req,res,next) {
             const viewCoupons = await dynamo.queryTable(ddb, viewCouponsQuery);
             
             console.log(viewCoupons.Items)
-            res.render("manager/viewCoupons",{coupons:viewCoupons.Items})
+            res.render("manager/viewCoupons",{coupons:viewCoupons.Items, user_type: user_type})
         } catch(err) {
             console.log(err)
             res.send({message:'Unable to retrieve coupons', error: err})

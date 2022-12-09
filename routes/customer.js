@@ -28,7 +28,7 @@ router.get('/', function(req,res) {
 /* GET home page. */
 router.get('/dashboard', async function (req, res, next) {
     // TODO create dashboard
-    res.render('customer/dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
+    res.render('customer/dashboard.ejs', {user_type: user_type});
 })
 
 router.get('/restaurants', async function (req, res, next) {
