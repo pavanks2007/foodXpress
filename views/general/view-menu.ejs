@@ -12,11 +12,31 @@
   <body style="background-color: #fef9a8;">
     <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="giant">
-  
+      <h1 id="heading-main"><% restaurantDetails %></h1>
+      <h1 id="heading-main"><% restaurantDetails.restaurant_name %></h1>
+    <% if (restaurantDetails.hasOwnProperty("distance")) { %>
+      <pre class="headings"><% `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address}    Distance: ${restaurantDetails.distance} ` %></pre>
+    <%} else { %>
+      <pre class="headings"><% `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address} ` %></pre>
+    <% } %>
+    <pre class="headings"><% `Cuisine: ${restaurantDetails.cuisine}    Contact: ${restaurantDetails.contact} ` %></pre>
     <!-- (A) CART -->
     <div id="cart-wrap">
       <!-- (A1) PRODUCTS LIST -->
-      <div id="cart-products"></div>
+      <div id="cart-products">
+        <% for(var i=0; i < items.length; i++) { %>
+          <div class="p-item">
+            <img class="p-img" src="/images/indian-res1.jpeg">
+            <div class="p-id" style="display: none;"><%= items[i].item_id %></div>
+            <div class="p-name"><%= items[i].item_name %></div>
+            <% if (items[i].hasOwnProperty("description")) { %>
+              <div class="p-desc"><%= items[i].description %></div>
+            <% } %>
+            <div class="p-price">$<%= items[i].item_price %></div>
+            <button class="cart p-add" id="<%= items[i].item_id + '-button' %>"">Add To Cart</button>
+          </div>
+        <% } %>	
+      </div>
 
       <!-- (A2) CURRENT CART ITEMS -->
       <div id="cart-items"></div>
@@ -43,8 +63,8 @@
     </div>
     </template>
     <template id="template-cart-checkout">
-      <button class="c-empty cart" onclick="cart.nuke()">Empty</button>
-      <button class="c-checkout cart" onclick="cart.checkout()">Checkout</button>
+      <button class="c-empty cart" id="cart-empty-button">Empty</button>
+      <button class="c-checkout cart" id="cart-checkout-button">Checkout</button>
     </template>
   </body>
 </html>

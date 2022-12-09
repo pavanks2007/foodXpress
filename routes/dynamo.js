@@ -27,7 +27,7 @@ function batchGetFromTable(documentClient, params) {
 
 function scanTable(documentClient, params) {
     try {
-        console.log('scanTable', params);
+        // console.log('scanTable', params);
         return documentClient.scan(params).promise();
     } catch (err) {
         return err;
@@ -45,7 +45,7 @@ function queryTable(documentClient, params) {
 
 function updateTable(documentClient, params) {
     try {
-        console.log('updateTable', params);
+        // console.log('updateTable', params);
         return documentClient.update(params).promise();
     } catch (err) {
         return err;
