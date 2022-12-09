@@ -50,7 +50,7 @@ router.get('/restaurants', async function (req, res, next) {
                     restaurant[constants.RATING] = 3.8;
                 delete restaurant[constants.SORT_KEY];
             });
-            allRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating);
+            allRestaurants = restaurants.Items.sort((a,b) => b.distance - a.distance);
             featuredRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating).slice(0, 5);
             res.render("customer/customer-restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
         }
