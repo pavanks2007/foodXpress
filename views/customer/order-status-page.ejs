@@ -15,13 +15,119 @@
     <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="giant">
         <div class="pt-4"></div>
-        <div class="card card-timeline px-2 border-none"> 
-          <ul class="bs4-order-tracking"> 
-            <li class="step active"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
-            <li class="step active"> <div><i class="fas fa-bread-slice"></i></div> In transit </li> 
-            <li class="step"> <div><i class="fas fa-truck"></i></div> Out for delivery </li> 
-            <li class="step "> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li>
-           </ul> <h5 class="text-center"><b>In transit</b>. The order has been shipped!</h5>
+        <div class="card card-timeline px-2 border-none"> Order Status
+            <ul class="bs4-order-tracking"> 
+                <% if (order_summary.status == "Order Placed" || order_summary.status == "SENT") { %>
+                    <li class="step" style="font-weight: bold;"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
+                <%} else { %>
+                    <li class="step"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
+                <%}  %>
+                <% if (order_summary.status == "In transit") { %>
+                    <li class="step"> <div><i class="fas fa-bread-slice"></i></div> In transit </li>
+                <%} else { %>
+                    <li class="step"> <div><i class="fas fa-bread-slice"></i></div> In transit </li> 
+                <%}  %>
+                <% if (order_summary.status == "Out for delivery") { %>
+                    <li class="step"> <div><i class="fas fa-truck"></i></div> Out for delivery </li>
+                <%} else { %>
+                    <li class="step"> <div><i class="fas fa-truck"></i></div> Out for delivery </li>
+                <%}  %>
+                <% if (order_summary.status == "Delivered") { %>
+                    <li class="step "> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li> 
+                <%} else { %>
+                    <li class="step "> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li> 
+                <%}  %>
+            </ul> 
+        </div>
+
+        <div style="font-size: 25px;">
+            <table style="width:50%">
+                <caption style="caption-side: top;">Order Details</caption>
+                <tr>
+                    <td>Restaurant</td>
+                    <td><%= order_summary.restaurant_name %></td>
+                </tr>
+                <tr>
+                    <td>Restaurant Contact</td>
+                    <td><%= batch_result[1].contact %></td>
+                </tr>
+                <tr>
+                    <td>Created At</td>
+                    <td><%= order_summary.created_at %></td>
+                </tr>
+                <tr>
+                    <td>Mode</td>
+                    <td><%= order_summary.mode %></td>
+                </tr>
+                <tr>
+                    <td>Customer Name</td>
+                    <td><%= batch_result[0].user_name %></td>
+                </tr>
+                <tr>
+                    <td>Customer Address</td>
+                    <td><%= batch_result[0].address %></td>
+                </tr>
+                <tr>
+                    <td>Customer Contact</td>
+                    <td><%= batch_result[0].contact %></td>
+                </tr>
+                <tr>
+                    <td>Driver</td>
+                    <% if (batch_result.length > 2) { %>
+                        <td><%= batch_result[2].user_name %></td>
+                    <%} else { %>
+                        <td>Not Assigned</td> 
+                    <%}  %>
+                </tr>
+                <tr>
+                    <td>Driver Contact</td>
+                    <% if (batch_result.length > 2) { %>
+                        <td><%= batch_result[2].contact %></td>
+                    <%} else { %>
+                        <td>Not Assigned</td> 
+                    <%}  %>
+                </tr>
+            </table>
+
+            <table style="width:50%">
+                <caption style="caption-side: top;">Order Items</caption>
+                <tr>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                </tr>
+                <% for(var i=0; i < order_items.length; i++) { %>
+                    <tr>
+                        <td><%= order_items[i].item_name %></td>
+                        <td><%= "$"+order_items[i].item_price %></td>
+                        <td><%= order_items[i].quantity %></td> 
+                    </tr>
+                <% } %>
+            </table>
+
+            <table style="width:50%">
+                <caption style="caption-side: top;">Order Summary</caption>
+                <tr>
+                    <td>Items Price</td>
+                    <td><%= "$"+order_summary.items_price %></td>
+                </tr>
+                <tr>
+                    <td>Taxes</td>
+                    <td><%= "$"+order_summary.taxes %></td>
+                </tr>
+                <tr>
+                    <td>Driver Tip</td>
+                    <td><%= "$"+order_summary.total_tip %></td>
+                </tr>
+                <tr>
+                    <td>Surge Fees</td>
+                    <td><%= "$"+order_summary.surge_fee %></td>
+                </tr>
+                <tr>
+                    <td>Final Price</td>
+                    <td><%= "$"+order_summary.final_price %></td>
+                </tr>
+            </table>
         </div>
 
         <div class="pt-5"></div>

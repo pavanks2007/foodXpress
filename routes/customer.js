@@ -82,8 +82,8 @@ router.get('/dashboard',function (req, res){
 
 router.post('/orderPayment', async (req, res) => {
     const customer_id = req.signedCookies.user_id;
-    const {restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, items} = req.body;
-    console.log("final_price", final_price);
+    const {restaurant_id, restaurant_name, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, items} = req.body;
+    console.log("items", items);
     const create_payment_json = {
         "intent": "sale",
         "payer": {
@@ -119,10 +119,10 @@ router.post('/orderPayment', async (req, res) => {
             }
             const createdAt = new Date().toString();
             // Add order summary with status as PROCESSING
-            await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, constants.PROCESSING));
+            await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, restaurant_name, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, constants.PROCESSING));
             items.forEach(async function(item) {
                 // Add order items
-                await dynamo.putInTable(ddb, ddbQueries.putItemInOrders(restaurant_id, order_id, item["item_id"], item["item_name"], item["item_price"], item["quantity"]));
+                await dynamo.putInTable(ddb, ddbQueries.putItemInOrders(restaurant_id, restaurant_name, order_id, item["item_id"], item["item_name"], item["item_price"], item["quantity"]));
             })
             res.json({redirect: redirectUrl});
         }
@@ -156,7 +156,7 @@ router.get('/orderPayment/success', async (req, res) => {
             throw error;
         } else {
             // Change status to SENT
-            await dynamo.updateTable(ddb, ddbQueries.updateOrderStatus(paymentId, constants.SENT));
+            await dynamo.updateTable(ddb, ddbQueries.updateOrderStatus(paymentId, constants.ORDER_PLACED));
             // Assign driver
             const availableDrivers = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDrivers());
             if(availableDrivers.Items.length > 0) {
@@ -181,7 +181,7 @@ router.get('/orderPayment/success', async (req, res) => {
                     //res.status(200).send(message.status);
                 })
                 .done();
-                res.json({ message: 'Successfully checkout out and added order summary: ' });
+                res.redirect('/customer/orders/'+paymentId);
             } catch (err) {
                 console.error(err);
                 res.status(500).json({ err: 'Something went wrong', error: err });
@@ -217,8 +217,14 @@ router.get('/orders/:orderId', async (req, res) => {
         if (customer_id != order_summary.Item[constants.USER_ID])
             throw `Order ${order_id} is not ordered by customer ${customer_id}`;
         const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
-        console.log({ order_summary: order_summary.Item, order_items: order_items.Item });
-        res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
+        console.log(order_summary.Item);
+        const ids = [customer_id, order_summary.Item[constants.RESTAURANT_ID]];
+        if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) {
+            ids.push(order_summary.Item[constants.DRIVER_ID]);
+        }
+        const batch_result = await dynamo.batchGetFromTable(ddb, ddbQueries.batchGetUserDetails(ids));
+        console.log("batch_result", batch_result.Responses[constants.ENCRYPTED_DATA_TABLE_NAME]);
+        res.render('customer/order-status-page', {order_summary: order_summary.Item, order_items: order_items.Items, batch_result:batch_result.Responses[constants.ENCRYPTED_DATA_TABLE_NAME], user_type: user_type});
     } catch(err) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong', error: err });

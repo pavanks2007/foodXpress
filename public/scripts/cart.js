@@ -15,6 +15,8 @@ window.addEventListener("DOMContentLoaded", function() {
   const tax = parseFloat(document.getElementById('cart-tax').innerHTML);
   const surge_fee = parseFloat(document.getElementById('cart-surge').innerHTML);
   const total_tip = 5;
+  const restaurant_id = document.getElementById("restaurant_id").innerHTML;
+  const restaurant_name = document.getElementById("restaurant_name").innerHTML;
 
   var cart = {
     // (A) PROPERTIES
@@ -173,7 +175,7 @@ window.addEventListener("DOMContentLoaded", function() {
       const taxes = document.getElementById("c-tax").innerHTML.slice("Taxes: $".length);
       const surge = document.getElementById("c-surge").innerHTML.slice("Surge Fees: $".length);
       const total_tip = document.getElementById("c-tip").innerHTML.slice("Driver Tip: $".length);
-      const coupon_used = "0";
+      const coupon_used = "";
       const coupon_value = parseFloat("0").toFixed(2);
       const final_price = document.getElementById("c-total").innerHTML.slice("Final price: $".length);
 
@@ -193,7 +195,8 @@ window.addEventListener("DOMContentLoaded", function() {
         }
 
         const data = {
-          "restaurant_id": "TEST_R_01",
+          "restaurant_id": restaurant_id,
+          "restaurant_name": restaurant_name,
           "items_price": items_price,
           "taxes": taxes,
           "surge_fee": surge_fee,
@@ -204,7 +207,6 @@ window.addEventListener("DOMContentLoaded", function() {
           "mode": "Delivery",
           "items": items
         };
-        console.log(data);
         
         fetch("/customer/orderPayment", { 
           method:"POST", 

@@ -20,6 +20,8 @@
       <pre class="headings"><%= `Contact: ${restaurantDetails.contact}     Address: ${restaurantDetails.restaurant_address} ` %></pre>
     <% } %>
     
+    <p id="restaurant_id" style="display: none;"><%= restaurantDetails.restaurant_id %></p>
+    <p id="restaurant_name" style="display: none;"><%= restaurantDetails.restaurant_name %></p>
     <p id="cart-min" style="display: none;"><%= cartLimits.cart_min %></p>
     <p id="cart-max" style="display: none;"><%= cartLimits.cart_max %></p>
     <p id="cart-tax" style="display: none;"><%= cartLimits.cart_tax %></p>

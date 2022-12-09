@@ -1,6 +1,21 @@
 const constants = require('./constants.js')
 
 module.exports = {
+    batchGetUserDetails: (userIds) => {
+        return {
+            RequestItems:{
+                [constants.ENCRYPTED_DATA_TABLE_NAME]: {
+                    Keys: userIds.map(userId => {
+                        return {
+                            [constants.USER_ID]: userId, 
+                            [constants.SORT_KEY]: constants.DETAILS
+                        }
+                    }),
+                    ProjectionExpression: `${constants.USER_ID}, ${constants.USER_NAME}, ${constants.CONTACT}, ${constants.ADDRESS}`
+                }
+            }
+        }
+    },
     deleteCoupon: (restaurant_id, coupon_id) => {
         return {
             TableName: constants.COUPONS_TABLE_NAME,
@@ -56,7 +71,6 @@ module.exports = {
             Key: {
                 [constants.ORDER_ID]: orderId
             },
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT}`,
         }
     },
     getOrderSummaryForDriver: (orderId) => {
@@ -65,7 +79,6 @@ module.exports = {
             Key: {
                 [constants.ORDER_ID]: orderId
             },
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING}`,
         }
     },
     getOrderSummaryForRestaurant: (orderId) => {
@@ -74,7 +87,6 @@ module.exports = {
             Key: {
                 [constants.ORDER_ID]: orderId
             },
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING}`,
         }
     },
     getUserDetails: (userId) => {
@@ -84,7 +96,7 @@ module.exports = {
                 [constants.USER_ID]: userId,
                 [constants.SORT_KEY]: constants.DETAILS
             },
-            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS},${constants.LATITUDE},${constants.LONGITUDE}`,
+            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS},${constants.LATITUDE},${constants.LONGITUDE},${constants.CONTACT}`,
         }
     },
     getUserCredentials: (userId) => {
@@ -158,7 +170,7 @@ module.exports = {
             }
         }
     },
-    putItemInOrders: (restaurant_id, order_id, item_id, item_name, item_price, quantity) => {
+    putItemInOrders: (restaurant_id, restaurant_name, order_id, item_id, item_name, item_price, quantity) => {
         return {
             TableName: constants.ORDER_ITEMS_TABLE_NAME,
             Item:{
@@ -167,17 +179,19 @@ module.exports = {
                 [constants.ITEM_NAME]: item_name,
                 [constants.ITEM_PRICE]: item_price,
                 [constants.QUANTITY]: quantity,
-                [constants.RESTAURANT_ID]: restaurant_id             
+                [constants.RESTAURANT_ID]: restaurant_id,
+                [constants.RESTAURANT_NAME]: restaurant_name             
             }
         }
     },
-    putOrderSummary: (order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, status) => {
+    putOrderSummary: (order_id, customer_id, restaurant_id, restaurant_name, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, status) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Item:{
                 [constants.ORDER_ID]: order_id, 
                 [constants.USER_ID]: customer_id,
                 [constants.RESTAURANT_ID]: restaurant_id, 
+                [constants.RESTAURANT_NAME]: restaurant_name,
                 [constants.ITEMS_PRICE]: items_price,
                 [constants.TAXES]: taxes,
                 [constants.SURGE_FEE]: surge_fee, 
@@ -291,7 +305,7 @@ module.exports = {
         return {
             TableName: constants.ORDER_ITEMS_TABLE_NAME,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.QUANTITY}`,
+            ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.ITEM_PRICE},${constants.QUANTITY}`,
             ExpressionAttributeNames: {
                 '#pk': constants.ORDER_ID,
             },
@@ -305,7 +319,7 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_USER_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT},#order_status`,
+            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.USER_ID,
                 '#order_status': constants.STATUS
@@ -320,7 +334,7 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_DRIVER_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING},#order_status`,
+            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.DRIVER_ID,
                 '#order_status': constants.STATUS
@@ -335,7 +349,7 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_RESTAURANT_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING},#order_status`,
+            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.RESTAURANT_ID,
                 '#order_status': constants.STATUS
@@ -344,6 +358,11 @@ module.exports = {
                 ':id': restaurantId,
             },
         }
+    },
+    scanAllOrderItems: ()=> {
+        return {
+            TableName: constants.ORDER_ITEMS_TABLE_NAME,
+        } 
     },
     scanAllUserIds: ()=> {
         return {
