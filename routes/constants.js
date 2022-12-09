@@ -53,7 +53,7 @@ module.exports = {
     MODE: 'mode',
     OPEN_TIME: 'open_time',
     ORDER_ID: 'order_id',
-    ORDER_PLACED: 'order_placed',
+    ORDER_PLACED: 'Order Placed',
     ORDER_TYPE: 'order_type',
     PAYMENT: 'payment',
     PAYMENT_NAME: 'payment_name',

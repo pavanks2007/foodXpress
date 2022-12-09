@@ -17,6 +17,7 @@
         <div class="pt-4"></div>
         <div class="card card-timeline px-2 border-none"> Order Status
             <ul class="bs4-order-tracking"> 
+                <% console.log(order_summary.status)  %>
                 <% if (order_summary.status == "Order Placed" || order_summary.status == "SENT") { %>
                     <li class="step" style="font-weight: bold;"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
                 <%} else { %>
