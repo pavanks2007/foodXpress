@@ -41,16 +41,16 @@ router.get('/restaurants', async function (req, res, next) {
                         restaurant[constants.LONGITUDE],
                         customerDetails.Item[constants.LATITUDE],
                         customerDetails.Item[constants.LONGITUDE]
-                    );
+                    ).toFixed(4);
                 } else {
-                    restaurant[constants.DISTANCE] = 0;
+                    restaurant[constants.DISTANCE] = 15;
                 }
                 restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
                 if(!restaurant.hasOwnProperty(constants.RATING))
                     restaurant[constants.RATING] = 3.8;
                 delete restaurant[constants.SORT_KEY];
             });
-            allRestaurants = restaurants.Items.sort((a,b) => b.distance - a.distance);
+            allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
             featuredRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating).slice(0, 5);
             res.render("customer/customer-restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
         }

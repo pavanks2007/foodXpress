@@ -40,6 +40,7 @@
                   <h5 class="card-title"><%= featuredRestaurants[j].restaurant_name %></h5>
                   <p class="card-text">Cuisine: <%= featuredRestaurants[j].cuisine %></p>
                   <p class="card-text">Rating: <%= featuredRestaurants[j].rating %></p>
+                  <p class="card-text">Distance: <%= featuredRestaurants[j].distance %> miles</p>
                   <a href="<%= '/restaurants/'+featuredRestaurants[j].restaurant_id %>" class="btn btn-primary">Visit Restaurant</a>
                 </div>
               </div>
@@ -85,6 +86,7 @@
                   <h5 class="card-title"><%= allRestaurants[j].restaurant_name %></h5>
                   <p class="card-text">Cuisine: <%= allRestaurants[j].cuisine %></p>
                   <p class="card-text">Rating: <%= allRestaurants[j].rating %></p>
+                  <p class="card-text">Distance: <%= allRestaurants[j].distance %> miles</p>
                   <a href="<%= '/restaurants/'+allRestaurants[j].restaurant_id %>" class="btn btn-primary">Visit Restaurant</a>
                 </div>
               </div>
