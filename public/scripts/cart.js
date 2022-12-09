@@ -105,6 +105,7 @@ var cart = {
         // (D3-1) PRODUCT ITEM
         p = products[id];
         item = template.cloneNode(true);
+        console.log(id, products);
         item.querySelector(".c-del").onclick = () => { cart.remove(id); };
         item.querySelector(".c-name").textContent = p.name;
         item.querySelector(".c-qty").value = cart.items[id];
@@ -166,16 +167,30 @@ var cart = {
   checkout : () => {
   
     // alert("TO DO");
+    const items = [];
+    for (const id in cart.items) {
+      items.push({
+        "item_id": id,
+        "item_name": products[id]["name"],
+        "item_price": products[id]["price"].toFixed(2),
+        "quantity": cart.items[id]
+      });
+    }
 
     const data = {
-      "cart": cart.items,
-      "products": products,
-      "total_cost": parseInt(document.getElementById("c-total").innerHTML)
+      "restaurant_id": "TEST_R_01",
+      "items_price": parseFloat(document.getElementById("c-total").innerHTML).toFixed(2),
+      "taxes": 0,
+      "surge_fee": 0,
+      "total_tip": 0,
+      "coupon_used": "",
+      "coupon_value": 0,
+      "final_price": parseFloat(document.getElementById("c-total").innerHTML).toFixed(2),
+      "mode": "Delivery",
+      "items": items
     };
-
-    console.log("data", data);
     
-    fetch("/payment/pay", { 
+    fetch("/customer/orderPayment", { 
       method:"POST", 
       headers: {
         'Content-Type': 'application/json',

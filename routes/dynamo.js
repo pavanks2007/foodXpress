@@ -27,7 +27,7 @@ function batchGetFromTable(documentClient, params) {
 
 function scanTable(documentClient, params) {
     try {
-        // console.log('scanTable', params);
+        console.log('scanTable', params);
         return documentClient.scan(params).promise();
     } catch (err) {
         return err;
@@ -45,7 +45,7 @@ function queryTable(documentClient, params) {
 
 function updateTable(documentClient, params) {
     try {
-        // console.log('updateTable', params);
+        console.log('updateTable', params);
         return documentClient.update(params).promise();
     } catch (err) {
         return err;
@@ -70,23 +70,26 @@ function deleteInTable(documentClient, params) {
     }
 }
 
-async function deleteItems(tableName, pk_name, pk_value, sk_name) {
+async function deleteItems(documentClient, tableName, pk_name, pk_value, sk_name="") {
     const queryParams = {
         TableName: tableName,
         KeyConditionExpression: '#pk = :id',
         ExpressionAttributeNames: { '#pk': pk_name },
         ExpressionAttributeValues: { ':id': pk_value },
     };
-    const queryResults = await docClient.query(queryParams).promise()
+    const queryResults = await documentClient.query(queryParams).promise()
     if (queryResults.Items && queryResults.Items.length > 0) {
         const batchCalls = chunks(queryResults.Items, 25).map(async (chunk) => {
             const deleteRequests = chunk.map(item => {
+                const key = sk_name == "" ? {
+                    [pk_name]: item[pk_name]
+                } : {
+                    [pk_name]: item[pk_name],
+                    [sk_name]: item[sk_name],
+                };
                 return {
                     DeleteRequest: {
-                        Key: {
-                            [pk_name]: item[pk_name],
-                            [sk_name]: item[sk_name],
-                        }
+                        Key: key
                     }
                 }
             })
@@ -95,7 +98,7 @@ async function deleteItems(tableName, pk_name, pk_value, sk_name) {
                     [tableName]: deleteRequests
                 }
             }
-            await docClient.batchWrite(batchWriteParams).promise()
+            await documentClient.batchWrite(batchWriteParams).promise()
         })
         await Promise.all(batchCalls)
     }

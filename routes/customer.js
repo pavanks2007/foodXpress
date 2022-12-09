@@ -6,6 +6,13 @@ const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 const fs = require('fs');
+const paypal = require('paypal-rest-sdk');
+
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AaMQhQJJ9rbV2fBrTSiYLMEhZMx4Dxq26JGawovRBbRW24dMLtJ7_171Zy78QAO3mjjCNIh85eIziQNn',
+    'client_secret': 'EMfiAVH-mVnTRGctW029hm3rrOpO7AVaXyI4790ZvwJrbslZ0T2OyFq5ZlhCbfBI0i4Vak7o4zK0NxTF'
+});
 
 const accountSid = 'AC24363df7efae2d43927f757719479774';
 const authToken = '3f266d820866fbbb831442a685a1dc22';
@@ -19,39 +26,27 @@ router.get('/', function(req,res)   // This still needs some work once cookie ha
 })
 
 /* GET home page. */
-router.get('/dashboard', async function (req, res, next) 
-{
+router.get('/dashboard', async function (req, res, next) {
     res.render('customer/customer-dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
 })
 
 router.get('/restaurants', async function (req, res, next) {
-    console.log(req.signedCookies);
     try {
-        if (!req.signedCookies) {
+        if (!validateCookie(req.signedCookies)) {
             res.redirect('/')
         } else {
             const customer_id = req.signedCookies.user_id;
             const customerDetails = await dynamo.getFromTable(ddb, ddbQueries.getUserDetails(customer_id));
             const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
             restaurants.Items.forEach(function(restaurant) {
-                if (
-                    restaurant.hasOwnProperty(constants.LATITUDE) && 
-                    restaurant.hasOwnProperty(constants.LONGITUDE) && 
-                    customerDetails.Item.hasOwnProperty(constants.LATITUDE) && 
-                    customerDetails.Item.hasOwnProperty(constants.LONGITUDE)
-                ) {
-                    restaurant[constants.DISTANCE] = getDistanceInMiles(
-                        restaurant[constants.LATITUDE],
-                        restaurant[constants.LONGITUDE],
-                        customerDetails.Item[constants.LATITUDE],
-                        customerDetails.Item[constants.LONGITUDE]
-                    ).toFixed(4);
+                if (restaurant.hasOwnProperty(constants.LATITUDE) && restaurant.hasOwnProperty(constants.LONGITUDE) && customerDetails.Item.hasOwnProperty(constants.LATITUDE) && customerDetails.Item.hasOwnProperty(constants.LONGITUDE)) {
+                    restaurant[constants.DISTANCE] = getDistanceInMiles(restaurant[constants.LATITUDE], restaurant[constants.LONGITUDE],customerDetails.Item[constants.LATITUDE],customerDetails.Item[constants.LONGITUDE]).toFixed(4);
                 } else {
                     restaurant[constants.DISTANCE] = 15;
                 }
                 restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
                 if(!restaurant.hasOwnProperty(constants.RATING))
-                    restaurant[constants.RATING] = 3.8;
+                restaurant[constants.RATING] = 3.8;
                 delete restaurant[constants.SORT_KEY];
             });
             allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
@@ -64,10 +59,109 @@ router.get('/restaurants', async function (req, res, next) {
     }
 });
 
-router.get('/profile',function (req, res)
-{
+router.get('/profile',function (req, res){
     res.sendFile('customer/customer-profile.html', { root: path.join(__dirname, '..', 'views') });
 })
+
+router.get('/cart', function (req, res, next) {
+    res.sendFile('cart.html', { root: path.join(__dirname, '..', 'views/customer') });
+});
+
+router.post('/orderPayment', async (req, res) => {
+    const customer_id = req.signedCookies.user_id;
+    const {restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, items} = req.body;
+    
+    const create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:3000/customer/orderPayment/success",
+            "cancel_url": "http://localhost:3000/customer/orderPayment/cancel"
+        },
+        "transactions": [{
+            "amount": {
+                "currency": "USD",
+                "total": final_price
+            },
+            "description": ""
+        }]
+    };
+    
+    let order_id = "";
+    let redirectUrl = "";
+    
+    paypal.payment.create(create_payment_json, async function (error, payment) {
+        if (error) {
+            throw error;
+        } else {
+            for(let i = 0;i < payment.links.length;i++){
+                if(payment.links[i].rel === 'self') {
+                    order_id = payment.links[i].href.substring("https://api.sandbox.paypal.com/v1/payments/payment/".length);
+                }
+                if(payment.links[i].rel === 'approval_url'){
+                    redirectUrl = payment.links[i].href;
+                }
+            }
+            const createdAt = new Date().toString();
+            // Add order summary with status as PROCESSING
+            await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, constants.PROCESSING));
+            items.forEach(async function(item) {
+                // Add order items
+                await dynamo.putInTable(ddb, ddbQueries.putItemInOrders(restaurant_id, order_id, item["item_id"], item["item_name"], item["item_price"], item["quantity"]));
+            })
+            res.json({redirect: redirectUrl});
+        }
+    });
+    
+});
+
+router.get('/orderPayment/success', async (req, res) => {
+    const payerId = req.query.PayerID;
+    const paymentId = req.query.paymentId;
+
+    const orderSummary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(paymentId));
+    const finalPrice = orderSummary.Item[constants.FINAL_PRICE]
+    
+    const execute_payment_json = {
+        "payer_id": payerId,
+        "transactions": [{
+            "amount": {
+                "currency": "USD",
+                "total": finalPrice
+            }
+        }]
+    };
+    
+    // Obtains the transaction details from paypal
+    paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
+        //When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
+        if (error) {
+            console.log(error.response);
+            throw error;
+        } else {
+            // Change status to SENT
+            await dynamo.updateTable(ddb, ddbQueries.updateOrderStatus(paymentId, constants.SENT));
+            // Assign driver
+            const availableDrivers = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDrivers());
+            const driver_id = availableDrivers.Items[0].driver_id;
+            await dynamo.updateTable(ddb, ddbQueries.updateStatusforDriver(driver_id, false));
+            await dynamo.updateTable(ddb, ddbQueries.updateOrderforDriver(paymentId, driver_id));
+            // TODO 
+            res.send("Success");
+        }
+    });
+});
+
+router.get('/orderPayment/cancel', async (req, res) => {
+    const paymentId = req.query.paymentId;
+    // Delete Order Summary
+    await dynamo.deleteInTable(ddb, ddbQueries.deleteOrderSummary(paymentId));
+    // Delete Order Items
+    await dynamo.deleteItems(documentClient, constants.ORDER_ITEMS_TABLE_NAME, constants.ORDER_ID, paymentId);
+    res.send('Cancelled')
+});
 
 router.post('/restaurant/menu', async function (req, res, next) {
     try {
@@ -84,48 +178,26 @@ router.get('/orderFees', async function (req, res, next) {
     res.json({ taxes: 0.14, surge_fees: 3});
 });
 
-// router.post('/orderConfirmation', async function (req, res, next) {
-//     const { order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode } = req.body;
-//     const createdAt = new Date().toString();
-//     const driver_id = await dynamo.scanTable(ddb, ddbQueries.getAvailableDriver());
-//     console.log(driver_id.Items);
-//     try {
-//         const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
-//         res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ err: 'Something went wrong', error: err });
-//     }
-// });
-
 router.post('/orderConfirmation', async function (req, res, next) {
-    const { order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode } = req.body;
-    const createdAt = new Date().toString();
-    const driver_id_list = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDriver());
-    let driver_id = driver_id_list.Items[0].driver_id.toString();
-    console.log(driver_id_list.Items[0].driver_id);
-
+    
     try {
-        const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
+        // const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
         client.messages
-    .create({
-      from: 'whatsapp:+14155238886',
-        body: "Thanku for choosing us, Your Order is Confirmed",
-        to: 'whatsapp:+18484680962'
-    })
-    .then((message) => {
-      console.log(message.status);
-      //res.status(200).send(message.status);
-    })
-    .done();
+        .create({
+            from: 'whatsapp:+14155238886',
+            body: "Thanku for choosing us, Your Order is Confirmed",
+            to: 'whatsapp:+18484680962'
+        })
+        .then((message) => {
+            console.log(message.status);
+            //res.status(200).send(message.status);
+        })
+        .done();
         res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
     } catch (err) {
         console.error(err);
         res.status(500).json({ err: 'Something went wrong', error: err });
     }
-});
-
-router.post('/payment', async function (req, res, next) {
 });
 
 router.post('/reviews', async function (req, res, next) {
@@ -146,7 +218,7 @@ router.get('/previous_orders', async function (req, res, next) {
     //const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
     res.sendFile('customer/customer-previous-orders.html', { root: path.join(__dirname, '..', 'views') });
 });
-    
+
 router.post('/previousOrders', async function (req, res, next) {
     const { customer_id } = req.body
     const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
@@ -166,9 +238,9 @@ router.post('/order', async function (req, res, next) {
     const { customer_id, order_id } = req.body;
     const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(order_id));
     if (!order_summary.Item.hasOwnProperty(constants.CUSTOMER_ID)) 
-        throw `No driver assigned to order ${order_id}`;
+    throw `No driver assigned to order ${order_id}`;
     if (customer_id != order_summary.Item[constants.CUSTOMER_ID])
-        throw `Order ${order_id} is not ordered by customer ${customer_id}`;
+    throw `Order ${order_id} is not ordered by customer ${customer_id}`;
     const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
     res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
 });
@@ -226,6 +298,14 @@ router.post('/deleteUser', async function (req, res, next) {
         res.send({ message: 'Unable to delete user', error: err })
     }
 });
+
+function validateCookie(signedCookies) {
+    try {
+        return signedCookies && signedCookies[constants.USER_TYPE] == constants.CUSTOMER
+    } catch (error) {
+        return false
+    }
+}
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2){
     var R = 6378.137; // Radius of earth in KM

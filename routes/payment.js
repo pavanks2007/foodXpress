@@ -14,11 +14,10 @@ paypal.configure({
   'client_secret': 'EMfiAVH-mVnTRGctW029hm3rrOpO7AVaXyI4790ZvwJrbslZ0T2OyFq5ZlhCbfBI0i4Vak7o4zK0NxTF'
 });
 
-paypalStore = {};
-
 // router.get('/', async function (req, res, next) {
 //     res.render('customer/payment.ejs', { root: path.join(__dirname, '..', 'views') });
 // });
+
 router.get('/', function (req, res, next) {
   res.sendFile('cart.html', { root: path.join(__dirname, '..', 'views/customer') });
 });
@@ -48,9 +47,9 @@ router.post('/pay', (req, res) => {
         "cancel_url": "http://localhost:3000/payment/cancel"
     },
     "transactions": [{
-        // "item_list": {
-        //     "items": items
-        // },
+        "item_list": {
+            "items": items
+        },
         "amount": {
             "currency": "USD",
             "total": data["total_cost"].toFixed(2)
@@ -98,18 +97,33 @@ router.get('/success', (req, res) => {
 
   // Obtains the transaction details from paypal
   paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
-    console.log("Lol1");
+    console.log(JSON.stringify(payment, null, 4));
       //When error occurs when due to non-existent transaction, throw an error else log the transaction details in the console then send a Success string reposponse to the user.
     if (error) {
         console.log(error.response);
         throw error;
     } else {
-        console.log(JSON.stringify(payment));
-        // TODO place order
-        res.send('Success');
+        const result = {
+          "order_id": payment["id"],
+          "payment_method": payment["payer"]["payment_method"],
+          "total_amount": payment["transactions"][0]["amount"]["total"],
+          "order_items": getOrderItems(payment["transactions"][0]["item_list"]["items"])
+        };
+        res.send(result);
     }
   });
 });
+
+function getOrderItems(order) {
+  order.map(function(item){
+    return {
+      "item_id": item["sku"],
+      "item_name": item["name"],
+      "item_price": item["price"],
+      "quantity": item["quantity"]
+    };
+  })
+}
 
 router.get('/cancel', (req, res) => res.send('Cancelled'));
 
