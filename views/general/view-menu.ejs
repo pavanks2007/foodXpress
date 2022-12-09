@@ -28,9 +28,6 @@
             <img class="p-img" src="/images/indian-res1.jpeg">
             <div class="p-id" style="display: none;"><%= items[i].item_id %></div>
             <div class="p-name"><%= items[i].item_name %></div>
-            <% if (items[i].hasOwnProperty("description")) { %>
-              <div class="p-desc"><%= items[i].description %></div>
-            <% } %>
             <div class="p-price">$<%= items[i].item_price %></div>
             <button class="cart p-add" id="<%= items[i].item_id + '-button' %>"">Add To Cart</button>
           </div>

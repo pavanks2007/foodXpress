@@ -3,10 +3,10 @@ window.addEventListener("DOMContentLoaded", function() {
   const items = Array.prototype.slice.call( document.getElementById("cart-products").children)
   for (var item in items) {
     const temp = Array.prototype.slice.call( items[item].children);
+    console.log(temp[4].innerHTML.slice(1));
     products[temp[1].innerHTML] = {
       name : temp[2].innerHTML,
-      desc : temp[3].innerHTML,
-      price : parseFloat(temp[4].innerHTML.slice(1))
+      price : parseFloat(temp[3].innerHTML.slice(1))
     };
   }
 
@@ -91,7 +91,7 @@ window.addEventListener("DOMContentLoaded", function() {
         item = document.createElement("div");
         item.className = "c-total";
         item.id = "c-total";
-        item.innerHTML = total;
+        item.innerHTML = "$"+total;
         cart.hItems.appendChild(item);
 
         // (D3-4) EMPTY & CHECKOUT
@@ -138,7 +138,6 @@ window.addEventListener("DOMContentLoaded", function() {
     // (H) CHECKOUT
     checkout : () => {
     
-      // alert("TO DO");
       const items = [];
       for (const id in cart.items) {
         items.push({
@@ -151,13 +150,13 @@ window.addEventListener("DOMContentLoaded", function() {
 
       const data = {
         "restaurant_id": "TEST_R_01",
-        "items_price": parseFloat(document.getElementById("c-total").innerHTML).toFixed(2),
+        "items_price": parseFloat(document.getElementById("c-total").innerHTML.slice(1)).toFixed(2),
         "taxes": 0,
         "surge_fee": 0,
         "total_tip": 0,
         "coupon_used": "",
         "coupon_value": 0,
-        "final_price": parseFloat(document.getElementById("c-total").innerHTML).toFixed(2),
+        "final_price": parseFloat(document.getElementById("c-total").innerHTML.slice(1)).toFixed(2),
         "mode": "Delivery",
         "items": items
       };
