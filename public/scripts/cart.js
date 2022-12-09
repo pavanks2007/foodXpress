@@ -10,6 +10,12 @@ window.addEventListener("DOMContentLoaded", function() {
     };
   }
 
+  const cart_min = parseFloat(document.getElementById('cart-min').innerHTML);
+  const cart_max = parseFloat(document.getElementById('cart-max').innerHTML);
+  const tax = parseFloat(document.getElementById('cart-tax').innerHTML);
+  const surge_fee = parseFloat(document.getElementById('cart-surge').innerHTML);
+  const total_tip = 5;
+
   var cart = {
     // (A) PROPERTIES
     hPdt : null,      // html products list
@@ -91,9 +97,33 @@ window.addEventListener("DOMContentLoaded", function() {
 
         // (D3-3) TOTAL AMOUNT
         item = document.createElement("div");
+        item.className = "c-items-price";
+        item.id = "c-items-price";
+        item.innerHTML = "Items price: $"+total.toFixed(2);
+        cart.hItems.appendChild(item);
+
+        item = document.createElement("div");
+        item.className = "c-tax";
+        item.id = "c-tax";
+        item.innerHTML = "Taxes: $"+(total*tax).toFixed(2);
+        cart.hItems.appendChild(item);
+
+        item = document.createElement("div");
+        item.className = "c-surge";
+        item.id = "c-surge";
+        item.innerHTML = "Surge Fees: $"+surge_fee.toFixed(2);
+        cart.hItems.appendChild(item);
+
+        item = document.createElement("div");
+        item.className = "c-tip";
+        item.id = "c-tip";
+        item.innerHTML = "Driver Tip: $"+total_tip.toFixed(2);
+        cart.hItems.appendChild(item);
+
+        item = document.createElement("div");
         item.className = "c-total";
         item.id = "c-total";
-        item.innerHTML = "$"+total;
+        item.innerHTML = "Final Price: $"+(total + total*tax + surge_fee + total_tip).toFixed(2);
         cart.hItems.appendChild(item);
 
         // (D3-4) EMPTY & CHECKOUT
@@ -139,47 +169,61 @@ window.addEventListener("DOMContentLoaded", function() {
 
     // (H) CHECKOUT
     checkout : () => {
-    
-      const items = [];
-      for (const id in cart.items) {
-        items.push({
-          "item_id": id,
-          "item_name": products[id]["name"],
-          "item_price": products[id]["price"].toFixed(2),
-          "quantity": cart.items[id]
-        });
-      }
+      const items_price = document.getElementById("c-items-price").innerHTML.slice("Items price: $".length);
+      const taxes = document.getElementById("c-tax").innerHTML.slice("Taxes: $".length);
+      const surge = document.getElementById("c-surge").innerHTML.slice("Surge Fees: $".length);
+      const total_tip = document.getElementById("c-tip").innerHTML.slice("Driver Tip: $".length);
+      const coupon_used = "0";
+      const coupon_value = parseFloat("0").toFixed(2);
+      const final_price = document.getElementById("c-total").innerHTML.slice("Final price: $".length);
 
-      const data = {
-        "restaurant_id": "TEST_R_01",
-        "items_price": parseFloat(document.getElementById("c-total").innerHTML.slice(1)).toFixed(2),
-        "taxes": 0,
-        "surge_fee": 0,
-        "total_tip": 0,
-        "coupon_used": "",
-        "coupon_value": 0,
-        "final_price": parseFloat(document.getElementById("c-total").innerHTML.slice(1)).toFixed(2),
-        "mode": "Delivery",
-        "items": items
-      };
-      
-      fetch("/customer/orderPayment", { 
-        method:"POST", 
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then((res) => {
-        return res.json();
-      })
-      .then((res) => {
-        console.log("test",res);
-        if (res.redirect) {
-          window.location.replace(res.redirect);
+      if(!window.location.href.includes("customer"))
+        this.alert("Please login as customer to checkout");
+      else if(final_price < cart_min || final_price > cart_max )
+        alert(`Total price should be between \$${cart_min} and \$${cart_max}`);
+      else {
+        const items = [];
+        for (const id in cart.items) {
+          items.push({
+            "item_id": id,
+            "item_name": products[id]["name"],
+            "item_price": products[id]["price"].toFixed(2),
+            "quantity": cart.items[id]
+          });
         }
-      })
-      .catch((err) => { console.error(err); });
+
+        const data = {
+          "restaurant_id": "TEST_R_01",
+          "items_price": items_price,
+          "taxes": taxes,
+          "surge_fee": surge_fee,
+          "total_tip": total_tip,
+          "coupon_used": coupon_used,
+          "coupon_value": coupon_value,
+          "final_price": final_price,
+          "mode": "Delivery",
+          "items": items
+        };
+        console.log(data);
+        
+        fetch("/customer/orderPayment", { 
+          method:"POST", 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          console.log("test",res);
+          if (res.redirect) {
+            window.location.replace(res.redirect);
+          }
+        })
+        .catch((err) => { console.error(err); });
+      }
     }
   };
   cart.init();

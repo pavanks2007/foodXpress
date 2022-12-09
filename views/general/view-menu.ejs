@@ -19,6 +19,11 @@
     <%} else { %>
       <pre class="headings"><%= `Contact: ${restaurantDetails.contact}     Address: ${restaurantDetails.restaurant_address} ` %></pre>
     <% } %>
+    
+    <p id="cart-min" style="display: none;"><%= cartLimits.cart_min %></p>
+    <p id="cart-max" style="display: none;"><%= cartLimits.cart_max %></p>
+    <p id="cart-tax" style="display: none;"><%= cartLimits.cart_tax %></p>
+    <p id="cart-surge" style="display: none;"><%= cartLimits.cart_surge %></p>
     <!-- (A) CART -->
     <div id="cart-wrap">
       <!-- (A1) PRODUCTS LIST -->
