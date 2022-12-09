@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test For Reviews</title>
+</head>
+<body>
+    <table>
+        <% for(var i=0; i < coupons.length; i++) 
+        { %>
+           <tr>
+             <td><%= coupons[i].restaurant_id %></td>
+             <td><%= coupons[i].coupon_id %></td>
+             <td><%= coupons[i].coupon_value %></td>
+             <td><%= coupons[i].experation_time %></td>
+           </tr>
+        <% } %>
+    </table>
+</body>
+</html>

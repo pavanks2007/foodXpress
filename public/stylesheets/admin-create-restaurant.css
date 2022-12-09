@@ -1,0 +1,17 @@
+.banking-details-form{
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.timings-holder{
+    display: flex;
+    justify-content: center;
+}
+
+.details-holder{
+    justify-content: space-between;
+}
+
+
+
+

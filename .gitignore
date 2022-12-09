@@ -1,4 +1,5 @@
 # Dependency directories
+.vscode/
 node_modules/
 
 # Optional npm cache directory
@@ -7,5 +8,4 @@ node_modules/
 # dotenv environment variables file
 .env
 
-routes/constants.js
-routes/query.js
+.DS_Store

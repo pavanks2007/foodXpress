@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../public/stylesheets/restaurant-manager-create-menu-item.css">
+    <!-- <link rel="stylesheet" href="../public/stylesheets/customer-home.css"> -->
+    <title>Create a Menu Item</title>
+</head>
+<body style="background-color: #fef9a8;">
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
+    <div class="universal-container">
+          <div class="dashboard-body">
+            <div class = 'user-image'>
+                <img src="../images/blank-profile-picture-973460__480.jpeg" alt="..." class="usr-img">
+            </div>
+                
+                <div class="pt-3"></div>
+                <div class="d-flex justify-content-center mx-auto">
+                    <form>
+                        <div class="pt-3"></div>
+                        <label for="itemName" class="form-label mx-2">Item Name</label>
+                        <input type="text" class="form-control form-control-lg mx-2" id="menuItemName" aria-describedby="emailHelp">
+                        <div class="pt-5"></div>
+        
+                        <label for="itemPrice" class="form-label-lg mx-2">Price (USD)</label>
+                        <input type="number" class="form-control form-control-lg mx-2" id="menuItemPrice">
+                        <div class="pt-5"></div>
+                        <div class="button d-flex justify-content-center">
+                            <button type="submit" class="btn btn-danger btn-lg">Create Item</button>
+                        </div>
+                        <div class="pt-5"></div>
+        
+                    </form>
+                </div>
+    
+        </div>
+    </div>
+    
+</body>
+</html>

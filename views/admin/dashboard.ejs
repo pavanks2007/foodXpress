@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="../public/stylesheets/restaurant-manager-dashboard.css">
+</head>
+<body style="background-color: #fef9a8;">
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
+    <div class="pt-5"></div>
+    <h3 class="display-6 pl-2">ADMIN DASHBOARD</h3>
+    <hr style="background-color:#CC9966"></hr>
+    <div class="dashboard-body">
+        <div class = 'user-image'>
+            <img src="../images/blank-profile-picture-973460__480.jpeg" alt="..." class="usr-img">
+        </div>
+            
+            <div class="pt-3"></div>
+            <div class="d-flex justify-content-center mx-auto">
+                <form>
+                    <div class="pt-3"></div>
+                    <label for="adminName" class="form-label">Admin Name</label>
+                    <input type="text" class="form-control form-control-lg" id="editAdminName" aria-describedby="emailHelp">
+                    <div class="pt-5"></div>
+
+                    <div class="surge-tax-holder">
+                        <label for="surgeFee" class="form-label mx-3">Surge Fee(USD)</label>
+                        <input type="number" class="form-control form-control" id="editSurgeFee">
+                        <div class="pt-5"></div>
+
+                        <label for="taxPercent" class="form-label-lg mx-3">Tax %</label>
+                        <input type="number" class="form-control form-control" id="editTaxPercent">
+                    </div>
+
+                    <div class="pt-5"></div>
+
+                    <label for="todayEarnings" class="form-label-lg">Today's earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readTodayEarnings" readonly>
+                    <div class="pt-5"></div>
+
+                    <label for="monthEarnings" class="form-label-lg">This Month's earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readMonthEarnings" readonly>
+                    <div class="pt-5"></div>
+
+
+                    <label for="totalEarnings" class="form-label-lg">Total earnings</label>
+                    <input type="number" class="form-control form-control-lg" id="readTotalEarnings" readonly>
+                    <div class="pt-5"></div>
+
+                    <div class="button d-flex justify-content-center">
+                        <button type="submit" class="btn btn-danger btn-lg">Update Details</button>
+                    </div>
+
+                </form>
+            </div>
+    <!-- <div class="submit d-flex justify-content-center">
+        <button type="button" class="btn btn-danger btn-lg">Save Details</button>
+    </div> -->
+
+    </div>
+    
+</body>
+</html>

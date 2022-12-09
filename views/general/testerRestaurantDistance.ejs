@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Nearby Restaurants</title>
+  </head>
+  <body>
+    <ul id="restaurant-list">
+      <!-- The list of restaurants will be inserted here -->
+    </ul>
+    <script>
+      // The user's latitude and longitude
+      const userLat = 51.5074;
+      const userLng = 0.1278;
+
+      // The radius of the circle around the user's location
+      const radius = 10; // 10 kilometers
+
+      // Convert the radius from kilometers to degrees
+      const radiusInDegrees = radius / 111.12;
+
+      // The Haversine formula
+      function haversine(lat1, lng1, lat2, lng2) {
+        const dLat = (lat2 - lat1) * (Math.PI / 180);
+        const dLng = (lng2 - lng1) * (Math.PI / 180);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1 * (Math.PI / 180)) *
+            Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLng / 2) *
+            Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return c;
+      }
+
+      // The URL of the backend API that returns the list of restaurants
+      const apiUrl = "https://example.com/api/restaurants";
+
+      // Send an HTTP GET request to the API to fetch the list of restaurants
+      fetch(apiUrl)
+        .then((response) => response.json()) // Parse the response as JSON
+        .then((restaurants) => {
+          // Filter the restaurants to find the ones that are within the user's radius
+          const nearbyRestaurants = restaurants.filter((restaurant) => {
+            const distance = haversine(
+              userLat,
+              userLng,
+              restaurant.lat,
+              restaurant.lng
+            );
+            return distance <= radiusInDegrees;
+          });
+
+          // Create an HTML string for the list of restaurants
+          const restaurantListHtml = nearbyRestaurants
+            .map((restaurant) => `<li>${restaurant.name}</li>`) // Assumes each restaurant has a "name" property
+            .join("");
+
+          // Get the <ul> element where the list of restaurants will be inserted
+          const restaurantListElement = document.getElementById("restaurant-list");
+
+          // Insert the list of restaurants into the <ul> element
+          restaurantListElement.innerHTML = restaurantListHtml;
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error(error);
+        });
+    </script>
+  </body>
+</html>

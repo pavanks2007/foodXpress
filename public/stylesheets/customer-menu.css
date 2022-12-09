@@ -1,0 +1,89 @@
+.card{
+    width:55%;
+    height: 15rem;
+    background-color: #fef9a8;
+    border-width: thin; 
+    border-color: #000;
+}
+.card-img{
+    width: 260px;
+    height: 195px;
+    padding-left: 20px;
+    padding-top: 25px;
+    padding-bottom: 15px;
+}
+
+
+
+.list-group-item{
+    background-color: #FDF68E;
+    border-color: #000;
+    padding-block: 1rem;
+    
+}
+
+.list-group-item:hover{
+    background-color: #DC3444;
+    border-color: #fff;
+    padding-block: 1rem;
+
+}
+
+.spinner-div{
+    padding-left: 19rem;
+}
+
+.h4{
+    padding-left: 15rem;
+}
+
+.date{
+    padding-left: 12rem;
+}
+
+
+
+.quantity-spinner{
+     width: 83%;
+}
+
+.holder{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.btn-holder{
+    padding-right: 1.25rem;
+}
+
+#count1,#count2,#count3{
+    display: inline;
+    margin: 15px;
+}
+
+.btn-container{
+
+    padding-left: 10rem;
+}
+
+.textarea{
+    max-width: 200px;
+    max-height: 75px;
+    }
+
+#billModal{
+    background-color: #FDF68E;
+    border-width: 2px;
+    border-color: #CC9967;
+    width: 33%;
+    height: auto;
+    /* max-height: 1000rem; */
+    display: block;
+}
+
+.bill-modal{
+    padding-top: 4rem;
+    display: flex;
+    justify-content: center;
+}
