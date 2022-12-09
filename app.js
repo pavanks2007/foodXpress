@@ -4,6 +4,7 @@ const http = require('http');
 const cookieParser = require('cookie-parser');
 const expressValidator = require('express-validator');
 const bodyParser = require('body-parser');
+
 const multer = require('multer');
 
 const app = express();
@@ -24,7 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine','ejs');
+app.use(bodyParser.urlencoded({extended:false}));
 app.use(expressValidator());
+
 
 app.use('/', indexRouter);
 app.use('/customer', customerRouter);

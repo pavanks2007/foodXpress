@@ -28,7 +28,7 @@ module.exports = {
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
     DRIVER_NAME: 'name',
-    DRIVER_AVAILABILITY: 'Available',
+    DRIVER_AVAILABILITY: 'available',
     EMAIL: 'email',
     ENCRYPTED_CREDENTIAL: 'encrypted_credential',
     ENCRYPTED_PAYMENT: 'encrypted_payment',

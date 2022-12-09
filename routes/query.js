@@ -1,5 +1,19 @@
 const constants = require('./constants.js')
 
+function updateTable(table_name, key, col_name, col_value) {
+    return {
+        TableName: table_name,
+        Key: key,
+        UpdateExpression: 'set #key = :value',
+        ExpressionAttributeNames: {
+            '#key': col_name,
+        },
+        ExpressionAttributeValues: {
+            ':value': col_value
+        }
+    }
+}
+
 module.exports = {
     deleteCoupon: (restaurant_id, coupon_id) => {
         return {
@@ -350,6 +364,37 @@ module.exports = {
             }
         }
     },
+    
+    updateCustomerAddress: (customer_id, value) => {
+        console.log(customer_id,  value)
+        return {
+            TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
+            Key: {
+                [constants.USER_ID] : constants.USER_ID,
+                [constants.SORT_KEY] : "DETAILS"
+            },
+            UpdateExpression: 'set #key = :value',
+            ExpressionAttributeNames: {
+                '#key': [constants.ADDRESS]
+            },
+            ExpressionAttributeValues: {
+                ':value': value
+            }
+        }
+    },
+    
+    updateEncryptedDataTable: (user_id, col_name, col_value) => {
+        return updateTable(
+            constants.ENCRYPTED_DATA_TABLE_NAME,
+            {
+                [constants.USER_ID]: user_id,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            col_name,
+            col_value
+        )
+    },
+    
     updateOrderforDriver: (order_id, key, value) => {
         console.log(order_id, key,value)
         //restaurantId='test_07'

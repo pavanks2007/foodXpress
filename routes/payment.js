@@ -15,13 +15,19 @@ paypal.configure({
 });
 
 
-router.get('/', async function (req, res, next) {
-    res.sendFile('payment.html', { root: path.join(__dirname, '..', 'views/customer') });
+// router.get('/', async function (req, res, next) {
+//     res.render('customer/payment.ejs', { root: path.join(__dirname, '..', 'views') });
+// });
+router.get('/', function (req, res, next) {
+  res.sendFile('cart.html', { root: path.join(__dirname, '..', 'views/customer') });
 });
 
 
-
 router.post('/pay', (req, res) => {
+  console.log(req.body);
+  const {fname,price} = req.body;
+  //res.render('submit',{first:fname})
+  console.log(req.body);
   const create_payment_json = {
     "intent": "sale",
     "payer": {
@@ -34,7 +40,7 @@ router.post('/pay', (req, res) => {
     "transactions": [{
         "item_list": {
             "items": [{
-                "name": "Redhock Bar Soap",
+                "name": "Nisha",
                 "sku": "001",
                 "price": "25.00",
                 "currency": "USD",
@@ -50,6 +56,7 @@ router.post('/pay', (req, res) => {
 };
 
 paypal.payment.create(create_payment_json, function (error, payment) {
+  console.log(create_payment_json);
   if (error) {
       throw error;
   } else {
