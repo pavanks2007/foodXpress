@@ -4,6 +4,7 @@ const router = express.Router();
 const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
+const user_type = constants.MANAGER;
 
 const ddb = dynamo.getDynamoDbClient();
 

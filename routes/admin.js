@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
+const constants = require('./constants.js');
 const router = express.Router();
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
+const user_type = constants.ADMIN;
 
 const ddb = dynamo.getDynamoDbClient();
 

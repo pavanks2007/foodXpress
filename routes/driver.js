@@ -4,6 +4,7 @@ const router = express.Router();
 const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
+const user_type = constants.DRIVER;
 
 const ddb = dynamo.getDynamoDbClient();
 
@@ -13,7 +14,7 @@ router.get('/', async function (req, res) {
 
 router.get('/dashboard', function (req, res, next) {
     // TODO dashboard page
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+    res.render('driver/dashboard', {user_type: user_type});
 });
 
 router.post('/dashboard', async function (req, res, next) {
@@ -21,7 +22,7 @@ router.post('/dashboard', async function (req, res, next) {
 });
 
 router.get('/orders', function (req, res, next) {
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+    res.render('driver/active-orders', {user_type: user_type});
 });
 
 router.post('/previousOrders', async function (req, res, next) {

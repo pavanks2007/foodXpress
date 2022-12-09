@@ -76,7 +76,7 @@ app.use(function(err, req, res, next) {
     
     // render the error page
     res.status(err.status || 500);
-    res.sendFile('error.html', { root: app.get('views') });
+    res.render('error', {user_type: ""});
 });
 
 

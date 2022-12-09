@@ -7,6 +7,7 @@ const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 const fs = require('fs');
 const paypal = require('paypal-rest-sdk');
+const user_type = constants.CUSTOMER;
 
 paypal.configure({
     'mode': 'sandbox', //sandbox or live
@@ -27,7 +28,7 @@ router.get('/', function(req,res) {
 /* GET home page. */
 router.get('/dashboard', async function (req, res, next) {
     // TODO create dashboard
-    res.render('customer/customer-dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
+    res.render('customer/dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
 })
 
 router.get('/restaurants', async function (req, res, next) {
@@ -51,7 +52,7 @@ router.get('/restaurants', async function (req, res, next) {
             });
             allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
             featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, 5);
-            res.render("customer/customer-restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
+            res.render("customer/restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
         }
     } catch (err) {
         console.log(err);
@@ -60,11 +61,11 @@ router.get('/restaurants', async function (req, res, next) {
 });
 
 router.get('/dashboard',function (req, res){
-    res.sendFile('customer/customer-profile.html', { root: path.join(__dirname, '..', 'views') });
+    res.render('customer/profile', {user_type: user_type});
 })
 
 router.get('/cart', function (req, res, next) {
-    res.sendFile('cart.html', { root: path.join(__dirname, '..', 'views/customer') });
+    res.render('customer/cart', {user_type: user_type});
 });
 
 router.post('/orderPayment', async (req, res) => {
@@ -211,7 +212,7 @@ router.post('/reviews', async function (req, res, next) {
 router.get('/previousOrders', async function (req, res, next) {
     //const { customer_id } = req.params.rID
     //const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
-    res.sendFile('customer/customer-previous-orders.html', { root: path.join(__dirname, '..', 'views') });
+    res.render('customer/previous-orders', {user_type: user_type});
 });
 
 router.post('/previousOrders', async function (req, res, next) {
