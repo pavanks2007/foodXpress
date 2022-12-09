@@ -62,7 +62,6 @@ router.get('/restaurants/:params', async function (req, res, next) {
         const restaurantDetails = await dynamo.getFromTable(ddb, ddbQueries.getRestaurantDetails(restaurant_id));
         restaurantDetails.Item[constants.RESTAURANT_ID] = restaurantDetails.Item[constants.SORT_KEY];
         const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
-        console.log({restaurantDetails: restaurantDetails.Item, items: menuItems.Items, user_type: user_type});
         res.render('general/view-menu', {restaurantDetails: restaurantDetails.Item, items: menuItems.Items, user_type: user_type});
     } catch (err) {
         console.log(err);

@@ -1,7 +1,7 @@
   <!DOCTYPE html>
   <html lang="en">
   <head>
-    <title>Simple JS Cart</title>
+    <title>Restaurant Menu</title>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,14 +12,13 @@
   <body style="background-color: #fef9a8;">
     <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="giant">
-      <h1 id="heading-main"><% restaurantDetails %></h1>
-      <h1 id="heading-main"><% restaurantDetails.restaurant_name %></h1>
+      <h1 id="heading-main"><%= restaurantDetails.restaurant_name %></h1>
     <% if (restaurantDetails.hasOwnProperty("distance")) { %>
-      <pre class="headings"><% `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address}    Distance: ${restaurantDetails.distance} ` %></pre>
+      <pre class="headings"><%= `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address}    Distance: ${restaurantDetails.distance} ` %></pre>
     <%} else { %>
-      <pre class="headings"><% `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address} ` %></pre>
+      <pre class="headings"><%= `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address} ` %></pre>
     <% } %>
-    <pre class="headings"><% `Cuisine: ${restaurantDetails.cuisine}    Contact: ${restaurantDetails.contact} ` %></pre>
+    <pre class="headings"><%= `Cuisine: ${restaurantDetails.cuisine}    Contact: ${restaurantDetails.contact} ` %></pre>
     <!-- (A) CART -->
     <div id="cart-wrap">
       <!-- (A1) PRODUCTS LIST -->
