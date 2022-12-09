@@ -38,9 +38,9 @@ router.get('/restaurants', async function (req, res, next) {
         const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
         restaurants.Items.forEach(function(restaurant) {
             if (restaurant.hasOwnProperty(constants.LATITUDE) && restaurant.hasOwnProperty(constants.LONGITUDE) && customerDetails.Item.hasOwnProperty(constants.LATITUDE) && customerDetails.Item.hasOwnProperty(constants.LONGITUDE)) {
-                restaurant[constants.DISTANCE] = getDistanceInMiles(restaurant[constants.LATITUDE], restaurant[constants.LONGITUDE],customerDetails.Item[constants.LATITUDE],customerDetails.Item[constants.LONGITUDE]).toFixed(4);
+                restaurant[constants.DISTANCE] = parseFloat(getDistanceInMiles(restaurant[constants.LATITUDE], restaurant[constants.LONGITUDE],customerDetails.Item[constants.LATITUDE],customerDetails.Item[constants.LONGITUDE])).toFixed(4);
             } else {
-                restaurant[constants.DISTANCE] = 15;
+                restaurant[constants.DISTANCE] = parseFloat("15").toFixed(2);
             }
             restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
             if(!restaurant.hasOwnProperty(constants.RATING))
@@ -199,19 +199,31 @@ router.get('/orderPayment/cancel', async (req, res) => {
     res.send('Cancelled')
 });
 
-router.post('/restaurant/menu', async function (req, res, next) {
-    try {
-        const { restaurant_id } = req.body;
-        const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
-        res.json(menuItems.Items);
-    } catch (err) {
-        console.log(err);
-        res.send({ message: 'Unable to view restaurant menu', error: err });
-    }
+router.get('/previousOrders', async (req, res) => {
+    const customer_id = req.signedCookies[constants.USER_ID];
+    const orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
+    res.json(orders.Items)
 });
 
-router.get('/orderFees', async function (req, res, next) {
-    res.json({ taxes: 0.14, surge_fees: 3});
+router.get('/orders/:orderId', async (req, res) => {
+    try {
+        const order_id = req.params.orderId;
+        const customer_id = req.signedCookies[constants.USER_ID];
+        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(order_id));
+        if (Object.keys(order_summary).length == 0) 
+            throw `Order ${order_id} does not exist`;
+        if (!order_summary.Item.hasOwnProperty(constants.USER_ID)) 
+            throw `No customer assigned to order ${order_id}`;
+        if (customer_id != order_summary.Item[constants.USER_ID])
+            throw `Order ${order_id} is not ordered by customer ${customer_id}`;
+        const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
+        console.log({ order_summary: order_summary.Item, order_items: order_items.Item });
+        res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+        res.redirect('/customer/previousOrders');
+    }
 });
 
 router.post('/reviews', async function (req, res, next) {
@@ -246,28 +258,6 @@ router.post('/updateCustomer', async function (req, res, next) {
     var col_name=constants.ADDRESS;
     const update_address = await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,col_name,address));
     res.json(update_address.Items);
-});
-
-router.post('/order', async function (req, res, next) {
-    const { customer_id, order_id } = req.body;
-    const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(order_id));
-    if (!order_summary.Item.hasOwnProperty(constants.CUSTOMER_ID)) 
-    throw `No driver assigned to order ${order_id}`;
-    if (customer_id != order_summary.Item[constants.CUSTOMER_ID])
-    throw `Order ${order_id} is not ordered by customer ${customer_id}`;
-    const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
-    res.json({ order_summary: order_summary.Item, order_items: order_items.Item });
-});
-
-router.get('/order/:id', async function (req, res, next) {
-    const id = req.params.id;
-    try {
-        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(id));
-        res.json(order_summary.Item);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ err: 'Something went wrong', error: err });
-    }
 });
 
 router.get('/getUserDetails/:id', async function (req, res, next) {
