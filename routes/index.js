@@ -42,7 +42,6 @@ router.get('/restaurants/:params', async function (req, res, next) {
         const restaurantDetails = await dynamo.getFromTable(ddb, ddbQueries.getRestaurantDetails(restaurant_id));
         restaurantDetails.Item[constants.RESTAURANT_ID] = restaurantDetails.Item[constants.SORT_KEY];
         const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
-        console.log({restaurantDetails: restaurantDetails.Item, items: menuItems.Items, user_type: user_type});
         res.render('general/view-menu', {restaurant: restaurantDetails.Item, items: menuItems.Items, user_type: user_type});
     } catch (err) {
         console.log(err);
@@ -53,22 +52,23 @@ router.get('/restaurants/:params', async function (req, res, next) {
 router.route("/login").get(function (req, res) {
     if (req.signedCookies[constants.USER_ID] !== undefined && req.signedCookies[constants.USER_TYPE] !== undefined)
         res.redirect(`/${req.signedCookies[constants.USER_TYPE]}/`)
-    else
-        res.render('general/login', {user_type: user_type} );
+    else {
+        let error = Object.keys(req.query).length !== 0 && req.query.hasOwnProperty("error") ? req.query.error : "";
+        res.render('general/login', {user_type: user_type, error: error} );
+    }
 });
 
 router.route("/login").post(async function (req, res) {
     try {
         const {user_id, password, user_type} = req.body
         const userInfo = await dynamo.getFromTable(ddb, ddbQueries.getUserCredentials(user_id));
-
-        if(userInfo.Item.length == 0)
-            throw `User does not exist; provided ${user_id}`
+        if(Object.keys(userInfo).length === 0)
+            throw `User does not exist; provided user_id: ${user_id}`
         else {    
             if (!userInfo.Item[constants.USER_ID]) 
-            throw `User does not exist; provided ${user_id}`
+            throw `User does not exist; provided user_id: ${user_id}`
             if (user_type != userInfo.Item[constants.USER_TYPE])
-            throw `Usertype does not match; provided ${user_type}`
+            throw `Usertype does not match; provided user_id: ${user_type}`
             if (password != userInfo.Item[constants.ENCRYPTED_CREDENTIAL]) 
             throw `Password does not match`
             console.log(`${user_type} ${user_id} successfully logged in.`);
@@ -78,7 +78,8 @@ router.route("/login").post(async function (req, res) {
         }
     } catch (err) {
         console.log(err);
-        res.redirect('/login'); // TODO: send error message
+        // res.redirect('/login');
+        res.redirect('/login?error=' + encodeURIComponent(err));
     }
 })
 

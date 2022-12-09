@@ -76,7 +76,7 @@ router.get('/dashboard',function (req, res){
 router.post('/orderPayment', async (req, res) => {
     const customer_id = req.signedCookies.user_id;
     const {restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, items} = req.body;
-    
+    console.log("final_price", final_price);
     const create_payment_json = {
         "intent": "sale",
         "payer": {
@@ -129,6 +129,7 @@ router.get('/orderPayment/success', async (req, res) => {
     
     const orderSummary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(paymentId));
     const finalPrice = orderSummary.Item[constants.FINAL_PRICE]
+    console.log(finalPrice);
     
     const execute_payment_json = {
         "payer_id": payerId,

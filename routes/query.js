@@ -278,7 +278,7 @@ module.exports = {
         return {
             TableName: constants.RESTAURANT_MENU_TABLE_NAME,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.ITEM_PRICE}`,
+            ProjectionExpression: `${constants.RESTAURANT_ID},${constants.ITEM_ID},${constants.ITEM_NAME},${constants.ITEM_PRICE},${constants.ITEM_AVAILABILITY}`,
             ExpressionAttributeNames: {
                 '#pk': constants.RESTAURANT_ID,
             },

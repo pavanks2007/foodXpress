@@ -45,7 +45,9 @@ window.addEventListener("DOMContentLoaded", function() {
 
     // (C1) DRAW PRODUCTS LIST
     for (let id in products) {
-      document.getElementById(id+"-button").onclick = () => { cart.add(id); };
+      const item = document.getElementById(id+"-button");
+      if(item != null)
+        item.onclick = () => { cart.add(id); };
     }
       // (C2) LIST CURRENT CART ITEMS
       cart.list();

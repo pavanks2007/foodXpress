@@ -41,6 +41,7 @@ module.exports = {
     EXPIRATION_TIME: 'expiration_time',
     EXPRESS_DELIVERY: 'express_delivery',
     FINAL_PRICE: 'final_price',
+    ITEM_AVAILABILITY: 'item_availability',
     ITEM_ID: 'item_id',
     ITEM_NAME: 'item_name',
     ITEM_PRICE: 'item_price',
