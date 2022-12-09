@@ -75,7 +75,7 @@ var cart = {
     }
 
     // (C3) LOAD CART FROM PREVIOUS SESSION
-    cart.load();
+    // cart.load();
 
     // (C4) LIST CURRENT CART ITEMS
     cart.list();
@@ -207,7 +207,6 @@ var cart = {
       }
     })
     .catch((err) => { console.error(err); });
-    
   }
 };
 window.addEventListener("DOMContentLoaded", cart.init);
