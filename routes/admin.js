@@ -129,18 +129,25 @@ router.post('/updateRestaurant', async function(req,res)
     let {whatToUpdate4,whatTochangeItTo4}= req.body;
     let {whatToUpdate5,whatTochangeItTo5}= req.body;
 
-    const updateRestaurantDetailQuery = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate, whatTochangeItTo);
-    const updateRestaurantDetail = await dynamo.updateTable(ddb, updateRestaurantDetailQuery);
-    const updateRestaurantDetailQuery2 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate2, whatTochangeItTo2);
-    const updateRestaurantDetail2 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery2);
-    const updateRestaurantDetailQuery3 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate3, whatTochangeItTo3);
-    const updateRestaurantDetail3 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery3);
-    const updateRestaurantDetailQuery4 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate4, whatTochangeItTo4);
-    const updateRestaurantDetail4 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery4);
-    const updateRestaurantDetailQuery5 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate5, whatTochangeItTo5);
-    const updateRestaurantDetail5 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery5);
+    try{
+        const updateRestaurantDetailQuery = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate, whatTochangeItTo);
+        const updateRestaurantDetail = await dynamo.updateTable(ddb, updateRestaurantDetailQuery);
+        const updateRestaurantDetailQuery2 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate2, whatTochangeItTo2);
+        const updateRestaurantDetail2 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery2);
+        const updateRestaurantDetailQuery3 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate3, whatTochangeItTo3);
+        const updateRestaurantDetail3 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery3);
+        const updateRestaurantDetailQuery4 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate4, whatTochangeItTo4);
+        const updateRestaurantDetail4 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery4);
+        const updateRestaurantDetailQuery5 = ddbQueries.updateRestaurantDetail(r_id, whatToUpdate5, whatTochangeItTo5);
+        const updateRestaurantDetail5 = await dynamo.updateTable(ddb, updateRestaurantDetailQuery5);
+    }
+    catch(e){
+        console.log(e);
+    }
 
-    console.log('updated values')
+   
+
+    // console.log('updated values')
 })
 
 module.exports = router;

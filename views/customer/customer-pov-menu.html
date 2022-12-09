@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -224,4 +224,348 @@
             </div>
           </div>
 </body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./customer-menu.css">
+    <title>Restaurant Page</title>
+    
+</head>
+<body style="background-color: #fef9a8;">
+    <div class="giant">
+        <div class="holder">
+            <h1 class="display-6 pt-3">{Restaurant Name} Menu</h1>
+        </div>
+        <hr style="background-color:#CC9966"></hr>
+
+        
+        <div id="list-example" class="list-group d-inline-flex justify-content-center">
+            <a class="list-group-item list-group-item-action" href="#frequently-ordered-items">Frequently Ordered Items</a>
+            <a class="list-group-item list-group-item-action" href="#menu-items">Menu Items</a>
+            <a class="list-group-item list-group-item-action" href="#reviews">Reviews</a>
+        </div>
+
+
+        <div class="bill-modal">
+            <div class="card mb-3" id="billModal">
+
+            <div class="row justify-content-center">
+
+                <div class="col-md-6" >
+                    <div class="cartItems" id="cart-items"> <h3><u>Items</u></h3> </div>
+                </div>
+
+                <div class="col-md-3" >
+                    <div class="cartItemQuantities" id="cart-item-quantities"> <h3><u>Prices</u></h3> </div>
+                </div>
+
+                <div class="pt-5"></div>
+
+                <div class="textarea tip" id = 'add-tip'>
+                  <div class="tip-input d-flex justify-content-center">
+                    <textarea name="tip" placeholder="Add Tip"></textarea>
+                  </div>
+                </div>
+
+                <div class="order-body justify-content-center">
+                  <div class="pt-5"></div>
+                  <div class="bill-block px-1 d-flex justify-content-center">
+                      <div class="price-tags mx-1">
+                        <div class="col-md-3  d-inline">
+                            <h5 class="total-price" id="totalPrice">Total Price</h5>
+                            <div class="pt-1"></div>
+                            <p class="item-taxes" id="itemTaxes">Taxes</p>
+                            <div class="pt-1"></div>
+                            <p class="surge-fee" id = 'surgeFee'>Surge Fee</p>
+                            <div class="pt-1"></div>
+                            <p class="total-tip" id = 'totalTip'>Total Tip</p>
+                            <div class="pt-1"></div>
+                            <p class="express-del-fee" id="expressDelFee">Express Delivery</p>
+                            <div class="pt-1"></div>
+                            <p class="total-bill" id="totalBillValue">Total Bill</p>
+                            <div class="pt-1"></div>
+                            <p class="order-items">Coupon Used</p>     
+                        </div>
+                     </div>
+                    <div class="pt-2"></div>
+                    <div class="prices mx-4">
+                      <div class="col-md-3 d-inline">
+                        <h5 class="total-price-tag-vals" id="totalPriceTagVals">Value</h5>
+                        <p class="price-tag-vals" id="priceTagVals">{Price}</p>
+                          <div class="pt-1"></div>
+                          <p class="item-tax-val" id="itemTaxVal">{price}</p>
+                          <div class="pt-1"></div>
+                          <p class="surge-fee-val" id='surgeFeeVal'>{price}</p>
+                          <div class="pt-1"></div>
+                          <p class="total-tip-val" id = 'totalTipVal'>{price}</p>
+                          <div class="pt-1"></div>
+                          <p class="order-items">{price}</p>
+                          <div class="pt-1"></div>
+                          <p class="order-items">{price}</p>
+                          <div class="pt-1"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-5"></div>
+
+
+                  <div class="place-order-btn-holder pb-3 d-flex justify-content-center">
+                    <button type="submit" class="place-order-btn btn btn-danger btn-lg px-5">Place Order</button>               
+                  </div>
+                </div>
+
+</div>
+             
+            </div>
+
+        </div>
+
+        <div data-spy="scroll" data-target="#list-example" data-offset="0" class="scrollspy-example">
+          
+           <div class="pt-4"></div>
+
+            <h4 id="frequently-ordered-items" class="mx-5 pt-3">Frequently Ordered Items</h4>
+            <div class="pt-4"></div>
+
+        <div class="foq-holder d-flex justify-content-center">
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="../images/indian-res3.jpeg" class="card-img" alt="NO IMAGE AVAILABLE">
+                  </div>
+                    <div class="col-md-8">
+                      <div class="card-body d-flex ">
+                        <h5 class="card-title display-flex pt-3" id="1">Paneer Tikka Masala</h5>
+                        <div class="btn-container">
+                            <button id="button1" onclick="decrement('1')">-</button>
+                            <p id="count1">0</p>
+                            <button id="button2" onclick="increment('1')">+</button>
+                        </div>
+                    </div>
+                    <div class="price-holder" style="padding-top: 5rem;">
+                      <h6 class="item-price mx-3 text-danger" id = 'fo-item-price-1'>Price: {price}</h6>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="foq-holder d-flex justify-content-center">
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="../images/indian-res3.jpeg" class="card-img" alt="NO IMAGE AVAILABLE">
+                  </div>
+                    <div class="col-md-8">
+                      <div class="card-body d-flex ">
+                        <h5 class="card-title pt-3" id="2">Chicken Tikka</h5>
+                        <div class="btn-container">
+                            <button id="button1" onclick="decrement('2')">-</button>
+                            <p id="count2">0</p>
+                            <button id="button2" onclick="increment('2')">+</button>
+                        </div>
+                        
+                    </div>
+                    <div class="price-holder" style="padding-top: 5rem;">
+                      <h6 class="item-price mx-3 text-danger" id = 'fo-item-price-2'>Price: {price}</h6>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        <div class="foq-holder d-flex justify-content-center">
+            <div class="card mb-3">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="../images/indian-res3.jpeg" class="card-img" alt="NO IMAGE AVAILABLE">
+                  </div>
+                    <div class="col-md-8">
+                      <div class="card-body d-flex ">
+                        <h5 class="card-title pt-3" id="3">Butter Chicken</h5>
+                        <div class="btn-container">
+                            <button id="button1" onclick="decrement('3')">-</button>
+                            <p id="count3">0</p>
+                            <button id="button2" onclick="increment('3')">+</button>
+                        </div>
+                    </div>
+                    <div class="price-holder" style="padding-top: 5rem;">
+                      <h6 class="item-price mx-3 text-danger" id = 'fo-item-price-3'>Price: {price}</h6>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+        </div>
+
+            <div class="pt-5">
+
+            
+            <h4 id="menu-items" class="mx-5">Menu Items</h4>
+
+            
+
+            <div class="pt-5 mx-auto">
+
+
+            <h4 id="reviews" class="mx-5">Reviews</h4>
+
+            <div class="pt-5 mx-auto">
+
+            <div class="review-holder d-flex justify-content-center">
+
+                <div class="card mb-3" style="width: 35rem;">
+                    <div class="card-header d-flex">
+                        <p>Review by {username}</p>
+                        <p class="date justify-content-end">Date: {date}</p>
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">Ratings: {ratings}</h5>
+                    <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                </div>
+
+                <div class="pt-5 mx-auto">
+
+
+                <div class="card mb-3" style="width: 35rem;">
+                    <div class="card-header d-flex">
+                        <p>Review by {username}</p>
+                        <p class="date justify-content-end">Date: {date}</p>
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">Ratings: {ratings}</h5>
+                    <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                </div>
+
+                <div class="pt-5 mx-auto">
+
+
+                <div class="card mb-3" style="width: 35rem;">
+                    <div class="card-header d-flex">
+                        <p>Review by {username}</p>
+                        <p class="date justify-content-end">Date: {date}</p>
+                    </div>
+                    <div class="card-body">
+                    <h5 class="card-title">Ratings: {ratings}</h5>
+                    <p class="card-text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type.</p>
+                </div>
+        
+            </div>
+          </div>
+
+          <script>
+            let map = {};
+            console.log(map);
+            let billModal = document.querySelector('#billModal');
+            let itemsCol = document.querySelector('#cart-items');
+            let pricesCol = document.querySelector('#cart-item-quantities');
+
+        
+    
+            //id param is the id for the menu item name h5 tag.
+            function increment(id){ 
+
+                    if(isEmpty(map)){
+                        var element = document.getElementById('count'.concat(id)); //count element
+                        var val = element.innerHTML;// current value inside the counter.
+                        ++val;
+                        map[document.getElementById(id).innerText] = val;
+
+                        var final_display = document.getElementById('count'.concat(id));
+                        final_display.innerHTML = val;
+                        billModal.style.display = "block"; //display the modal when first item gets added to cart
+                        console.log(map);
+
+                        var newItem = document.createElement("li");
+                        newItem.classList += 'item-'+id;
+                        newItem.innerHTML = document.getElementById(id).innerText;
+                        itemsCol.append(newItem);
+
+ 
+                        var newItemQuantity = document.createElement("li");
+                        newItemQuantity.classList += 'mx-2 item-'+id + '-quantity';
+                        newItemQuantity.innerText = val;
+                        pricesCol.append(newItemQuantity);
+
+
+                        return;
+                    }
+
+                    // Condition where map is not empty but menu item is new.
+
+                    if(!isEmpty(map) && !map.hasOwnProperty(document.getElementById(id).innerText)){
+                        map[document.getElementById(id).innerText] = 1;
+                        ++document.getElementById('count'+id).innerHTML;
+
+                        var newItem = document.createElement("li");
+                        newItem.classList += 'item-'+id;
+                        newItem.innerHTML = document.getElementById(id).innerText;
+                        itemsCol.append(newItem);
+
+
+                        var newItemQuantity = document.createElement("li");
+                        newItemQuantity.classList += 'mx-2 item-'+id+'-quantity';
+                        newItemQuantity.innerText = map[document.getElementById(id).innerText];
+                        pricesCol.append(newItemQuantity);
+                        return;
+
+                    }
+                   // if key(added item) exists in the map, then update the value in the modal.
+                
+                    if(map.hasOwnProperty(document.getElementById(id).innerText)){
+                         ++document.getElementById('count'+id).innerText;
+                        map[document.getElementById(id).innerText] = val;
+                        document.getElementById('item-'+id+'-quantity').innertext = val;
+                        console.log(document.getElementById('item-'+id+'-quantity').innerHTML);
+                    }
+    
+                
+                
+            }
+    
+            //fails for now.
+            //need to add a button disabler when quantity less than 0 or greater than 20.
+            function decrement(id){
+                var element = document.getElementById(id);
+                var val = element.innerHTML;
+    
+                if(map.hasOwnProperty(id) && map[id] <= 0){
+                            delete map[id];
+                            return;
+                }
+                else {
+                        --val;
+                        map[id] = val;
+                        console.log(map);
+                        document.getElementById(id).innerHTML = val;
+                }
+               
+            }
+    
+            
+    
+            function isEmpty(obj){
+                if(Object.keys(map).length==0){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+    
+          </script>
+</body>
+
 </html>
