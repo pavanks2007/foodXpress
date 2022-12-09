@@ -28,11 +28,7 @@
 </head>
 <body style="background-color: #fef9a8;">
    
-    <div class="p-5 xl-4 bg-danger text-white" >FoodXpress 
-        <div class="small-nav-bar">
-            <p class="text-white"><a href="./admin-home.html" class="text-white">Home</a>&emsp;<a href="./admin/admin-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
-      </div>
-    </div>
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
 
     <h3 class="display-6 pl-2 pt-2">Edit Restaurant</h3>
     <hr style="background-color:#CC9966"></hr>

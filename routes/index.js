@@ -8,6 +8,7 @@ const ddbQueries = require('./query.js');
 const axios = require('axios');
 const xmlbuilder2=require('xmlbuilder2');
 const ddb = dynamo.getDynamoDbClient();
+const user_type = constants.CUSTOMER;
 
 /* GET home page. */
 router.get('/', async function (req, res) {
@@ -28,7 +29,7 @@ router.get('/restaurants', async function (req, res, next) {
         });
         allRestaurants = restaurants.Items;
         featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, 6);
-        res.render("general/restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
+        res.render("general/restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants, user_type: user_type} );
     } catch (err) {
         console.log(err);
         res.send({ message: 'Unable to view restaurants', error: err });

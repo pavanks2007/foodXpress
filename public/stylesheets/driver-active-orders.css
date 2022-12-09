@@ -44,8 +44,3 @@
 .form-control{
     background-color: #FDF68E;
 }
-
-.small-nav-bar{
-    display: flex;
-    justify-content: flex-end;
-}

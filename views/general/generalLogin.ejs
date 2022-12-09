@@ -10,9 +10,8 @@
 
 </head>
 <body style="background-color: #fef9a8;">
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="giant">
-        <div class="p-5 xl-4 bg-danger text-white" >FoodXpress </div>
-    
         <br><br>
         <div class="d-flex justify-content-center mx-auto">
             <form action="/login" method="POST">
