@@ -10,11 +10,7 @@
     <link rel="stylesheet" href="../public/stylesheets/restaurant-manager-dashboard.css">
 </head>
 <body style="background-color: #fef9a8;">
-    <div class="p-5 xl-4 bg-danger text-white" >FoodXpress
-        <div class="small-nav-bar">
-            <p class="text-white"><a href="./restaurant-manager-active-prev-orders.html" class="text-white">Orders</a>&emsp;<a href="./restaurant-manager-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
-        </div>    
-    </div>
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="pt-5"></div>
     <h3 class="display-6 pl-2">ADMIN DASHBOARD</h3>
     <hr style="background-color:#CC9966"></hr>

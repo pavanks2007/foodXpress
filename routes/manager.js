@@ -4,27 +4,16 @@ const router = express.Router();
 const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
-
+const user_type = constants.MANAGER;
 
 const ddb = dynamo.getDynamoDbClient();
 
-
 /* GET home page. */
-router.get('/', (req, res) =>
-{
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else
-    {
-        res.redirect('manager/dashboard')
-    }
-
+router.get('/', async function (req, res) {
+    res.redirect(`/manager/dashboard`)
 });
-// req.signedCookies.user_type=='customer'
 
-router.get('/dashboard', async function (req, res){
+router.get('/dashboard', async function (req, res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -32,21 +21,21 @@ router.get('/dashboard', async function (req, res){
     else
     {
         //const storeInfo= await dynamo.get
-        res.render("manager/restaurant-manager-dashboard");
+        res.render("manager/dashboard", {user_type: user_type});
     }
 });
 
 //get all prev orders from database and send it over to webpage.
-router.get('/allOrders', async function(req,res){
+router.get('/allOrders', async function(req,res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
         try{
-            const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurantID));
+            const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(req.signedCookies.user_id));
             console.log('Successfully pulled data')
-            res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items})
+            res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items, user_type: user_type})
         }
         catch(err)
         {
@@ -56,32 +45,30 @@ router.get('/allOrders', async function(req,res){
     }
 })
 
-router.get('/orders/confirm',(req,res)=>
-{
+router.get('/orders/confirm',(req,res)=> {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        res.render("manager/restaurant-manager-active-prev-orders")
+        res.render("manager/viewMenu", {user_type: user_type})
     }
 })
 
-router.get('/viewMenu/:rID',async function(req,res)
-{
+router.get('/viewMenu',async function(req,res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        const restaurantID=req.params.rID;
+        const restaurantID=req.signedCookies.user_id;
         try
         {
             const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
             console.log(viewMenu.Items)
             //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
 
-            res.render("manager/viewMenu",{menu:viewMenu.Items})
+            res.render("manager/viewMenu",{menu:viewMenu.Items, user_type: user_type})
         }
         catch(err)
         {
@@ -91,16 +78,16 @@ router.get('/viewMenu/:rID',async function(req,res)
     }
 })
 
-router.post('/addMenuItem', async function(req,res,next){
+router.post('/addMenuItem', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else
     {
-        const {restaurant_id, item_id, item_name, item_price, description} = req.body
+        const {item_id, item_name, item_price, description} = req.body
         try {
-            const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(restaurant_id, item_id, item_name, item_price, description);
+            const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(req.signedCookies.user_id, item_id, item_name, item_price, description);
             const addMenuItem = await dynamo.putInTable(ddb, addMenuItemQuery);
             res.json({message:'Successfully put menu item', query: addMenuItemQuery, queryResult: addMenuItem})
         } catch(err) {
@@ -110,15 +97,15 @@ router.post('/addMenuItem', async function(req,res,next){
     }
 });
 
-router.post('/deleteMenuItem', async function(req,res,next){
+router.post('/deleteMenuItem', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        const {restaurant_id, item_id} = req.body
+        const item_id = req.body
         try {
-            const deleteMenuQuery = ddbQueries.deleteMenuItem(restaurant_id, item_id);
+            const deleteMenuQuery = ddbQueries.deleteMenuItem(req.signedCookies.user_id, item_id);
             const deleteMenuItem = await dynamo.deleteInTable(ddb, deleteMenuQuery);
             res.json({message:'Successfully deleted menu item', query: deleteMenuQuery, queryResult: deleteMenuItem})
         } catch(err) {
@@ -128,15 +115,15 @@ router.post('/deleteMenuItem', async function(req,res,next){
     }   
 }); 
 
-router.post('/updateRestaurantDetail', async function(req,res,next){
+router.post('/updateRestaurantDetail', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        const {restaurant_id, key, value} = req.body
+        const {key, value} = req.body
         try {
-            const updateRestaurantDetailQuery = ddbQueries.updateRestaurantDetail(restaurant_id, key, value);
+            const updateRestaurantDetailQuery = ddbQueries.updateRestaurantDetail(req.signedCookies.user_id, key, value);
             const updateRestaurantDetail = await dynamo.updateTable(ddb, updateRestaurantDetailQuery);
             res.json({message:'Successfully updated restaurant detail', query: updateRestaurantDetailQuery, queryResult: updateRestaurantDetail})
         } catch(err) {
@@ -146,19 +133,18 @@ router.post('/updateRestaurantDetail', async function(req,res,next){
     }
 });
 
-router.get('/viewCoupons/:rID', async function(req,res,next){
+router.get('/viewCoupons', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-        const restaurant_id = req.params.rID;
         try {
-            const viewCouponsQuery = ddbQueries.queryCouponsForRestaurant(restaurant_id);
+            const viewCouponsQuery = ddbQueries.queryCouponsForRestaurant(req.signedCookies.user_id);
             const viewCoupons = await dynamo.queryTable(ddb, viewCouponsQuery);
             
             console.log(viewCoupons.Items)
-            res.render("manager/viewCoupons",{coupons:viewCoupons.Items})
+            res.render("manager/viewCoupons",{coupons:viewCoupons.Items, user_type: user_type})
         } catch(err) {
             console.log(err)
             res.send({message:'Unable to retrieve coupons', error: err})
@@ -166,17 +152,16 @@ router.get('/viewCoupons/:rID', async function(req,res,next){
     }
 });
 
-router.post('/addCoupon', async function(req,res,next)
-{
+router.post('/addCoupon', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
-         const {restaurant_id, coupon_id, coupon_value, expiration_time} = req.body
+         const {coupon_id, coupon_value, expiration_time} = req.body
         try 
         {
-            const addCouponQuery = ddbQueries.putCoupon(restaurant_id, coupon_id, coupon_value, true, expiration_time);
+            const addCouponQuery = ddbQueries.putCoupon(req.signedCookies.user_id, coupon_id, coupon_value, true, expiration_time);
             const addCoupon = await dynamo.putInTable(ddb, addCouponQuery);
             res.json({message:'Successfully put coupon', query: addCouponQuery, queryResult: addCoupon})
         } 
@@ -189,16 +174,16 @@ router.post('/addCoupon', async function(req,res,next)
     }
 });
 
-router.post('/deleteCoupon', async function(req,res,next){
+router.post('/deleteCoupon', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
     }
     else{
 
-        const {restaurant_id, coupon_id} = req.body
+        const coupon_id = req.body
         try {
-            const deleteCouponQuery = ddbQueries.deleteCoupon(restaurant_id, coupon_id);
+            const deleteCouponQuery = ddbQueries.deleteCoupon(req.signedCookies.user_id, coupon_id);
             const deleteCoupon = await dynamo.deleteInTable(ddb, deleteCouponQuery);
             res.json({message:'Successfully deleted coupon', query: deleteCouponQuery, queryResult: deleteCoupon})
         } catch(err) {
@@ -208,4 +193,13 @@ router.post('/deleteCoupon', async function(req,res,next){
 
     }
 });
+
+function validateCookie(signedCookies) {
+    try {
+        return signedCookies && signedCookies[constants.USER_TYPE] == constants.MANAGER
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = router;

@@ -1,0 +1,48 @@
+<% if (user_type == "customer") { %>
+<div class="p-4 xl-4 bg-danger text-white">
+    <div class="small-nav-bar" style="display: flex;">
+        <a href="/" class="text-white" style="margin-right: 10px;">FoodXpress</a>
+        <a href="/customer/previousOrders" class="text-white" style="margin-left: auto; margin-right: 10px;">Orders</a>
+        <a href="/customer/dashboard" class="text-white" style="margin-right: 10px;">Dashboard</a>
+        <a href="/support" class="text-white" style="margin-right: 10px;" style="margin-right: 10px;">Contact Us</a>
+        <a href="/logout" class="text-white" style="margin-right: 10px;">Logout</a>
+    </div>
+</div>
+<%} else if (user_type == "manager")  { %>
+<div class="p-4 xl-4 bg-danger text-white">
+    <div class="small-nav-bar" style="display: flex;">
+        <a href="/" class="text-white" style="margin-right: 10px;">FoodXpress</a>
+        <a href="/manager/previousOrders" class="text-white" style="margin-left: auto; margin-right: 10px;">Orders</a>
+        <a href="/manager/dashboard" class="text-white" style="margin-right: 10px;">Dashboard</a>
+        <a href="/support" class="text-white" style="margin-right: 10px;" style="margin-right: 10px;">Contact Us</a>
+        <a href="/logout" class="text-white" style="margin-right: 10px;">Logout</a>
+    </div>
+</div>
+<%} else if (user_type == "driver")  { %>
+<div class="p-4 xl-4 bg-danger text-white">
+    <div class="small-nav-bar" style="display: flex;">
+        <a href="/" class="text-white" style="margin-right: 10px;">FoodXpress</a>
+        <a href="/driver/previousOrders" class="text-white" style="margin-left: auto; margin-right: 10px;">Orders</a>
+        <a href="/driver/dashboard" class="text-white" style="margin-right: 10px;">Dashboard</a>
+        <a href="/support" class="text-white" style="margin-right: 10px;" style="margin-right: 10px;">Contact Us</a>
+        <a href="/logout" class="text-white" style="margin-right: 10px;">Logout</a>
+    </div>
+</div>
+<%} else if (user_type == "admin")  { %>
+<div class="p-4 xl-4 bg-danger text-white">
+    <div class="small-nav-bar" style="display: flex;">
+        <a href="/" class="text-white" style="margin-right: 10px;">FoodXpress</a>
+        <a href="/driver/dashboard" class="text-white" style="margin-left: auto; margin-right: 10px;">Dashboard</a>
+        <a href="/support" class="text-white" style="margin-right: 10px;" style="margin-right: 10px;">Contact Us</a>
+        <a href="/logout" class="text-white" style="margin-right: 10px;">Logout</a>
+    </div>
+</div>
+<%} else { %>
+<div class="p-4 xl-4 bg-danger text-white">
+    <div class="small-nav-bar" style="display: flex;">
+        <a href="/" class="text-white" style="margin-right: 10px;">FoodXpress</a>
+        <a href="/login" class="text-white" style="margin-left: auto; margin-right: 10px;">Login</a>
+        <a href="/support" class="text-white" style="margin-right: 10px;">Contact Us</a>
+    </div>
+</div>
+<% } %>

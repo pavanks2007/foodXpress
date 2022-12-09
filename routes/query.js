@@ -1,19 +1,5 @@
 const constants = require('./constants.js')
 
-function updateTable(table_name, key, col_name, col_value) {
-    return {
-        TableName: table_name,
-        Key: key,
-        UpdateExpression: 'set #key = :value',
-        ExpressionAttributeNames: {
-            '#key': col_name,
-        },
-        ExpressionAttributeValues: {
-            ':value': col_value
-        }
-    }
-}
-
 module.exports = {
     deleteCoupon: (restaurant_id, coupon_id) => {
         return {
@@ -33,6 +19,15 @@ module.exports = {
                 [constants.ITEM_ID] : item_id
             },
             ConditionExpression: `attribute_exists(${constants.ITEM_ID})`
+        }
+    },
+    deleteOrderSummary: (order_id) => {
+        return {
+            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
+            Key: {
+                [constants.ORDER_ID] : order_id,
+            },
+            ConditionExpression: `attribute_exists(${constants.ORDER_ID})`
         }
     },
     deleteUser: (userId) => {
@@ -64,20 +59,6 @@ module.exports = {
             ProjectionExpression: `${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT}`,
         }
     },
-    scanAvailableDriver: ()=> {
-        return {
-            TableName: constants.DRIVER,
-            ExpressionAttributeNames: {
-                '#available': constants.DRIVER_AVAILABILITY,
-            },
-            ExpressionAttributeValues: {
-                ':true': true,
-            },
-            FilterExpression : "#available = :true" ,
-            ProjectionExpression: `${constants.DRIVER_ID}`,
-        }
-    },
-    
     getOrderSummaryForDriver: (orderId) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
@@ -103,7 +84,7 @@ module.exports = {
                 [constants.USER_ID]: userId,
                 [constants.SORT_KEY]: constants.DETAILS
             },
-            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS}`,
+            ProjectionExpression: `${constants.USER_ID}${constants.SORT_KEY},${constants.USER_NAME},${constants.USER_TYPE},${constants.CREATED_AT},${constants.ADDRESS},${constants.LATITUDE},${constants.LONGITUDE}`,
         }
     },
     getUserCredentials: (userId) => {
@@ -147,7 +128,7 @@ module.exports = {
             }
         }
     },
-    putCustomer: (userId, username, email, userType, createdAt, address,lat,long, encryptedCredential) => {
+    putCustomer: (userId, username, email, userType, createdAt, address,latitude,longitude, encryptedCredential) => {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
             Item:{
@@ -158,8 +139,8 @@ module.exports = {
                 [constants.USER_TYPE]: userType,
                 [constants.CREATED_AT]: createdAt,
                 [constants.ADDRESS]: address,
-                [constants.LAT]: lat,
-                [constants.LONG]: long,
+                [constants.LATITUDE]: latitude,
+                [constants.LONGITUDE]: longitude,
                 [constants.ENCRYPTED_CREDENTIAL]: encryptedCredential
                 
             }
@@ -177,15 +158,26 @@ module.exports = {
             }
         }
     },
-    putOrderSummary: (order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt) => {
-        console.log(order_id, customer_id, restaurant_id, driver_id);
+    putItemInOrders: (restaurant_id, order_id, item_id, item_name, item_price, quantity) => {
+        return {
+            TableName: constants.ORDER_ITEMS_TABLE_NAME,
+            Item:{
+                [constants.ORDER_ID]: order_id, 
+                [constants.ITEM_ID]: item_id,
+                [constants.ITEM_NAME]: item_name,
+                [constants.ITEM_PRICE]: item_price,
+                [constants.QUANTITY]: quantity,
+                [constants.RESTAURANT_ID]: restaurant_id             
+            }
+        }
+    },
+    putOrderSummary: (order_id, customer_id, restaurant_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt, status) => {
         return {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             Item:{
                 [constants.ORDER_ID]: order_id, 
                 [constants.USER_ID]: customer_id,
                 [constants.RESTAURANT_ID]: restaurant_id, 
-                [constants.DRIVER_ID]: driver_id,
                 [constants.ITEMS_PRICE]: items_price,
                 [constants.TAXES]: taxes,
                 [constants.SURGE_FEE]: surge_fee, 
@@ -194,11 +186,12 @@ module.exports = {
                 [constants.COUPON_VALUE]: coupon_value,
                 [constants.FINAL_PRICE]: final_price,
                 [constants.MODE]: mode,
-                [constants.CREATED_AT]: createdAt
+                [constants.CREATED_AT]: createdAt,
+                [constants.STATUS]: status
             }
       }
     },
-    putRestaurant: (restaurantId, restaurantName, restaurantAddress,lat,long, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
+    putRestaurant: (restaurantId, restaurantName, restaurantAddress,latitude,longitude, openTime, closeTime, contact, cuisine, rating, minimum_order) => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             Item: {
@@ -206,8 +199,8 @@ module.exports = {
                 [constants.SORT_KEY]: restaurantId,
                 [constants.RESTAURANT_NAME]: restaurantName,
                 [constants.RESTAURANT_ADDRESS]: restaurantAddress,
-                [constants.LAT]: lat,
-                [constants.LONG]: long,
+                [constants.LATITUDE]: latitude,
+                [constants.LONGITUDE]: longitude,
                 [constants.OPEN_TIME]: openTime,
                 [constants.CLOSE_TIME]: closeTime,
                 [constants.CONTACT]: contact,
@@ -242,24 +235,11 @@ module.exports = {
             },
         }
     },
-    queryListOfItemsInOrder: (orderId) => {
-        return {
-            TableName: constants.ORDER_ITEMS_TABLE_NAME,
-            KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.ITEM_ID},${constants.ITEM_NAME},${constants.QUANTITY}`,
-            ExpressionAttributeNames: {
-                '#pk': constants.ORDER_ID,
-            },
-            ExpressionAttributeValues: {
-                ':id': orderId,
-            },
-        }
-    },
     queryListOfRestaurants: () => {
         return {
             TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
             KeyConditionExpression: '#pk = :details',
-            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING},${constants.LAT},${constants.LONG}`,
+            ProjectionExpression: `${constants.SORT_KEY},${constants.RESTAURANT_NAME},${constants.RESTAURANT_ADDRESS},${constants.OPEN_TIME},${constants.CLOSE_TIME},${constants.CONTACT},${constants.CUISINE},${constants.RATING},${constants.LATITUDE},${constants.LONGITUDE}`,
             ExpressionAttributeNames: {
                 '#pk': constants.PRIMARY_KEY,
             },
@@ -362,82 +342,102 @@ module.exports = {
             },
         }
     },
-    updateRestaurantDetail: (restaurant_id, key, value) => {
-        return {
-            TableName: constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
-            Key: {
-                [constants.PRIMARY_KEY] : constants.DETAILS,
-                [constants.SORT_KEY] : restaurant_id
-            },
-            UpdateExpression: 'set #key = :value',
-            ExpressionAttributeNames: {
-                '#key': key
-            },
-            ExpressionAttributeValues: {
-                ':value': value
-            }
-        }
-    },
-    updateEncryptedDataTable: (user_id, col_name, col_value) => {
-        return updateTable(
-            constants.ENCRYPTED_DATA_TABLE_NAME,
-            {
-                [constants.USER_ID]: user_id,
-                [constants.SORT_KEY]: constants.DETAILS
-            },
-            col_name,
-            col_value
-        )
-    },
-    updateStatusforDriver: (driver_id, value) => {
-        return {
-            TableName: constants.DRIVER_TABLE_NAME,
-            Key: {
-                [constants.DRIVER_ID] : driver_id,
-            },
-            UpdateExpression: 'set #key = :value',
-            ExpressionAttributeNames: {
-                '#key': constants.DRIVER_AVAILABILITY,
-            },
-            ExpressionAttributeValues: {
-                ':value': value
-            }
-        }
-    },
-    
-    updateOrderforDriver: (order_id, key, value) => {
-        console.log(order_id, key,value)
-        return {
-            TableName: constants.ORDER_SUMMARY_TABLE_NAME,
-            Key: {
-                [constants.ORDER_ID] : order_id,
-            },
-            UpdateExpression: 'set #key = :value',
-            ExpressionAttributeNames: {
-                '#key': [constants.DRIVER_ID],
-            },
-            ExpressionAttributeValues: {
-                ':value': value
-            }
-        }
-    },
-    updateEncryptedDataTable: (user_id, col_name, col_value) => {
-        return updateTable(
-            constants.ENCRYPTED_DATA_TABLE_NAME,
-            {
-                [constants.USER_ID]: user_id,
-                [constants.SORT_KEY]: constants.DETAILS
-            },
-            col_name,
-            col_value
-        )
-    },
     scanAllUserIds: ()=> {
         return {
             TableName: constants.ENCRYPTED_DATA_TABLE_NAME,
             ProjectionExpression: `${constants.USER_ID}`,
+        } 
+    },
+    scanAvailableDrivers: ()=> {
+        return {
+            TableName: constants.DRIVER_TABLE_NAME,
+            ExpressionAttributeNames: {
+                '#available': constants.DRIVER_AVAILABILITY,
+            },
+            ExpressionAttributeValues: {
+                ':true': true,
+            },
+            FilterExpression : "#available = :true" ,
+            ProjectionExpression: `${constants.DRIVER_ID}`,
         }
     },
+    updateRestaurantDetail: (restaurant_id, col_name, col_value) => {
+        return updateTable(
+            constants.RESTAURANTS_AND_REVIEWS_TABLE_NAME,
+            {
+                [constants.PRIMARY_KEY] : constants.DETAILS,
+                [constants.SORT_KEY] : restaurant_id
+            },
+            col_name,
+            col_value
+        )
+    },
+    updateEncryptedDataTable: (user_id, col_name, col_value) => {
+        return updateTable(
+            constants.ENCRYPTED_DATA_TABLE_NAME,
+            {
+                [constants.USER_ID]: user_id,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            col_name,
+            col_value
+        )
+    },
+    updateStatusforDriver: (driver_id, col_value) => {
+        return updateTable(
+            constants.DRIVER_TABLE_NAME,
+            {
+                [constants.DRIVER_ID] : driver_id,
+            },
+            constants.DRIVER_AVAILABILITY,
+            col_value
+        )
+    },
+    updateOrderforDriver: (order_id, col_value) => {
+        return updateTable(
+            constants.ORDER_SUMMARY_TABLE_NAME,
+            {
+                [constants.ORDER_ID] : order_id,
+            },
+            constants.DRIVER_ID,
+            col_value
+        )
+    },
+    updateOrderStatus: (order_id, col_value) => {
+        return updateTable(
+            constants.ORDER_SUMMARY_TABLE_NAME,
+            {
+                [constants.ORDER_ID] : order_id,
+            },
+            constants.STATUS,
+            col_value
+        )
+    },
+    updateEncryptedDataTable: (user_id, col_name, col_value) => {
+        return updateTable(
+            constants.ENCRYPTED_DATA_TABLE_NAME,
+            {
+                [constants.USER_ID]: user_id,
+                [constants.SORT_KEY]: constants.DETAILS
+            },
+            col_name,
+            col_value
+        )
+    },
+}
+
+function updateTable(table_name, key, col_name, col_value) {
+    return {
+        TableName: table_name,
+        Key: key,
+        UpdateExpression: 'set #key = :value',
+        ExpressionAttributeNames: {
+            '#key': col_name,
+        },
+        ExpressionAttributeValues: {
+            ':value': col_value
+        }
+    }
 }
 
 /*

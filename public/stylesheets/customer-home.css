@@ -26,10 +26,6 @@ top: 50%;
 transform: translateY(-50%);
 }
 
-.small-nav-bar{
-    display: flex;
-    justify-content: flex-end;
-}
 @media (min-width: 768px) {
 .card img {
     height: 11em;

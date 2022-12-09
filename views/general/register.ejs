@@ -9,9 +9,8 @@
     <title>Register</title>
 </head>
 <body style="background-color: #fef9a8;">
-    <div class="giant">
-        <div class="p-5 xl-4 bg-danger text-white" >FoodXpress </div>
-    
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
+    <div class="giant">    
         <br><br>
         <div class="d-flex justify-content-center">
             <form action="/addUser" method="POST">

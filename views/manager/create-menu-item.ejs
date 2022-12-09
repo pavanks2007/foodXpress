@@ -11,13 +11,8 @@
     <title>Create a Menu Item</title>
 </head>
 <body style="background-color: #fef9a8;">
+    <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="universal-container">
-        <div class="p-5 xl-4 bg-danger text-white">FoodXpress
-            <div class="small-nav-bar">
-                  <p class="text-white"><a href="./restaurant-manager-pov-menu.html" class="text-white">Orders</a>&emsp;<a href="./restaurant-manager-active-prev-orders.html" class="text-white">Orders</a>&emsp;<a href="./restaurant-manager-dashboard.html" class="text-white">Profile</a>&emsp;<a href="./nothing" class="text-white">Logout</a></p>
-            </div>
-          </div>
-
           <div class="dashboard-body">
             <div class = 'user-image'>
                 <img src="../images/blank-profile-picture-973460__480.jpeg" alt="..." class="usr-img">
@@ -27,15 +22,15 @@
                 <div class="d-flex justify-content-center mx-auto">
                     <form>
                         <div class="pt-3"></div>
-                        <label for="menuItemName" class="form-label mx-2">Item Name</label>
-                        <input type="text" class="form-control form-control-lg mx-2" id="menuItem" aria-describedby="emailHelp">
+                        <label for="itemName" class="form-label mx-2">Item Name</label>
+                        <input type="text" class="form-control form-control-lg mx-2" id="menuItemName" aria-describedby="emailHelp">
                         <div class="pt-5"></div>
         
-                        <label for="menuItemPrice" class="form-label-lg mx-2">Price (USD)</label>
-                        <input type="number" class="form-control form-control-lg mx-2" id="itemPrice">
+                        <label for="itemPrice" class="form-label-lg mx-2">Price (USD)</label>
+                        <input type="number" class="form-control form-control-lg mx-2" id="menuItemPrice">
                         <div class="pt-5"></div>
                         <div class="button d-flex justify-content-center">
-                            <button type="submit" class="btn btn-danger btn-lg">Update Item</button>
+                            <button type="submit" class="btn btn-danger btn-lg">Create Item</button>
                         </div>
                         <div class="pt-5"></div>
         
