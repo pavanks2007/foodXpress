@@ -28,32 +28,28 @@ router.get('/', function(req,res) {
 /* GET home page. */
 router.get('/dashboard', async function (req, res, next) {
     // TODO create dashboard
-    res.render('customer/dashboard.ejs', {user_type: user_type});
+    res.render('customer/dashboard', {user_type: user_type});
 })
 
 router.get('/restaurants', async function (req, res, next) {
     try {
-        if (!validateCookie(req.signedCookies)) {
-            res.redirect('/')
-        } else {
-            const customer_id = req.signedCookies.user_id;
-            const customerDetails = await dynamo.getFromTable(ddb, ddbQueries.getUserDetails(customer_id));
-            const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
-            restaurants.Items.forEach(function(restaurant) {
-                if (restaurant.hasOwnProperty(constants.LATITUDE) && restaurant.hasOwnProperty(constants.LONGITUDE) && customerDetails.Item.hasOwnProperty(constants.LATITUDE) && customerDetails.Item.hasOwnProperty(constants.LONGITUDE)) {
-                    restaurant[constants.DISTANCE] = getDistanceInMiles(restaurant[constants.LATITUDE], restaurant[constants.LONGITUDE],customerDetails.Item[constants.LATITUDE],customerDetails.Item[constants.LONGITUDE]).toFixed(4);
-                } else {
-                    restaurant[constants.DISTANCE] = 15;
-                }
-                restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
-                if(!restaurant.hasOwnProperty(constants.RATING))
-                restaurant[constants.RATING] = 3.8;
-                delete restaurant[constants.SORT_KEY];
-            });
-            allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
-            featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, 5);
-            res.render("customer/restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
-        }
+        const customer_id = req.signedCookies.user_id;
+        const customerDetails = await dynamo.getFromTable(ddb, ddbQueries.getUserDetails(customer_id));
+        const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
+        restaurants.Items.forEach(function(restaurant) {
+            if (restaurant.hasOwnProperty(constants.LATITUDE) && restaurant.hasOwnProperty(constants.LONGITUDE) && customerDetails.Item.hasOwnProperty(constants.LATITUDE) && customerDetails.Item.hasOwnProperty(constants.LONGITUDE)) {
+                restaurant[constants.DISTANCE] = getDistanceInMiles(restaurant[constants.LATITUDE], restaurant[constants.LONGITUDE],customerDetails.Item[constants.LATITUDE],customerDetails.Item[constants.LONGITUDE]).toFixed(4);
+            } else {
+                restaurant[constants.DISTANCE] = 15;
+            }
+            restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
+            if(!restaurant.hasOwnProperty(constants.RATING))
+            restaurant[constants.RATING] = constants.DEFAULT_RATING;
+            delete restaurant[constants.SORT_KEY];
+        });
+        allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
+        featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, constants.DEFAULT_NUMBER_OF_FEATURED_RESTAURANTS);
+        res.render("customer/restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants, user_type: user_type});
     } catch (err) {
         console.log(err);
         res.send({ message: 'Unable to view restaurants', error: err });
@@ -294,14 +290,6 @@ router.post('/deleteUser', async function (req, res, next) {
         res.send({ message: 'Unable to delete user', error: err })
     }
 });
-
-function validateCookie(signedCookies) {
-    try {
-        return signedCookies && signedCookies[constants.USER_TYPE] == constants.CUSTOMER
-    } catch (error) {
-        return false
-    }
-}
 
 function getDistanceInMiles(lat1, lon1, lat2, lon2){
     var R = 6378.137; // Radius of earth in KM

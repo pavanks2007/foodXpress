@@ -25,6 +25,8 @@ module.exports = {
     CUSTOMER: 'customer',
     CUSTOMER_ID: 'customer_id',
     DATE_TIME: 'date_time',
+    DEFAULT_RATING: 3.8,
+    DEFAULT_NUMBER_OF_FEATURED_RESTAURANTS: 6,
     DESCRIPTION: 'description',
     DETAILS: 'DETAILS',
     DISTANCE: 'distance',

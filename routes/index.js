@@ -24,11 +24,11 @@ router.get('/restaurants', async function (req, res, next) {
         restaurants.Items.forEach(function(restaurant) {
             restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
             if(!restaurant.hasOwnProperty(constants.RATING))
-                restaurant[constants.RATING] = 3.8;
+                restaurant[constants.RATING] = constants.DEFAULT_RATING;
             delete restaurant[constants.SORT_KEY];
         });
         allRestaurants = restaurants.Items;
-        featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, 6);
+        featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, constants.DEFAULT_NUMBER_OF_FEATURED_RESTAURANTS);
         res.render("general/restaurants", { featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants, user_type: user_type} );
     } catch (err) {
         console.log(err);
@@ -207,7 +207,10 @@ router.post('/add_updateAddress/:rID', async function (req, res) {
 });
 
 router.get('/support', function (req, res) {
-    res.render('general/contact-us-page', {user_type: user_type});
+    if (req.signedCookies[constants.USER_TYPE] === undefined) 
+        res.render('general/contact-us-page', {user_type: user_type});
+    else
+        res.render('general/contact-us-page', {user_type: req.signedCookies[constants.USER_TYPE]});
 });
 
 module.exports = router;
