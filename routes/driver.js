@@ -7,6 +7,10 @@ const ddbQueries = require('./query.js');
 
 const ddb = dynamo.getDynamoDbClient();
 
+router.get('/', async function (req, res) {
+    res.redirect(`/driver/dashboard`)
+});
+
 router.get('/dashboard', function (req, res, next) {
     // TODO dashboard page
     res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
@@ -60,6 +64,14 @@ router.post('/status', async function(req,res,next){
         res.status(500).json({ err: 'Something went wrong', error: err });
     }
 });
+
+function validateCookie(signedCookies) {
+    try {
+        return signedCookies && signedCookies[constants.USER_TYPE] == constants.DRIVER
+    } catch (error) {
+        return false
+    }
+}
 
 module.exports = router;
 

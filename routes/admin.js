@@ -7,8 +7,9 @@ const ddbQueries = require('./query.js');
 const ddb = dynamo.getDynamoDbClient();
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-    res.sendFile('users.html', { root: path.join(__dirname, '..', 'views') });
+router.get('/', async function (req, res) {
+    // TODO create dashboard
+    res.redirect(`/admin/dashboard`)
 });
 
 router.get('/restaurants', async function (req, res, next) {
@@ -144,10 +145,15 @@ router.post('/updateRestaurant', async function(req,res)
     catch(e){
         console.log(e);
     }
-
-   
-
     // console.log('updated values')
-})
+});
+
+function validateCookie(signedCookies) {
+    try {
+        return signedCookies && signedCookies[constants.USER_TYPE] == constants.ADMIN
+    } catch (error) {
+        return false
+    }
+}
 
 module.exports = router;

@@ -5,26 +5,14 @@ const constants = require('./constants.js');
 const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 
-
 const ddb = dynamo.getDynamoDbClient();
 
-
 /* GET home page. */
-router.get('/', (req, res) =>
-{
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else
-    {
-        res.redirect('manager/dashboard')
-    }
-
+router.get('/', async function (req, res) {
+    res.redirect(`/manager/dashboard`)
 });
-// req.signedCookies.user_type=='customer'
 
-router.get('/dashboard', async function (req, res){
+router.get('/dashboard', async function (req, res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -37,7 +25,7 @@ router.get('/dashboard', async function (req, res){
 });
 
 //get all prev orders from database and send it over to webpage.
-router.get('/allOrders', async function(req,res){
+router.get('/allOrders', async function(req,res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -56,8 +44,7 @@ router.get('/allOrders', async function(req,res){
     }
 })
 
-router.get('/orders/confirm',(req,res)=>
-{
+router.get('/orders/confirm',(req,res)=> {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -67,8 +54,7 @@ router.get('/orders/confirm',(req,res)=>
     }
 })
 
-router.get('/viewMenu',async function(req,res)
-{
+router.get('/viewMenu',async function(req,res) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -91,7 +77,7 @@ router.get('/viewMenu',async function(req,res)
     }
 })
 
-router.post('/addMenuItem', async function(req,res,next){
+router.post('/addMenuItem', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -110,7 +96,7 @@ router.post('/addMenuItem', async function(req,res,next){
     }
 });
 
-router.post('/deleteMenuItem', async function(req,res,next){
+router.post('/deleteMenuItem', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -128,7 +114,7 @@ router.post('/deleteMenuItem', async function(req,res,next){
     }   
 }); 
 
-router.post('/updateRestaurantDetail', async function(req,res,next){
+router.post('/updateRestaurantDetail', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -146,7 +132,7 @@ router.post('/updateRestaurantDetail', async function(req,res,next){
     }
 });
 
-router.get('/viewCoupons', async function(req,res,next){
+router.get('/viewCoupons', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -165,8 +151,7 @@ router.get('/viewCoupons', async function(req,res,next){
     }
 });
 
-router.post('/addCoupon', async function(req,res,next)
-{
+router.post('/addCoupon', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -188,7 +173,7 @@ router.post('/addCoupon', async function(req,res,next)
     }
 });
 
-router.post('/deleteCoupon', async function(req,res,next){
+router.post('/deleteCoupon', async function(req,res,next) {
     if(req.signedCookies.user_type !== 'manager')
     {
         res.redirect('/'+req.signedCookies['user_type']);
@@ -207,4 +192,13 @@ router.post('/deleteCoupon', async function(req,res,next){
 
     }
 });
+
+function validateCookie(signedCookies) {
+    try {
+        return signedCookies && signedCookies[constants.USER_TYPE] == constants.MANAGER
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = router;

@@ -13,6 +13,7 @@ module.exports = {
     ORDER_SUMMARY_RESTAURANT_ID_INDEX: 'restaurant_id-order_id-index',
     // Column Names
     ADDRESS: 'address',
+    ADMIN: 'admin',
     APP_EARNING: 'app_earning',
     CLOSE_TIME: 'close_time',
     CONTACT: 'contact',
@@ -27,6 +28,7 @@ module.exports = {
     DESCRIPTION: 'description',
     DETAILS: 'DETAILS',
     DISTANCE: 'distance',
+    DRIVER: 'driver',
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
     DRIVER_NAME: 'name',
@@ -43,6 +45,7 @@ module.exports = {
     LATITUDE: 'latitude',
     LONGITUDE: 'longitude',
     ITEMS_PRICE: 'items_price',
+    MANAGER: 'manager',
     MINIMUM_ORDER: 'minimum_order',
     MODE: 'mode',
     OPEN_TIME: 'open_time',

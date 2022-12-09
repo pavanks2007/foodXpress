@@ -20,13 +20,13 @@ const client = require("twilio")(accountSid, authToken);
 
 const ddb = dynamo.getDynamoDbClient();
 
-router.get('/', function(req,res)   // This still needs some work once cookie handler is finished
-{
-    res.redirect('customer/dashboard')
+router.get('/', function(req,res) {
+    res.redirect('/customer/restaurants')
 })
 
 /* GET home page. */
 router.get('/dashboard', async function (req, res, next) {
+    // TODO create dashboard
     res.render('customer/customer-dashboard.ejs', { root: path.join(__dirname, '..', 'views') });
 })
 
@@ -50,7 +50,7 @@ router.get('/restaurants', async function (req, res, next) {
                 delete restaurant[constants.SORT_KEY];
             });
             allRestaurants = restaurants.Items.sort((a,b) => a.distance - b.distance);
-            featuredRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating).slice(0, 5);
+            featuredRestaurants = allRestaurants.sort((a,b) => b.rating - a.rating).slice(0, 5);
             res.render("customer/customer-restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
         }
     } catch (err) {
@@ -59,7 +59,7 @@ router.get('/restaurants', async function (req, res, next) {
     }
 });
 
-router.get('/profile',function (req, res){
+router.get('/dashboard',function (req, res){
     res.sendFile('customer/customer-profile.html', { root: path.join(__dirname, '..', 'views') });
 })
 
@@ -120,7 +120,7 @@ router.post('/orderPayment', async (req, res) => {
 router.get('/orderPayment/success', async (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-
+    
     const orderSummary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(paymentId));
     const finalPrice = orderSummary.Item[constants.FINAL_PRICE]
     
@@ -208,7 +208,7 @@ router.post('/reviews', async function (req, res, next) {
     }
 });
 
-router.get('/previous_orders', async function (req, res, next) {
+router.get('/previousOrders', async function (req, res, next) {
     //const { customer_id } = req.params.rID
     //const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
     res.sendFile('customer/customer-previous-orders.html', { root: path.join(__dirname, '..', 'views') });
