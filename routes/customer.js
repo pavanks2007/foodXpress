@@ -7,6 +7,10 @@ const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 const fs = require('fs');
 
+const accountSid = 'AC24363df7efae2d43927f757719479774';
+const authToken = '3f266d820866fbbb831442a685a1dc22';
+const client = require("twilio")(accountSid, authToken);
+
 const ddb = dynamo.getDynamoDbClient();
 
 router.get('/', function(req,res)   // This still needs some work once cookie handler is finished
@@ -100,8 +104,20 @@ router.post('/orderConfirmation', async function (req, res, next) {
     const driver_id_list = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDriver());
     let driver_id = driver_id_list.Items[0].driver_id.toString();
     console.log(driver_id_list.Items[0].driver_id);
+
     try {
         const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
+        client.messages
+    .create({
+      from: 'whatsapp:+14155238886',
+        body: "Thanku for choosing us, Your Order is Confirmed",
+        to: 'whatsapp:+18484680962'
+    })
+    .then((message) => {
+      console.log(message.status);
+      //res.status(200).send(message.status);
+    })
+    .done();
         res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
     } catch (err) {
         console.error(err);
@@ -135,6 +151,15 @@ router.post('/previousOrders', async function (req, res, next) {
     const { customer_id } = req.body
     const previous_orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
     res.json(previous_orders.Items);
+});
+
+router.post('/updateCustomer', async function (req, res, next) {
+    console.log(req);
+    const { user_id,address } = req.body
+    console.log(user_id,address);
+    var col_name=constants.ADDRESS;
+    const update_address = await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,col_name,address));
+    res.json(update_address.Items);
 });
 
 router.post('/order', async function (req, res, next) {
