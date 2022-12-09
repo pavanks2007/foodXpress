@@ -28,29 +28,31 @@ router.get('/restaurants', async function (req, res, next) {
         } else {
             const customer_id = req.signedCookies.user_id;
             const customerDetails = await dynamo.getFromTable(ddb, ddbQueries.getUserDetails(customer_id));
-            console.log(customerDetails);
             const restaurants = await dynamo.queryTable(ddb, ddbQueries.queryListOfRestaurants());
             restaurants.Items.forEach(function(restaurant) {
-                console.log(restaurant);
                 if (
                     restaurant.hasOwnProperty(constants.LATITUDE) && 
                     restaurant.hasOwnProperty(constants.LONGITUDE) && 
                     customerDetails.Item.hasOwnProperty(constants.LATITUDE) && 
                     customerDetails.Item.hasOwnProperty(constants.LONGITUDE)
                 ) {
-                    restaurant['distance'] = getDistanceInMiles(
+                    restaurant[constants.DISTANCE] = getDistanceInMiles(
                         restaurant[constants.LATITUDE],
                         restaurant[constants.LONGITUDE],
                         customerDetails.Item[constants.LATITUDE],
                         customerDetails.Item[constants.LONGITUDE]
                     );
                 } else {
-                    restaurant['distance'] = 0;
+                    restaurant[constants.DISTANCE] = 0;
                 }
-                restaurant['restaurant_id'] = restaurant['sk'];
-                delete restaurant['sk'];
+                restaurant[constants.RESTAURANT_ID] = restaurant[constants.SORT_KEY];
+                if(!restaurant.hasOwnProperty(constants.RATING))
+                    restaurant[constants.RATING] = 3.8;
+                delete restaurant[constants.SORT_KEY];
             });
-            res.json(restaurants.Items);
+            allRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating);
+            featuredRestaurants = restaurants.Items.sort((a,b) => b.rating - a.rating).slice(0, 5);
+            res.render("customer/customer-restaurants",{ featuredRestaurants: featuredRestaurants, allRestaurants:allRestaurants} );
         }
     } catch (err) {
         console.log(err);

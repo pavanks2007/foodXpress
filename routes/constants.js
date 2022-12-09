@@ -25,6 +25,7 @@ module.exports = {
     DATE_TIME: 'date_time',
     DESCRIPTION: 'description',
     DETAILS: 'DETAILS',
+    DISTANCE: 'distance',
     DRIVER_ID: 'driver_id',
     DRIVER_EARNING: 'driver_earning',
     DRIVER_NAME: 'name',
