@@ -146,10 +146,27 @@ router.get('/orderPayment/success', async (req, res) => {
             // Assign driver
             const availableDrivers = await dynamo.scanTable(ddb, ddbQueries.scanAvailableDrivers());
             const driver_id = availableDrivers.Items[0].driver_id;
+            console.log(`Driver ${driver_id} is assigned to the order ${paymentId}`);
             await dynamo.updateTable(ddb, ddbQueries.updateStatusforDriver(driver_id, false));
             await dynamo.updateTable(ddb, ddbQueries.updateOrderforDriver(paymentId, driver_id));
-            // TODO 
-            res.send("Success");
+            // TODO redirect to order status page
+            try {
+                client.messages
+                .create({
+                    from: 'whatsapp:+14155238886',
+                    body: "Thanku for choosing us, Your Order is Confirmed",
+                    to: 'whatsapp:+18484680962'
+                })
+                .then((message) => {
+                    console.log(message.status);
+                    //res.status(200).send(message.status);
+                })
+                .done();
+                res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
+            } catch (err) {
+                console.error(err);
+                res.status(500).json({ err: 'Something went wrong', error: err });
+            }
         }
     });
 });
@@ -176,28 +193,6 @@ router.post('/restaurant/menu', async function (req, res, next) {
 
 router.get('/orderFees', async function (req, res, next) {
     res.json({ taxes: 0.14, surge_fees: 3});
-});
-
-router.post('/orderConfirmation', async function (req, res, next) {
-    
-    try {
-        // const checkout = await dynamo.putInTable(ddb, ddbQueries.putOrderSummary(order_id, customer_id, restaurant_id, driver_id, items_price, taxes, surge_fee, total_tip, coupon_used, coupon_value, final_price, mode, createdAt));
-        client.messages
-        .create({
-            from: 'whatsapp:+14155238886',
-            body: "Thanku for choosing us, Your Order is Confirmed",
-            to: 'whatsapp:+18484680962'
-        })
-        .then((message) => {
-            console.log(message.status);
-            //res.status(200).send(message.status);
-        })
-        .done();
-        res.json({ message: 'Successfully checkout out and added order summary: ' + checkout });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ err: 'Something went wrong', error: err });
-    }
 });
 
 router.post('/reviews', async function (req, res, next) {
