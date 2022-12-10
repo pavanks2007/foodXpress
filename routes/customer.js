@@ -7,6 +7,8 @@ const dynamo = require('./dynamo.js')
 const ddbQueries = require('./query.js');
 const fs = require('fs');
 const paypal = require('paypal-rest-sdk');
+const axios = require('axios');
+const xmlbuilder2=require('xmlbuilder2');
 const user_type = constants.CUSTOMER;
 
 paypal.configure({
@@ -280,27 +282,6 @@ router.get('/getUserDetails/:id', async function (req, res, next) {
     }
 });
 
-router.post('/addUser', async function (req, res, next) {
-    const { user_name, email, address, password, confirmedPassword } = req.body;
-    const createdAt = new Date().toString();
-    const user_type = 'Customer';
-    //const encryptedCredential="Rutgers@123";
-    // Validation
-    req.checkBody('user_name', 'Name is required').notEmpty();
-    req.checkBody('email', 'Email is required').notEmpty();
-    req.checkBody('email', 'Email is not valid').isEmail();
-    req.checkBody('password', 'Password is required').notEmpty();
-    req.checkBody('confirmedPassword', 'Passwords do not match').equals(req.body.password);
-    const user_id = 'rt67';
-    try {
-        const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt, address, password));
-        res.json({ message: 'Successfully added user: ' + newCustomer });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err });
-    }
-});
-
 router.post('/deleteUser', async function (req, res, next) {
     const { user_id } = req.body
     try {
@@ -310,6 +291,90 @@ router.post('/deleteUser', async function (req, res, next) {
     } catch (err) {
         console.log(err)
         res.send({ message: 'Unable to delete user', error: err })
+    }
+});
+
+router.get('/updateAddress',function(req,res) {
+    let error = Object.keys(req.query).length !== 0 && req.query.hasOwnProperty("error") ? req.query.error : "";
+    res.render('general/addAddress', {user_type: user_type, error: error} );
+})
+
+router.post('/updateAddress', async function (req, res) {
+    const user_id= req.signedCookies.user_id;
+    const{ addpt1,addpt2,city,state,zip}= req.body;
+    var fulladd;
+    let error = "";
+    //_________________________________________________________________________________________
+    /*here we will validate address*/
+        
+    try//this will try to execute ther address validator and update DB.
+    {
+        const root =xmlbuilder2.create({ version: '1.0' })
+        .ele('AddressValidateRequest', { USERID: '159NONE00041' })
+          .ele('Address')
+            .ele('Address1').txt(addpt1).up()
+            .ele('Address2').txt(addpt2).up()
+            .ele('City').txt(city).up()
+            .ele('State').txt(state).up()
+            .ele('Zip5').txt(zip).up()
+            .ele('Zip4').up()
+            .up()
+        .up();
+
+        let xml= root.end({prettyPrint: true});
+        let url='https://secure.shippingapis.com/ShippingAPI.dll?API=Verify&xml='+ encodeURIComponent(xml);
+
+        axios.get(url)
+        .then(async function(response) {  
+            const obj= xmlbuilder2.convert(response.data,{format:"object"});
+            console.log(obj.AddressValidateResponse);
+            
+            if(obj.AddressValidateResponse.Address.hasOwnProperty("Error")) {
+                res.redirect('/customer/updateAddress?error=' + encodeURIComponent('Address does not exist. Please Try again.'));
+            } else {
+                delete obj["AddressValidateResponse"]["Address"]["Zip4"]//deletes extra zip code
+                const fullAddress=Object.values(obj["AddressValidateResponse"]["Address"])
+                fulladd=fullAddress.join()
+
+                const updated= await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.ADDRESS,fulladd)); 
+                console.log('successfully Added/Updated Users Address')
+                try
+                {
+                    let url2=`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fulladd)}&key=AIzaSyCSCk3BE2UzEdCR0-NcWzmnD2dTCv3Jcsg`
+                    fetch(url2)
+                    .then(function(response){
+                        console.log(response);
+                        return response.json();
+                    })
+                    .then(async function(data) {
+                        console.log(data);
+                        coordinates=Object.values(data.results[0].geometry.location)
+                        console.log(coordinates[0])
+                        console.log(coordinates[1])
+
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LATITUDE,coordinates[0]));
+                        await dynamo.updateTable(ddb, ddbQueries.updateEncryptedDataTable(user_id,constants.LONGITUDE,coordinates[1]));
+
+                        console.log('Successfully added coordinates')
+                        res.redirect('/')
+                    })
+                    .catch(function(err){
+                        error = err;
+                    })
+                } catch(err) {
+                    error = err;
+                }
+            }
+        })
+        .catch(function(err) {
+            error = err;
+        })
+    } catch(err) {
+        console.log(err)
+    }
+    if (error.length > 0){
+        console.log(error);
+        res.redirect('/customer/updateAddress?error=' + encodeURIComponent(err));
     }
 });
 
