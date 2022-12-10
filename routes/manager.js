@@ -32,7 +32,7 @@ router.get('/orders/:orderId', async (req, res) => {
     try {
         const order_id = req.params.orderId;
         const restaurant_id = req.signedCookies[constants.USER_ID];
-        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForCustomer(order_id));
+        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForRestaurant(order_id));
         if (Object.keys(order_summary).length == 0) 
             throw `Order ${order_id} does not exist`;
         if (!order_summary.Item.hasOwnProperty(constants.RESTAURANT_ID)) 

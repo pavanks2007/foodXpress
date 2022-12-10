@@ -18,7 +18,7 @@ paypal.configure({
 });
 
 const accountSid = 'AC24363df7efae2d43927f757719479774';
-const authToken = '4e8a88c1a07ade0d62dfdf8251c06289';
+const authToken = '96c27a579a543c695a4ff2b2b74abc88';
 const client = require("twilio")(accountSid, authToken);
 
 const ddb = dynamo.getDynamoDbClient();
@@ -175,7 +175,7 @@ router.get('/orderPayment/success', async (req, res) => {
                 client.messages
                 .create({
                     from: 'whatsapp:+14155238886',
-                    body: "Thanku for choosing us, Your Order is Confirmed",
+                    body: `Thank you for ordering from ${orderSummary[constants.RESTAURANT_NAME]}. Your order is confirmed, we will be in touch shortly.`,
                     to: 'whatsapp:+18484371960'
                 })
                 .then((message) => {
@@ -225,6 +225,7 @@ router.get('/orders/:orderId', async (req, res) => {
             throw `Order ${order_id} is not ordered by customer ${customer_id}`;
         const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
         const ids = [order_summary.Item[constants.USER_ID], order_summary.Item[constants.RESTAURANT_ID]];
+        console.log("order_summary.Item", order_summary.Item);
         if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) {
             ids.push(order_summary.Item[constants.DRIVER_ID]);
         }
