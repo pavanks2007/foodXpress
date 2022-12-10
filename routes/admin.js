@@ -32,11 +32,20 @@ router.get('/restaurants', async function (req, res, next) {
     }
 });
 
-router.post('/restaurant/menu', async function (req, res, next) {
+router.get('/restaurants/:params', async function (req, res, next) {
     try {
-        const { restaurant_id } = req.body;
+        const restaurant_id = req.params.params;
+        const restaurantDetails = await dynamo.getFromTable(ddb, ddbQueries.getRestaurantDetails(restaurant_id));
+        restaurantDetails.Item[constants.RESTAURANT_ID] = restaurantDetails.Item[constants.SORT_KEY];
         const menuItems = await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurant_id));
-        res.json(menuItems.Items);
+        const cartLimits = {
+            "cart_min": 15,
+            "cart_max": 150,
+            "cart_tax": 0.09,
+            "cart_surge": 2
+        };
+        console.log(cartLimits);
+        res.render('general/view-menu', {restaurantDetails: restaurantDetails.Item, items: menuItems.Items, cartLimits:cartLimits, user_type: user_type});
     } catch (err) {
         console.log(err);
         res.send({ message: 'Unable to view restaurant menu', error: err });

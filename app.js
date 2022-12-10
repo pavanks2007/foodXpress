@@ -16,7 +16,6 @@ const managerRouter = require('./routes/manager');
 const adminRouter = require('./routes/admin');
 const driverRouter = require('./routes/driver');
 const constants = require('./routes/constants.js');
-const { USER_TYPE } = require('./routes/constants.js');
 
 const secret = 'Test123';
 
@@ -75,6 +74,7 @@ app.use(function(err, req, res, next) {
     // res.locals.error = req.app.get('env') === 'development' ? err : {};
     
     // render the error page
+    console.error(err);
     res.status(err.status || 500);
     res.render('error', {user_type: ""});
 });
@@ -83,8 +83,8 @@ app.use(function(err, req, res, next) {
 function validateCookie(signedCookies, user_type) {
     try {
         return signedCookies[constants.USER_ID] !== undefined && 
-            signedCookies[USER_TYPE] !== undefined &&
-            signedCookies[USER_TYPE] === user_type
+            signedCookies[constants.USER_TYPE] !== undefined &&
+            signedCookies[constants.USER_TYPE] === user_type
     } catch (error) {
         return false
     }
