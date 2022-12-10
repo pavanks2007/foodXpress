@@ -13,12 +13,19 @@
     <%- include('../partials/taskbar', {user_type: user_type}) %>
     <div class="giant">
       <h1 id="heading-main"><%= restaurantDetails.restaurant_name %></h1>
+      <pre class="headings"><%= `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}     Cuisine: ${restaurantDetails.cuisine}    Rating: ${restaurantDetails.rating} ` %></pre>
     <% if (restaurantDetails.hasOwnProperty("distance")) { %>
-      <pre class="headings"><%= `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address}    Distance: ${restaurantDetails.distance} ` %></pre>
+      <pre class="headings"><%= `Contact: ${restaurantDetails.contact}     Address: ${restaurantDetails.restaurant_address}    Distance: ${restaurantDetails.distance} ` %></pre>
     <%} else { %>
-      <pre class="headings"><%= `Timings: ${restaurantDetails.open_time}-${restaurantDetails.close_time}    Rating: ${restaurantDetails.rating}    Address: ${restaurantDetails.restaurant_address} ` %></pre>
+      <pre class="headings"><%= `Contact: ${restaurantDetails.contact}     Address: ${restaurantDetails.restaurant_address} ` %></pre>
     <% } %>
-    <pre class="headings"><%= `Cuisine: ${restaurantDetails.cuisine}    Contact: ${restaurantDetails.contact} ` %></pre>
+    
+    <p id="restaurant_id" style="display: none;"><%= restaurantDetails.restaurant_id %></p>
+    <p id="restaurant_name" style="display: none;"><%= restaurantDetails.restaurant_name %></p>
+    <p id="cart-min" style="display: none;"><%= cartLimits.cart_min %></p>
+    <p id="cart-max" style="display: none;"><%= cartLimits.cart_max %></p>
+    <p id="cart-tax" style="display: none;"><%= cartLimits.cart_tax %></p>
+    <p id="cart-surge" style="display: none;"><%= cartLimits.cart_surge %></p>
     <!-- (A) CART -->
     <div id="cart-wrap">
       <!-- (A1) PRODUCTS LIST -->
@@ -29,7 +36,11 @@
             <div class="p-id" style="display: none;"><%= items[i].item_id %></div>
             <div class="p-name"><%= items[i].item_name %></div>
             <div class="p-price">$<%= items[i].item_price %></div>
-            <button class="cart p-add" id="<%= items[i].item_id + '-button' %>"">Add To Cart</button>
+            <% if (items[i].hasOwnProperty("item_availability") && items[i].item_availability) { %> 
+              <button class="cart p-add" id="<%= items[i].item_id + '-button' %>"">Add To Cart</button>
+            <%} else { %>
+              <div style="font-size: large;">Not Available</div>
+            <% } %>
           </div>
         <% } %>	
       </div>

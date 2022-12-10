@@ -41,7 +41,7 @@
                   <% if (featuredRestaurants[j].hasOwnProperty("distance")) { %>
                     <p class="card-text">Distance: <%= featuredRestaurants[j].distance %> miles</p>
                   <% } %>
-                  <a href="<%= '/restaurants/'+featuredRestaurants[j].restaurant_id %>" class="btn btn-primary">Visit Restaurant</a>
+                  <a href="<%= '/admin/restaurants/'+featuredRestaurants[j].restaurant_id %>" class="btn btn-primary">Visit Restaurant</a>
                 </div>
               </div>
             <% } %>

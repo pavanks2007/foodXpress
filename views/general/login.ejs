@@ -14,7 +14,7 @@
     <div class="giant">
         <br><br>
         <div class="d-flex justify-content-center mx-auto">
-            <form action="/login" method="POST">
+            <form action="/login" method="POST" >
 
                 <div class="pt-3"></div>
                 <label for="exampleInputEmail1" class="form-label">User ID
@@ -59,10 +59,11 @@
 
                 <div class="pt-4"></div>
 
-
                 <div class="text-center">
                 <button type="submit" class="btn btn-danger btn-lg">Login</button>
                 </div>
+                <br><br><br>
+                <p style="font-size:large; color: red;font-weight: bold;"><%= error %></p>
         </form>
         </div>
     </div>

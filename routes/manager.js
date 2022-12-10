@@ -14,86 +14,69 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/dashboard', async function (req, res) {
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else
-    {
-        //const storeInfo= await dynamo.get
-        res.render("manager/dashboard", {user_type: user_type});
+    res.render("manager/dashboard", {user_type: user_type});
+});
+
+router.get('/previousOrders', async (req, res) => {
+    try {
+        const restaurant_id = req.signedCookies[constants.USER_ID];
+        const orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(restaurant_id));
+        res.render('customer/previous-orders', {orders: orders.Items.reverse(), user_type: user_type});
+    } catch (error) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
     }
 });
 
-//get all prev orders from database and send it over to webpage.
-router.get('/allOrders', async function(req,res) {
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else{
-        try{
-            const allPrevOrders= await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForRestaurant(req.signedCookies.user_id));
-            console.log('Successfully pulled data')
-            res.render("manager/viewOrders",{allPrevOrders:allPrevOrders.Items, user_type: user_type})
+router.get('/orders/:orderId', async (req, res) => {
+    try {
+        const order_id = req.params.orderId;
+        const restaurant_id = req.signedCookies[constants.USER_ID];
+        const order_summary = await dynamo.getFromTable(ddb, ddbQueries.getOrderSummaryForRestaurant(order_id));
+        if (Object.keys(order_summary).length == 0) 
+            throw `Order ${order_id} does not exist`;
+        if (!order_summary.Item.hasOwnProperty(constants.RESTAURANT_ID)) 
+            throw `No restaurant is assigned to order ${order_id}`;
+        if (restaurant_id != order_summary.Item[constants.RESTAURANT_ID])
+            throw `Order ${order_id} is not sent to the restaurant ${restaurant_id}`;
+        const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
+        const ids = [order_summary.Item[constants.USER_ID], order_summary.Item[constants.RESTAURANT_ID]];
+        if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) {
+            ids.push(order_summary.Item[constants.DRIVER_ID]);
         }
-        catch(err)
-        {
-            console.log(err)
-            res.send('Unable to pull data.')
-        }
+        const batch_result = await dynamo.batchGetFromTable(ddb, ddbQueries.batchGetUserDetails(ids));
+        console.log("batch_result", batch_result.Responses[constants.ENCRYPTED_DATA_TABLE_NAME]);
+        res.render('customer/order-status-page', {order_summary: order_summary.Item, order_items: order_items.Items, batch_result:batch_result.Responses[constants.ENCRYPTED_DATA_TABLE_NAME], user_type: user_type});
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+        res.redirect('/manager/previousOrders');
     }
-})
-
-router.get('/orders/confirm',(req,res)=> {
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else{
-        res.render("manager/viewMenu", {user_type: user_type})
-    }
-})
+});
 
 router.get('/viewMenu',async function(req,res) {
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else{
-        const restaurantID=req.signedCookies.user_id;
-        try
-        {
-            const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
-            console.log(viewMenu.Items)
-            //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
+    const restaurantID=req.signedCookies.user_id;
+    try {
+        const viewMenu= await dynamo.queryTable(ddb, ddbQueries.queryMenuItemsInRestaurant(restaurantID))
+        console.log(viewMenu.Items)
+        //res.json({message:'Successfully pulled Menu', data: viewMenu.Items})
 
-            res.render("manager/viewMenu",{menu:viewMenu.Items, user_type: user_type})
-        }
-        catch(err)
-        {
-            console.log(err)
-            res.send('Unable to pull Menu')
-        }
+        res.render("manager/viewMenu",{menu:viewMenu.Items, user_type: user_type})
+    } catch(err) {
+        console.log(err)
+        res.send('Unable to pull Menu')
     }
 })
 
 router.post('/addMenuItem', async function(req,res,next) {
-    if(req.signedCookies.user_type !== 'manager')
-    {
-        res.redirect('/'+req.signedCookies['user_type']);
-    }
-    else
-    {
-        const {item_id, item_name, item_price, description} = req.body
-        try {
-            const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(req.signedCookies.user_id, item_id, item_name, item_price, description);
-            const addMenuItem = await dynamo.putInTable(ddb, addMenuItemQuery);
-            res.json({message:'Successfully put menu item', query: addMenuItemQuery, queryResult: addMenuItem})
-        } catch(err) {
-            console.log(err)
-            res.send({message:'Unable to add menu item', error: err})
-        }
+    const {item_id, item_name, item_price, description} = req.body
+    try {
+        const addMenuItemQuery = ddbQueries.putMenuItemInRestaurant(req.signedCookies.user_id, item_id, item_name, item_price, description);
+        const addMenuItem = await dynamo.putInTable(ddb, addMenuItemQuery);
+        res.json({message:'Successfully put menu item', query: addMenuItemQuery, queryResult: addMenuItem})
+    } catch(err) {
+        console.log(err)
+        res.send({message:'Unable to add menu item', error: err})
     }
 });
 
@@ -193,13 +176,5 @@ router.post('/deleteCoupon', async function(req,res,next) {
 
     }
 });
-
-function validateCookie(signedCookies) {
-    try {
-        return signedCookies && signedCookies[constants.USER_TYPE] == constants.MANAGER
-    } catch (error) {
-        return false
-    }
-}
 
 module.exports = router;
