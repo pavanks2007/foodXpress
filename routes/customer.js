@@ -200,9 +200,14 @@ router.get('/orderPayment/cancel', async (req, res) => {
 });
 
 router.get('/previousOrders', async (req, res) => {
-    const customer_id = req.signedCookies[constants.USER_ID];
-    const orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
-    res.json(orders.Items)
+    try {
+        const customer_id = req.signedCookies[constants.USER_ID];
+        const orders = await dynamo.queryTable(ddb, ddbQueries.queryPreviousOrdersForCustomer(customer_id));
+        res.render('customer/previous-orders', {orders: orders.Items, user_type: user_type});
+    } catch (error) {
+        console.error(err);
+        res.status(500).json({ err: 'Something went wrong', error: err });
+    }
 });
 
 router.get('/orders/:orderId', async (req, res) => {

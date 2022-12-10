@@ -319,10 +319,8 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_USER_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.PAYMENT},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.USER_ID,
-                '#order_status': constants.STATUS
             },
             ExpressionAttributeValues: {
                 ':id': userId,
@@ -334,10 +332,8 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_DRIVER_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.DRIVER_EARNING},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.DRIVER_ID,
-                '#order_status': constants.STATUS
             },
             ExpressionAttributeValues: {
                 ':id': driverId,
@@ -349,10 +345,8 @@ module.exports = {
             TableName: constants.ORDER_SUMMARY_TABLE_NAME,
             IndexName: constants.ORDER_SUMMARY_RESTAURANT_ID_INDEX,
             KeyConditionExpression: '#pk = :id',
-            ProjectionExpression: `${constants.USER_ID},${constants.ORDER_ID},${constants.RESTAURANT_ID},${constants.RESTAURANT_NAME},${constants.ORDER_TYPE},${constants.FINAL_PRICE},${constants.DRIVER_ID},${constants.DATE_TIME},${constants.RESTAURANT_EARNING},#order_status`,
             ExpressionAttributeNames: {
                 '#pk': constants.RESTAURANT_ID,
-                '#order_status': constants.STATUS
             },
             ExpressionAttributeValues: {
                 ':id': restaurantId,

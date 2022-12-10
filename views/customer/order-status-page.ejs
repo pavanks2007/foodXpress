@@ -8,41 +8,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pixeden-stroke-7-icon@1.2.3/pe-icon-7-stroke/dist/pe-icon-7-stroke.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../public/stylesheets/customer-order-status-page.css">
+    <link rel="stylesheet" href="/stylesheets/customer-order-status-page.css">
     <title>Order Status</title>
 </head>
 <body style="background-color: #fef9a8;">
     <%- include('../partials/taskbar', {user_type: user_type}) %>
-    <div class="giant">
+    <div class="giant active-order-card d-flex justify-content-center">
         <div class="pt-4"></div>
-        <div class="card card-timeline px-2 border-none"> Order Status
+        <div class="card card-timeline px-2 border-none"> 
+            <h1 style="text-align:center;">Order Status</h1>
             <ul class="bs4-order-tracking"> 
-                <% console.log(order_summary.status)  %>
-                <% if (order_summary.status == "Order Placed" || order_summary.status == "SENT") { %>
-                    <li class="step" style="font-weight: bold;"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
+                <% if (order_summary.status == "Order Placed" || order_summary.status == "SENT" || order_summary.status == "order_placed") { %>
+                    <li class="step active"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
                 <%} else { %>
                     <li class="step"> <div><i class="fas fa-user"></i></div> Order Placed </li> 
                 <%}  %>
                 <% if (order_summary.status == "In transit") { %>
-                    <li class="step"> <div><i class="fas fa-bread-slice"></i></div> In transit </li>
+                    <li class="step active"> <div><i class="fas fa-bread-slice"></i></div> In transit </li>
                 <%} else { %>
                     <li class="step"> <div><i class="fas fa-bread-slice"></i></div> In transit </li> 
                 <%}  %>
                 <% if (order_summary.status == "Out for delivery") { %>
-                    <li class="step"> <div><i class="fas fa-truck"></i></div> Out for delivery </li>
+                    <li class="step active"> <div><i class="fas fa-truck"></i></div> Out for delivery </li>
                 <%} else { %>
                     <li class="step"> <div><i class="fas fa-truck"></i></div> Out for delivery </li>
                 <%}  %>
                 <% if (order_summary.status == "Delivered") { %>
-                    <li class="step "> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li> 
+                    <li class="step active"> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li> 
                 <%} else { %>
                     <li class="step "> <div><i class="fas fa-birthday-cake"></i></div> Delivered </li> 
                 <%}  %>
             </ul> 
-        </div>
+        <!-- </div> -->
 
-        <div style="font-size: 25px;">
-            <table style="width:50%">
+        <!-- <div class="card" style="font-size: 25px; margin: 25px; padding: 50px;"> -->
+            <table class="mytable">
                 <caption style="caption-side: top;">Order Details</caption>
                 <tr>
                     <td>Restaurant</td>
@@ -50,10 +50,10 @@
                 </tr>
                 <tr>
                     <td>Restaurant Contact</td>
-                    <td><%= batch_result[1].contact %></td>
+                    <td ><%= batch_result[1].contact %></td>
                 </tr>
                 <tr>
-                    <td>Created At</td>
+                    <td>Order Placed</td>
                     <td><%= order_summary.created_at %></td>
                 </tr>
                 <tr>
@@ -88,9 +88,9 @@
                         <td>Not Assigned</td> 
                     <%}  %>
                 </tr>
-            </table>
+            </table><br>
 
-            <table style="width:50%">
+            <table class="mytable">
                 <caption style="caption-side: top;">Order Items</caption>
                 <tr>
                   <th>Name</th>
@@ -104,9 +104,9 @@
                         <td><%= order_items[i].quantity %></td> 
                     </tr>
                 <% } %>
-            </table>
+            </table><br>
 
-            <table style="width:50%">
+            <table class="mytable">
                 <caption style="caption-side: top;">Order Summary</caption>
                 <tr>
                     <td>Items Price</td>
@@ -129,20 +129,20 @@
                     <td><%= "$"+order_summary.final_price %></td>
                 </tr>
             </table>
-        </div>
 
-        <div class="pt-5"></div>
-
-        
-        <div class="contact-us text-center">
-            <p class="h6">Facing an issue with the order?  <a href="/contact-us-page.html" style="color: #850509;">Contact us.</a> </p> </p>
-        </div>
-
-        <div class="pt-5"></div>
-
-
-        <div class="leave-review text-center">
-            <p class="h6">What do you think about the order? Leave a <a href="/customer-review.html" style="color: #850509;">review</a> </p> </p>
+            <div class="pt-5"></div>
+    
+            
+            <div class="contact-us text-center">
+                <p class="h6">Facing an issue with the order?  <a href="/contact-us-page.html" style="color: #850509;">Contact us.</a> </p> </p>
+            </div>
+    
+            <div class="pt-5"></div>
+    
+    
+            <div class="leave-review text-center">
+                <p class="h6">What do you think about the order? Leave a <a href="/customer-review.html" style="color: #850509;">review</a> </p> </p>
+            </div>
         </div>
         
     </div>
