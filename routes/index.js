@@ -85,7 +85,6 @@ router.route("/login").post(async function (req, res) {
         }
     } catch (err) {
         console.log(err);
-        // res.redirect('/login');
         res.redirect('/login?error=' + encodeURIComponent(err));
     }
 })
@@ -98,33 +97,33 @@ router.get('/logout', function (req, res) {
 })
 
 router.get('/register', function (req, res) {
-    res.render('general/register', {user_type: user_type});
+    if (req.signedCookies[constants.USER_ID] !== undefined && req.signedCookies[constants.USER_TYPE] !== undefined)
+        res.redirect(`/${req.signedCookies[constants.USER_TYPE]}/`)
+    else {
+        let error = Object.keys(req.query).length !== 0 && req.query.hasOwnProperty("error") ? req.query.error : "";
+        res.render('general/register', {user_type: user_type, error: error} );
+    }
 })
 
-router.post('/addUser', async function(req,res)//checks if user exists. If info is valid, move on to the next phase of registration
-{
-    const {user_id,user_name, email,password,confirmPass, user_type} = req.body;
-    let createdAt = new Date().toString();
-    const userNameData= await dynamo.getFromTable(ddb,ddbQueries.getUserCredentials(user_id))
-    console.log(userNameData);
-    req.checkBody('confirmPass', 'Passwords do not match').equals(password);
-    if(Object.keys(userNameData).length==0) {
-        try{ 
+router.post('/addUser', async function(req,res) {
+    try {
+        const {user_id,user_name, email,password,confirmedPassword, user_type} = req.body;
+        console.log(password, confirmedPassword);
+        if (confirmedPassword != password )
+            throw `Passwords are not matching`
+        let createdAt = new Date().toString();
+        const userNameData= await dynamo.getFromTable(ddb,ddbQueries.getUserCredentials(user_id))
+        console.log(userNameData);
+        if(Object.keys(userNameData).length==0) {
             const newCustomer = await dynamo.putInTable(ddb, ddbQueries.putCustomer(user_id, user_name, email, user_type, createdAt,'', '','',password));
             console.log('Successfully added user: '+ user_id)
             res.redirect('/add_updateAddress/'+user_id)
-        } 
-        catch (err) {
-            console.log('there is an error: '+err )
         }
-        
-    }
-    else if(userNameData.Item.hasOwnProperty(constants.ENCRYPTED_CREDENTIAL)) {
-        console.log('User Exists. Being redirected to Login page.')
-        res.redirect('/login')
-    }
-    else {
-        console.log('IDK missing something:')
+        else {
+            throw `User ${user_id} already exists`
+        }   
+    } catch(err) {
+        res.redirect('/register?error=' + encodeURIComponent(err));
     }
 })
 

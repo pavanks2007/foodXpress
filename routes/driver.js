@@ -66,13 +66,5 @@ router.post('/status', async function(req,res,next){
     }
 });
 
-function validateCookie(signedCookies) {
-    try {
-        return signedCookies && signedCookies[constants.USER_TYPE] == constants.DRIVER
-    } catch (error) {
-        return false
-    }
-}
-
 module.exports = router;
 

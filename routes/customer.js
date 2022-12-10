@@ -27,8 +27,8 @@ router.get('/', function(req,res) {
 
 /* GET home page. */
 router.get('/dashboard', async function (req, res, next) {
-    // TODO create dashboard
-    res.render('customer/dashboard', {user_type: user_type});
+    // res.render('customer/dashboard', {user_type: user_type});
+    res.redirect('/customer/');
 })
 
 router.get('/restaurants', async function (req, res, next) {
@@ -222,8 +222,7 @@ router.get('/orders/:orderId', async (req, res) => {
         if (customer_id != order_summary.Item[constants.USER_ID])
             throw `Order ${order_id} is not ordered by customer ${customer_id}`;
         const order_items = await dynamo.queryTable(ddb, ddbQueries.queryOrderItems(order_id));
-        console.log(order_summary.Item);
-        const ids = [customer_id, order_summary.Item[constants.RESTAURANT_ID]];
+        const ids = [order_summary.Item[constants.USER_ID], order_summary.Item[constants.RESTAURANT_ID]];
         if (order_summary.Item.hasOwnProperty(constants.DRIVER_ID)) {
             ids.push(order_summary.Item[constants.DRIVER_ID]);
         }
